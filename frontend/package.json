@@ -10,7 +10,11 @@
     "preview": "vite preview"
   },
   "dependencies": {
+<<<<<<< HEAD
     "json-server": "^0.17.4",
+=======
+    "json-server": "^1.0.0-beta.15",
+>>>>>>> origin/main
     "react": "^19.2.6",
     "react-dom": "^19.2.6"
   },
