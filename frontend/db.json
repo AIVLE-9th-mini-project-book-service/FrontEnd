@@ -1,19 +1,6 @@
 {
   "books": [
     {
-      "id": "1",
-      "title": "죄와 벌",
-      "author": "도스토예프스키",
-      "genre": "고전",
-      "likes": 128,
-      "content": "가난한 법학도 라스콜니코프가 범죄를 저지른 후 죄책감과 심리적 갈등을 겪는 이야기",
-      "tag": "고전문학",
-      "coverImageUrl": "https://picsum.photos/seed/book1/200/300",
-      "createdAt": "2026-05-01T10:00:00",
-      "updatedAt": "2026-05-22T07:21:34.212Z",
-      "deletedAt": ""
-    },
-    {
       "id": "2",
       "title": "채식주의자",
       "author": "한강",
@@ -64,6 +51,18 @@
       "createdAt": "2026-05-15T10:00:00",
       "updatedAt": "2026-05-15T10:00:00",
       "deletedAt": ""
+    },
+    {
+      "title": "데미안",
+      "author": "헤르만 헤세",
+      "genre": "소설",
+      "likes": 0,
+      "content": "데미안",
+      "tag": "베스트셀러,추천도서",
+      "coverImageUrl": "",
+      "createdAt": "2026-05-22T07:39:51.583Z",
+      "updatedAt": "2026-05-22T07:39:51.583Z",
+      "id": "e0kE8XgTt3E"
     }
   ],
   "$schema": "./node_modules/json-server/schema.json"
