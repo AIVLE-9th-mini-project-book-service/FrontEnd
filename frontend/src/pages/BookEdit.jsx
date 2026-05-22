@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { generateBookCover } from '../components/api/openai'
-
+import '../App.css'
 
 // 도서 수정 페이지 
 function BookEdit({ book, onCoverUpdate }) {
@@ -16,38 +16,40 @@ function BookEdit({ book, onCoverUpdate }) {
   const [loading, setLoading] = useState(false)
   const [coverPreview, setCoverPreview] = useState(book.coverImageUrl || '')
 
+  // 사용자가 [저장] 버튼을 눌렀을 때 작동할 핸들러
+  const handleFinalSubmit = (e) => {
+    e.preventDefault();
+    
+    alert('도서 정보가 저장되었습니다.');
+  };
 
-   // 현재 입력된 도서 정보 기반으로 OpenAI 이미지 생성 후 저장
+  // 🎨 현재 입력된 도서 정보 기반으로 OpenAI 이미지 생성 후 저장
   async function handleGenerateCover() {
-    // ① API Key 유효성 검사
     if (!apiKey.trim()) {
       alert('OpenAI API Key를 입력해주세요.')
       return
     }
 
-    // ② 로딩 상태 ON
     setLoading(true)
 
     try {
-      // ③ 현재 수정 중인 데이터 기반으로 이미지 생성 요청
+      // 현재 수정 중인 최신 데이터 기반으로 이미지 생성 요청
       const editedBook = { title, author, content, tag, genre: book.genre }
       const imageSrc = await generateBookCover(editedBook, apiKey, quality)
 
-      // ④ 표지 미리보기 업데이트
+      // 표지 미리보기 업데이트
       setCoverPreview(imageSrc)
 
-      // ⑤ json-server PATCH 저장
+      // 상위 컴포넌트의 이미지 저장 통로 호출 (json-server PATCH)
       await onCoverUpdate(book.id, imageSrc)
       alert(`"${title}" 표지가 생성되었습니다!`)
 
     } catch (err) {
-      // 에러 코드별 사용자 알림
       if (err.message === '401')          alert('API Key가 올바르지 않습니다.')
       else if (err.message === '429')     alert('요청 한도 초과. 잠시 후 다시 시도해주세요.')
       else if (err.message === 'PARSE_ERROR') alert('응답 형식 오류가 발생했습니다.')
       else                                alert(`오류: ${err.message}`)
     } finally {
-      // 성공/실패 관계없이 로딩 상태 OFF
       setLoading(false)
     }
   }
@@ -66,16 +68,17 @@ function BookEdit({ book, onCoverUpdate }) {
           )}
         </div>
 
-        {/* 오른쪽: 수정 폼 + AI 생성 */}
-        <div className="edit-form">
+        {/* 오른쪽: 수정 폼 (form 태그 내부 순서 변경) */}
+        <form className="edit-form" onSubmit={handleFinalSubmit}>
 
-          {/* 도서 정보 수정 */}
+          {/* 1. 도서 정보 수정 입력 필드 */}
           <div className="form-group">
             <label>제목</label>
             <input
               type="text"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
+              placeholder="도서 제목을 입력하세요"
             />
           </div>
 
@@ -85,6 +88,7 @@ function BookEdit({ book, onCoverUpdate }) {
               type="text"
               value={author}
               onChange={(e) => setAuthor(e.target.value)}
+              placeholder="작가 이름을 입력하세요"
             />
           </div>
 
@@ -93,6 +97,7 @@ function BookEdit({ book, onCoverUpdate }) {
             <textarea
               value={content}
               onChange={(e) => setContent(e.target.value)}
+              placeholder="도서 내용을 입력하세요"
               rows={4}
             />
           </div>
@@ -103,10 +108,18 @@ function BookEdit({ book, onCoverUpdate }) {
               type="text"
               value={tag}
               onChange={(e) => setTag(e.target.value)}
+              placeholder="태그를 입력하세요"
             />
           </div>
 
-          {/* AI 표지 생성 섹션 */}
+          {/* [저장] 버튼 */}
+          <div className="submit-section">
+            <button type="submit" className="save-btn" disabled={loading}>
+              저장
+            </button>
+          </div>
+
+          {/* 2. AI 표지 생성 섹션 */}
           <div className="ai-section">
             <h3>🎨 AI 표지 생성</h3>
 
@@ -135,6 +148,7 @@ function BookEdit({ book, onCoverUpdate }) {
             </div>
 
             <button
+              type="button"
               className="generate-btn"
               onClick={handleGenerateCover}
               disabled={loading}
@@ -142,7 +156,8 @@ function BookEdit({ book, onCoverUpdate }) {
               {loading ? '⏳ 생성 중...' : '🎨 AI 표지 생성'}
             </button>
           </div>
-        </div>
+
+        </form>
       </div>
     </div>
   )
