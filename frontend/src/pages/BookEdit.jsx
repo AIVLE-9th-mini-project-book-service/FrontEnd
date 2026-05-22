@@ -1,8 +1,9 @@
 import { useState } from 'react'
 import { generateBookCover } from '../components/api/openai'
+import './BookEdit.css'
 
+const JSON_SERVER_URL = 'http://localhost:3000'
 
-// 도서 수정 페이지 
 function BookEdit({ book, onCoverUpdate }) {
   // 도서 수정 필드 상태
   const [title, setTitle] = useState(book.title)
@@ -14,40 +15,54 @@ function BookEdit({ book, onCoverUpdate }) {
   const [apiKey, setApiKey] = useState('')
   const [quality, setQuality] = useState('low')
   const [loading, setLoading] = useState(false)
+  const [saving, setSaving] = useState(false)  // 저장 상태
   const [coverPreview, setCoverPreview] = useState(book.coverImageUrl || '')
 
+  //제목, 작가, 내용, 태그 수정 내용을 json-server에 PATCH 저장
+  async function handleSave() {
+    setSaving(true)
+    try {
+      const res = await fetch(`${JSON_SERVER_URL}/books/${book.id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          title,
+          author,
+          content,
+          tag,
+          updatedAt: new Date().toISOString(), // 수정 시간 갱신
+        }),
+      })
+      if (!res.ok) throw new Error('저장 실패')
+      alert('저장되었습니다!')
+    } catch (err) {
+      alert(`저장 오류: ${err.message}`)
+    } finally {
+      setSaving(false)
+    }
+  }
 
-   // 현재 입력된 도서 정보 기반으로 OpenAI 이미지 생성 후 저장
+
+  // AI 표지 생성 버튼
   async function handleGenerateCover() {
-    // ① API Key 유효성 검사
     if (!apiKey.trim()) {
       alert('OpenAI API Key를 입력해주세요.')
       return
     }
 
-    // ② 로딩 상태 ON
     setLoading(true)
-
     try {
-      // ③ 현재 수정 중인 데이터 기반으로 이미지 생성 요청
       const editedBook = { title, author, content, tag, genre: book.genre }
       const imageSrc = await generateBookCover(editedBook, apiKey, quality)
-
-      // ④ 표지 미리보기 업데이트
       setCoverPreview(imageSrc)
-
-      // ⑤ json-server PATCH 저장
       await onCoverUpdate(book.id, imageSrc)
       alert(`"${title}" 표지가 생성되었습니다!`)
-
     } catch (err) {
-      // 에러 코드별 사용자 알림
       if (err.message === '401')          alert('API Key가 올바르지 않습니다.')
       else if (err.message === '429')     alert('요청 한도 초과. 잠시 후 다시 시도해주세요.')
       else if (err.message === 'PARSE_ERROR') alert('응답 형식 오류가 발생했습니다.')
       else                                alert(`오류: ${err.message}`)
     } finally {
-      // 성공/실패 관계없이 로딩 상태 OFF
       setLoading(false)
     }
   }
@@ -105,6 +120,15 @@ function BookEdit({ book, onCoverUpdate }) {
               onChange={(e) => setTag(e.target.value)}
             />
           </div>
+
+          {/* 저장 버튼 */}
+          <button
+            className="save-btn"
+            onClick={handleSave}
+            disabled={saving}
+          >
+            {saving ? '💾 저장 중...' : '💾 저장'}
+          </button>
 
           {/* AI 표지 생성 섹션 */}
           <div className="ai-section">
