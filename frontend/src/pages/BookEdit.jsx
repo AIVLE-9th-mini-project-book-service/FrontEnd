@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { generateBookCover } from '../components/api/Openapi'
+import { generateOneLiner } from '../components/api/Openapi_text'
 
 const JSON_SERVER_URL = 'http://localhost:3000'
 
@@ -16,6 +17,8 @@ function BookEdit({ book, onCoverUpdate, onBack, onSave }) {
   const [loading, setLoading] = useState(false)
   const [saving, setSaving] = useState(false)  // 저장 상태
   const [coverPreview, setCoverPreview] = useState(book.coverImageUrl || '')
+  const [summary, setSummary] = useState(book.summary || '')
+  const [oneLinerLoading, setOneLinerLoading] = useState(false)
 
   //제목, 작가, 내용, 태그 수정 내용을 json-server에 PATCH 저장
   async function handleSave() {
@@ -30,6 +33,7 @@ function BookEdit({ book, onCoverUpdate, onBack, onSave }) {
           content,
           tag,
           coverImageUrl: coverPreview,
+          summary,
           updatedAt: new Date().toISOString(),
         }),
       })
@@ -44,6 +48,26 @@ function BookEdit({ book, onCoverUpdate, onBack, onSave }) {
     }
   }
 
+
+  async function handleGenerateOneLiner() {
+    if (!apiKey.trim()) {
+      alert('OpenAI API Key를 입력해주세요.')
+      return
+    }
+    setOneLinerLoading(true)
+    try {
+      const editedBook = { title, author, content, tag, genre: book.genre }
+      const result = await generateOneLiner(editedBook, apiKey)
+      setSummary(result)
+    } catch (err) {
+      if (err.message === '401')           alert('API Key가 올바르지 않습니다.')
+      else if (err.message === '429')      alert('요청 한도 초과. 잠시 후 다시 시도해주세요.')
+      else if (err.message === 'PARSE_ERROR') alert('응답 형식 오류가 발생했습니다.')
+      else                                 alert(`오류: ${err.message}`)
+    } finally {
+      setOneLinerLoading(false)
+    }
+  }
 
   // AI 표지 생성 버튼
   async function handleGenerateCover() {
@@ -131,6 +155,28 @@ function BookEdit({ book, onCoverUpdate, onBack, onSave }) {
           >
             {saving ? '💾 저장 중...' : '💾 저장'}
           </button>
+
+          {/* 한줄평 섹션 */}
+          <div className="ai-section">
+            <h3>✏️ AI 한줄평 생성</h3>
+            <button
+              className="generate-btn"
+              onClick={handleGenerateOneLiner}
+              disabled={oneLinerLoading}
+            >
+              {oneLinerLoading ? '⏳ 생성 중...' : '✏️ 한줄평 생성'}
+            </button>
+            {summary && (
+              <div className="form-group" style={{ marginTop: '8px' }}>
+                <label>한줄평</label>
+                <textarea
+                  value={summary}
+                  onChange={(e) => setSummary(e.target.value)}
+                  rows={2}
+                />
+              </div>
+            )}
+          </div>
 
           {/* AI 표지 생성 섹션 */}
           <div className="ai-section">

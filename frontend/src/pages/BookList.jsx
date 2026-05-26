@@ -91,7 +91,7 @@ function BookList({ onSelectBook }) {
               <h3 className="book-list-name">{book.title}</h3>
               <p className="book-list-author">작가: {book.author}</p>
               <p className="book-list-description">
-                <em>"{book.content || book.firstSentence || "등록된 소개글이 없습니다."}"</em>
+                <em>{book.summary || book.content || book.firstSentence || "등록된 소개글이 없습니다."}</em>
               </p>
               <Button
                 label={`👍 추천 (${book.likes || 0})`}
