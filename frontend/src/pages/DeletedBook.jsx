@@ -107,7 +107,7 @@ function DeletedBook() {
       <div className="trash-header">
         <h1 className="page-title">삭제된 도서</h1>
         <p className="page-desc">
-          삭제 날짜가 기록된 도서입니다. 복원하거나 영구 삭제할 수 있습니다.
+          삭제된 도서입니다. 복원하거나 영구 삭제할 수 있습니다.
         </p>
       </div>
 
@@ -119,7 +119,8 @@ function DeletedBook() {
           <span className="trash-empty-icon" aria-hidden>🗑️</span>
           <p className="empty-message">휴지통이 비어 있습니다.</p>
           <p className="page-desc">
-            도서 상세·목록에서 휴지통으로 이동한 도서가 여기에 표시됩니다.
+            도서 상세·목록에서 삭제한 도서가 여기에
+            표시됩니다.
           </p>
         </div>
       ) : (
