@@ -446,7 +446,7 @@ const styles = {
   deleteBtn: { padding: '8px 16px', backgroundColor: '#e53e3e', color: '#fff', border: 'none', borderRadius: '6px', cursor: 'pointer', fontSize: '14px', fontWeight: 'bold' },
   topSection: { display: 'flex', gap: '28px', alignItems: 'flex-start', marginBottom: '32px' },
   coverWrap: { flexShrink: 0, textAlign: 'center' },
-  coverImg: { width: '210px', height: '300px', objectFit: 'cover', borderRadius: '8px', boxShadow: '0 2px 8px rgba(0,0,0,0.15)', display: 'block' },
+  coverImg: { width: '210px', height: 'auto', objectFit: 'contain', borderRadius: '8px', boxShadow: '0 2px 8px rgba(0,0,0,0.15)', display: 'block' },
   titleRow: { display: 'flex', alignItems: 'center', justifyContent: 'space-between' },
   likes: { fontSize: '18px', color: '#e53e3e', fontWeight: 'bold', whiteSpace: 'nowrap', flexShrink: 0 },
   dateWrap: { display: 'flex', flexDirection: 'column', gap: '2px', marginTop: 'auto' },
