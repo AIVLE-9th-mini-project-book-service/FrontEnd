@@ -53,33 +53,50 @@ function BookRegister() {
       alert("도서가 등록되었습니다!");
       setForm({ title: "", author: "", genre: "", likes: 0, content: "", tag: "", coverImageUrl: "" });
       setSelectedTags([]);
-      onBack();
     } else {
       alert("등록 실패! json-server 실행 확인해주세요.");
     }
   };
 
   return (
-    <div>
-      <h2>도서 등록</h2>
+    <div style={styles.container}>
+      <h2 style={styles.pageTitle}>새 도서 등록하기</h2>
 
-      <Input name="title" placeholder="도서 제목" value={form.title} onChange={handleChange} />
-      <Input name="author" placeholder="저자명" value={form.author} onChange={handleChange} />
+      <div style={styles.formGroup}>
+        <label style={styles.label}>도서 제목</label>
+        <Input 
+          name="title" 
+          placeholder="도서 제목을 입력하세요" 
+          value={form.title} 
+          onChange={handleChange} 
+          style={styles.input}
+        />
+      </div>
 
-      <div>
-        <p>장르</p>
-        <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
+      <div style={styles.formGroup}>
+        <label style={styles.label}>저자명</label>
+        <Input 
+          name="author" 
+          placeholder="저자 이름을 입력하세요" 
+          value={form.author} 
+          onChange={handleChange} 
+          style={styles.input}
+        />
+      </div>
+
+      <div style={styles.formGroup}>
+        <p style={styles.label}>장르 선택</p>
+        <div style={styles.chipContainer}>
           {GENRE_LIST.map((g) => (
             <span
               key={g}
               onClick={() => handleGenreSelect(g)}
               style={{
-                padding: "4px 12px",
-                borderRadius: "99px",
-                cursor: "pointer",
+                ...styles.chip,
                 border: `1px solid ${form.genre === g ? "#1D9E75" : "#ccc"}`,
                 background: form.genre === g ? "#E1F5EE" : "transparent",
-                color: form.genre === g ? "#085041" : "inherit",
+                color: form.genre === g ? "#085041" : "#555",
+                fontWeight: form.genre === g ? "bold" : "normal",
               }}
             >
               {g}
@@ -88,20 +105,19 @@ function BookRegister() {
         </div>
       </div>
 
-      <div>
-        <p>태그</p>
-        <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
+      <div style={styles.formGroup}>
+        <p style={styles.label}>태그 선택 (복수 선택 가능)</p>
+        <div style={styles.chipContainer}>
           {TAG_LIST.map((t) => (
             <span
               key={t}
               onClick={() => handleTagSelect(t)}
               style={{
-                padding: "4px 12px",
-                borderRadius: "99px",
-                cursor: "pointer",
+                ...styles.chip,
                 border: `1px solid ${selectedTags.includes(t) ? "#1D9E75" : "#ccc"}`,
                 background: selectedTags.includes(t) ? "#E1F5EE" : "transparent",
-                color: selectedTags.includes(t) ? "#085041" : "inherit",
+                color: selectedTags.includes(t) ? "#085041" : "#555",
+                fontWeight: selectedTags.includes(t) ? "bold" : "normal",
               }}
             >
               {t} {selectedTags.includes(t) && "×"}
@@ -110,11 +126,100 @@ function BookRegister() {
         </div>
       </div>
 
-      <TextArea name="content" placeholder="도서 내용" value={form.content} onChange={handleChange} rows={4} />
+      <div style={styles.formGroup}>
+        <label style={styles.label}>도서 소개 / 내용</label>
+        <TextArea 
+          name="content" 
+          placeholder="도서의 주요 내용이나 첫 문장을 입력해 주세요." 
+          value={form.content} 
+          onChange={handleChange} 
+          rows={5} 
+          style={styles.textarea}
+        />
+      </div>
 
-      <Button label="등록하기" onClick={handleSubmit} />
+      <Button 
+        label="등록하기" 
+        onClick={handleSubmit} 
+        style={styles.submitButton}
+      />
     </div>
   );
 }
+
+const styles = {
+  container: { 
+    padding: "30px", 
+    maxWidth: "550px", 
+    margin: "40px auto", 
+    fontFamily: "sans-serif",
+    backgroundColor: "#ffffff",
+    borderRadius: "12px",
+    boxShadow: "0 4px 16px rgba(0,0,0,0.08)",
+    border: "1px solid #eee",
+    boxSizing: "border-box"
+  },
+  pageTitle: { 
+    textAlign: "center", 
+    marginBottom: "30px", 
+    color: "#222",
+    fontSize: "24px",
+    fontWeight: "bold"
+  },
+  formGroup: { 
+    marginBottom: "22px" 
+  },
+  label: { 
+    display: "block",
+    marginBottom: "8px", 
+    fontWeight: "bold",
+    color: "#444", 
+    fontSize: "14px" 
+  },
+  input: { 
+    width: "100%", 
+    padding: "12px", 
+    borderRadius: "6px", 
+    border: "1px solid #ccc", 
+    boxSizing: "border-box", 
+    fontSize: "14px" 
+  },
+  textarea: { 
+    width: "100%", 
+    padding: "12px", 
+    borderRadius: "6px", 
+    border: "1px solid #ccc", 
+    boxSizing: "border-box", 
+    fontSize: "14px", 
+    resize: "none" 
+  },
+  chipContainer: { 
+    display: "flex", 
+    flexWrap: "wrap", 
+    gap: "8px",
+    marginTop: "4px"
+  },
+  chip: {
+    padding: "6px 14px",
+    borderRadius: "99px",
+    cursor: "pointer",
+    fontSize: "13px",
+    transition: "all 0.15s ease",
+    userSelect: "none"
+  },
+  submitButton: { 
+    width: "100%",
+    padding: "14px", 
+    backgroundColor: "#1D9E75", 
+    color: "#fff", 
+    border: "none", 
+    borderRadius: "6px", 
+    cursor: "pointer",
+    fontSize: "16px",
+    fontWeight: "bold",
+    boxShadow: "0 2px 6px rgba(29, 158, 117, 0.2)",
+    transition: "background-color 0.2s"
+  }
+};
 
 export default BookRegister;
