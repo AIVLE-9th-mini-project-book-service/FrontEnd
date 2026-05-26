@@ -49,66 +49,6 @@ function Navigation({ onGoToList, onGoToRegister, onGoToDeleted }) {
   );
 }
 
-/*
-function SlideSection() {
-  const [slide, setSlide] = useState(0);
-  const slides = ["#d9d9d9", "#cfcfcf", "#bfbfbf", "#a9a9a9"];
-
-  const movePrev = () => {
-    setSlide((prev) => (prev === 0 ? slides.length - 1 : prev - 1));
-  };
-
-  const moveNext = () => {
-    setSlide((prev) => (prev === slides.length - 1 ? 0 : prev + 1));
-  };
-
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setSlide((prev) => (prev === slides.length - 1 ? 0 : prev + 1));
-    }, 2000);
-
-    return () => clearInterval(timer);
-  }, [slides.length]);
-
-  return (
-    <section className="slide-section">
-      <div className="slide-box">
-        <button className="slide-btn left" onClick={movePrev}>
-          ‹
-        </button>
-
-        <div
-          className="slide-img"
-          style={{ backgroundColor: slides[slide] }}
-        >
-          <h1>{slide + 1}</h1>
-        </div>
-
-        <button className="slide-btn right" onClick={moveNext}>
-          ›
-        </button>
-      </div>
-
-      <div className="slide-control">
-        <div className="dots">
-          {slides.map((_, index) => (
-            <button
-              key={index}
-              className={slide === index ? "dot active" : "dot"}
-              onClick={() => setSlide(index)}
-            />
-          ))}
-        </div>
-
-        <div className="count">
-          {slide + 1} / {slides.length}
-        </div>
-      </div>
-    </section>
-  );
-}
-*/
-
 function BookSection({ onSelectBook }) {
   const visibleCount = 5;
 
@@ -193,17 +133,20 @@ function BookSection({ onSelectBook }) {
 
 
 function StatisticsSection() {
-  const [genreChartType, setGenreChartType] = useState("pie");
-  const [tagChartType, setTagChartType] = useState("pie");
+  const [bookCountType, setBookCountType] = useState("genre");
+  const [likeCountType, setLikeCountType] = useState("genre");
+
+  const [bookChartType, setBookChartType] = useState("pie");
+  const [likeChartType, setLikeChartType] = useState("pie");
 
   const [books, setBooks] = useState([]);
   const [statsLoading, setStatsLoading] = useState(true);
   const [statsError, setStatsError] = useState(null);
 
   useEffect(() => {
-    fetch('http://localhost:3000/books')
+    fetch("http://localhost:3000/books")
       .then((res) => {
-        if (!res.ok) throw new Error('서버 연결 실패');
+        if (!res.ok) throw new Error("서버 연결 실패");
         return res.json();
       })
       .then((data) => {
@@ -211,43 +154,75 @@ function StatisticsSection() {
         setStatsLoading(false);
       })
       .catch((err) => {
-        console.error('통계 데이터 불러오기 실패:', err);
-        setStatsError('통계 데이터를 불러오지 못했습니다.');
+        console.error("통계 데이터 불러오기 실패:", err);
+        setStatsError("통계 데이터를 불러오지 못했습니다.");
         setStatsLoading(false);
       });
   }, []);
 
   const colors = ["#3ba4f6", "#6b4fd6", "#a78bfa", "#2f5673", "#f5a623"];
 
-  const GenreStats = () => {
+  const getTags = (tag) => {
+    if (Array.isArray(tag)) return tag;
+    if (typeof tag === "string" && tag.trim()) return tag.split(",");
+    return [];
+  };
+
+  const getBookCountByGenre = () => {
     const result = {};
 
     books.forEach((book) => {
-      result[book.genre] = (result[book.genre] || 0) + book.likes;
+      result[book.genre] = (result[book.genre] || 0) + 1;
     });
 
     return Object.entries(result).map(([name, value]) => ({ name, value }));
   };
 
-  const TagStats = () => {
+  const getBookCountByTag = () => {
     const result = {};
 
     books.forEach((book) => {
-      const tags = Array.isArray(book.tag)
-        ? book.tag
-        : typeof book.tag === 'string' && book.tag.trim()
-          ? [book.tag]
-          : [];
-
-      tags.forEach((tag) => {
-        result[tag] = (result[tag] || 0) + (book.likes ?? 0);
+      getTags(book.tag).forEach((tag) => {
+        const trimTag = tag.trim();
+        result[trimTag] = (result[trimTag] || 0) + 1;
       });
     });
 
     return Object.entries(result).map(([name, value]) => ({ name, value }));
   };
 
-  const ChartCard = (title, data, chartType, setChartType) => {
+  const getLikeCountByGenre = () => {
+    const result = {};
+
+    books.forEach((book) => {
+      result[book.genre] = (result[book.genre] || 0) + (book.likes ?? 0);
+    });
+
+    return Object.entries(result).map(([name, value]) => ({ name, value }));
+  };
+
+  const getLikeCountByTag = () => {
+    const result = {};
+
+    books.forEach((book) => {
+      getTags(book.tag).forEach((tag) => {
+        const trimTag = tag.trim();
+        result[trimTag] = (result[trimTag] || 0) + (book.likes ?? 0);
+      });
+    });
+
+    return Object.entries(result).map(([name, value]) => ({ name, value }));
+  };
+
+  const ChartCard = (
+    title,
+    data,
+    chartType,
+    setChartType,
+    unit,
+    selectedType,
+    setSelectedType
+  ) => {
     const total = data.reduce((sum, item) => sum + item.value, 0);
 
     return (
@@ -256,25 +231,25 @@ function StatisticsSection() {
           <div>
             <h3>{title}</h3>
             <p>
-              총 <strong>{total.toLocaleString()}</strong>건
+              총 <strong>{total.toLocaleString()}</strong>{unit}
             </p>
           </div>
 
           <div className="chart-buttons">
             <button
               type="button"
-              className={chartType === "pie" ? "active" : ""}
-              onClick={() => setChartType("pie")}
+              className={selectedType === "genre" ? "active" : ""}
+              onClick={() => setSelectedType("genre")}
             >
-              원형
+              장르
             </button>
 
             <button
               type="button"
-              className={chartType === "bar" ? "active" : ""}
-              onClick={() => setChartType("bar")}
+              className={selectedType === "tag" ? "active" : ""}
+              onClick={() => setSelectedType("tag")}
             >
-              막대
+              태그
             </button>
           </div>
         </div>
@@ -303,7 +278,7 @@ function StatisticsSection() {
                 </ResponsiveContainer>
               </div>
             ) : (
-              <ResponsiveContainer width="100%" height="100%">
+              <ResponsiveContainer width="100%" height={220}>
                 <BarChart data={data}>
                   <CartesianGrid strokeDasharray="3 3" />
                   <XAxis dataKey="name" />
@@ -325,7 +300,10 @@ function StatisticsSection() {
                     {item.name}
                   </span>
 
-                  <strong>{item.value.toLocaleString()}건</strong>
+                  <strong>
+                    {item.value.toLocaleString()}
+                    {unit}
+                  </strong>
                 </li>
               ))}
           </ul>
@@ -334,22 +312,29 @@ function StatisticsSection() {
     );
   };
 
-  const genreStats = GenreStats();
-  const tagStats = TagStats();
+  const bookCountData =
+    bookCountType === "genre" ? getBookCountByGenre() : getBookCountByTag();
 
-  if (statsLoading) return (
-    <section className="stats-section">
-      <h2>도서 통계</h2>
-      <p>통계 데이터를 불러오는 중...</p>
-    </section>
-  );
+  const likeCountData =
+    likeCountType === "genre" ? getLikeCountByGenre() : getLikeCountByTag();
 
-  if (statsError) return (
-    <section className="stats-section">
-      <h2>도서 통계</h2>
-      <p>{statsError}</p>
-    </section>
-  );
+  if (statsLoading) {
+    return (
+      <section className="stats-section">
+        <h2>도서 통계</h2>
+        <p>통계 데이터를 불러오는 중...</p>
+      </section>
+    );
+  }
+
+  if (statsError) {
+    return (
+      <section className="stats-section">
+        <h2>도서 통계</h2>
+        <p>{statsError}</p>
+      </section>
+    );
+  }
 
   return (
     <section className="stats-section">
@@ -357,31 +342,37 @@ function StatisticsSection() {
 
       <div className="stats-chart-wrap">
         {ChartCard(
-          "장르별 좋아요 수",
-          genreStats,
-          genreChartType,
-          setGenreChartType
+          "도서 수",
+          bookCountData,
+          bookChartType,
+          setBookChartType,
+          "권",
+          bookCountType,
+          setBookCountType
         )}
 
         {ChartCard(
-          "태그별 좋아요 수",
-          tagStats,
-          tagChartType,
-          setTagChartType
+          "좋아요 수",
+          likeCountData,
+          likeChartType,
+          setLikeChartType,
+          "건",
+          likeCountType,
+          setLikeCountType
         )}
       </div>
     </section>
   );
 }
 
-function BookMain({ onGoToList, onGoToRegister, onGoToDeleted, onSelectBook }) {
+function BookMain({onGoToList, onGoToRegister, onGoToDeleted, onSelectBook}) {
   return (
-    <>
-      <Navigation onGoToList={onGoToList} onGoToRegister={onGoToRegister} onGoToDeleted={onGoToDeleted} />
-      <BookSection onSelectBook={onSelectBook} />
-      <StatisticsSection />
-    </>
-  );
+        <>
+          <Navigation onGoToList={onGoToList} onGoToRegister={onGoToRegister} onGoToDeleted={onGoToDeleted} />
+          <BookSection onSelectBook={onSelectBook} />
+          <StatisticsSection />
+        </>
+        );
 }
 
 export default BookMain;

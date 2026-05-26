@@ -80,6 +80,36 @@ function App() {
     setPage('finder');
   };
 
+  // 수정 페이지 이동
+  const handleGoToEdit = () => {
+    setPage('edit');
+  };
+
+  // 수정 완료 후 상태 반영
+  const handleSaveBook = (updatedBook) => {
+    setBooks((prev) =>
+      prev.map((book) => book.id === updatedBook.id ? updatedBook : book)
+    );
+    setPage('detail');
+  };
+
+  // 커버 이미지 업데이트
+  const handleCoverUpdate = async (bookId, imageSrc) => {
+    try {
+      const res = await fetch(`http://localhost:3000/books/${bookId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ coverImageUrl: imageSrc }),
+      });
+      const data = await res.json();
+      setBooks((prev) =>
+        prev.map((book) => book.id === data.id ? data : book)
+      );
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   // 삭제 도서 페이지 이동
   const handleGoToDeleted = () => {
     setSelectedBookId(null);
@@ -219,6 +249,7 @@ function App() {
             onBack={handleGoToList}
             onDelete={() => handleDelete(selectedBook)}
             onUpdate={handleUpdate}
+            onEdit={handleGoToEdit}
           />
 
         ) : page === 'main' ? (
@@ -234,6 +265,15 @@ function App() {
 
           <BookFinder
             onSelectBook={handleSelectBook}
+          />
+
+        ) : page === 'edit' && selectedBook ? (
+
+          <BookEdit
+            book={selectedBook}
+            onCoverUpdate={handleCoverUpdate}
+            onBack={() => setPage('detail')}
+            onSave={handleSaveBook}
           />
 
         ) : page === 'register' ? (
