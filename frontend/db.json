@@ -10,7 +10,7 @@
       "tag": "한국문학",
       "coverImageUrl": "https://picsum.photos/seed/book2/200/300",
       "createdAt": "2026-05-05T10:00:00",
-      "updatedAt": "2026-05-05T10:00:00",
+      "updatedAt": "2026-05-26T05:20:29.891Z",
       "deletedAt": ""
     },
     {
@@ -23,7 +23,7 @@
       "tag": "역사/인문",
       "coverImageUrl": "https://picsum.photos/seed/book3/200/300",
       "createdAt": "2026-05-08T10:00:00",
-      "updatedAt": "2026-05-08T10:00:00",
+      "updatedAt": "2026-05-26T05:26:35.816Z",
       "deletedAt": ""
     },
     {
@@ -75,6 +75,77 @@
       "createdAt": "2026-05-26T03:46:51.995Z",
       "updatedAt": "2026-05-26T03:46:51.996Z",
       "id": "9OMe8HXEXaQ"
+    }
+  ],
+  "comments": [
+    {
+      "bookId": "3",
+      "author": "ㅇㅇ",
+      "text": "이 책 추천?",
+      "createdAt": "2026-05-26T05:02:40.700Z",
+      "id": "OYwjoCac2hM"
+    },
+    {
+      "bookId": "3",
+      "author": "ㅇㅇ",
+      "text": "ㅇㅇ",
+      "createdAt": "2026-05-26T05:03:00.723Z",
+      "id": "jAFSXjf5Zv4"
+    },
+    {
+      "bookId": "3",
+      "author": "ㅇㅇ",
+      "text": "ㅇㅇ",
+      "createdAt": "2026-05-26T05:03:02.467Z",
+      "id": "Q8EjpGVe6a0"
+    },
+    {
+      "bookId": "2",
+      "author": "ㅇㅇ",
+      "text": "ㅇㅇ",
+      "password": "1111",
+      "createdAt": "2026-05-26T05:12:44.382Z",
+      "id": "sSAImVKMbkY"
+    },
+    {
+      "bookId": "5",
+      "author": "익명",
+      "text": "1",
+      "password": "111",
+      "createdAt": "2026-05-26T05:14:08.936Z",
+      "id": "4zYSMxB50Ps"
+    },
+    {
+      "bookId": "2",
+      "author": "익명",
+      "text": "ㅂㅂ",
+      "password": "qq",
+      "createdAt": "2026-05-26T05:16:45.842Z",
+      "id": "_u24crg7PGw"
+    },
+    {
+      "bookId": "2",
+      "author": "익명",
+      "text": "ㅇㅇ",
+      "password": "dd",
+      "createdAt": "2026-05-26T05:20:42.722Z",
+      "id": "7RiiNUjd-Fo"
+    },
+    {
+      "bookId": "3",
+      "author": "익명",
+      "text": "ㅇㅇ",
+      "password": "dd",
+      "createdAt": "2026-05-26T05:26:31.607Z",
+      "id": "UTj1Vq8ShzM"
+    },
+    {
+      "bookId": "2",
+      "author": "ㅇㅇ",
+      "text": "ㅇㅇ",
+      "password": "dd",
+      "createdAt": "2026-05-26T05:30:55.612Z",
+      "id": "Or6qkWPQU_4"
     }
   ],
   "$schema": "./node_modules/json-server/schema.json"
