@@ -13,39 +13,45 @@ import {
   ResponsiveContainer,
 } from "recharts";
 
-
-function Navigation({ onGoToList, onGoToRegister, onGoToDeleted }) {
-  const NAV_LIST = [
-    {
-      title: "도서목록",
-      onClick: onGoToList,
-    },
-    {
-      title: "새 도서 등록",
-      onClick: onGoToRegister,
-    },
-    {
-      title: "휴지통",
-      onClick: onGoToDeleted,
-    },
-  ];
-
+function BookMain({ onGoToFinder, onSelectBook }) {
   return (
-    <nav className="nav-wrap">
-      <div className="nav-bar">
-        <div className="nav-menu-area">
-          {NAV_LIST.map((menu) => (
-            <button
-              key={menu.title}
-              className="nav-item"
-              onClick={menu.onClick}
-            >
-              {menu.title}
-            </button>
-          ))}
-        </div>
+    <>
+      <div className="search-area">
+
+        <button
+          className="search-type-btn"
+          onClick={onGoToFinder}
+        >
+          자료검색
+        </button>
+
+        <input
+          className="search-input"
+          placeholder="도서명 또는 저자를 입력하세요."
+          onClick={onGoToFinder}
+          readOnly
+          style={{ cursor: "pointer" }}
+        />
+
+        <button
+          className="icon-btn"
+          onClick={onGoToFinder}
+        >
+          🔍
+        </button>
+
+        <button
+          className="detail-btn"
+          onClick={onGoToFinder}
+        >
+          상세검색
+        </button>
+
       </div>
-    </nav>
+
+      <BookSection onSelectBook={onSelectBook} />
+      <StatisticsSection />
+    </>
   );
 }
 
@@ -410,16 +416,6 @@ function StatisticsSection() {
       </div>
     </section>
   );
-}
-
-function BookMain({onGoToList, onGoToRegister, onGoToDeleted, onSelectBook}) {
-  return (
-        <>
-          <Navigation onGoToList={onGoToList} onGoToRegister={onGoToRegister} onGoToDeleted={onGoToDeleted} />
-          <BookSection onSelectBook={onSelectBook} />
-          <StatisticsSection />
-        </>
-        );
 }
 
 export default BookMain;
