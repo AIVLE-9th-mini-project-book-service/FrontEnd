@@ -5,13 +5,14 @@ import BookDetail from './pages/BookDetail';
 import BookRegister from './pages/BookRegister';
 import Footer from './pages/Footer';
 import BookMain from './pages/BookMain';
+import DeletedBook from './pages/DeletedBook';
 
 function App() {
   const [books, setBooks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [selectedBookId, setSelectedBookId] = useState(null);
-  const [page, setPage] = useState('list');
+  const [page, setPage] = useState('main');
   const [deletedRefreshKey, setDeletedRefreshKey] = useState(0);
 
   const loadBooks = async () => {
@@ -36,6 +37,7 @@ function App() {
 
   const handleSelectBook = (id) => {
     setSelectedBookId(id);
+    setPage('detail');
   };
 
   const handleGoToList = () => {
@@ -118,28 +120,26 @@ const handleUpdate = async (updatedBook) => {
   }
 };
 
-  if (loading) return <><Header onGoToList={handleGoToList} onGoToDeleted={handleGoToDeleted} /><p>도서 정보를 불러오는 중...</p></>;
-  if (error) return <><Header onGoToList={handleGoToList} onGoToDeleted={handleGoToDeleted} /><p>에러 발생: {error}</p></>;
+  if (loading) return <><Header onGoToList={handleGoToList} onGoToDeleted={handleGoToDeleted} onGoToMain={() => setPage('main')} /><p>도서 정보를 불러오는 중...</p></>;
+  if (error) return <><Header onGoToList={handleGoToList} onGoToDeleted={handleGoToDeleted} onGoToMain={() => setPage('main')} /><p>에러 발생: {error}</p></>;
 
   const selectedBook = books.find(b => b.id === selectedBookId);
 
   return (
     <>
-      <Header />
-      <BookMain />
+      <Header onGoToList={handleGoToList} onGoToDeleted={handleGoToDeleted} onGoToMain={() => setPage('main')} />
       <main>
-        {page === 'register' ? (
+        {page === 'detail' && selectedBook ? (
+          <BookDetail book={selectedBook} onBack={handleGoToList} onDelete={() => handleDelete(selectedBook)}
+            onUpdate={handleUpdate} />
+        ) : page === 'main' ? (
+          <BookMain onGoToList={handleGoToList} onGoToRegister={() => setPage('register')} onGoToDeleted={handleGoToDeleted} onSelectBook={handleSelectBook} />
+        ) : page === 'register' ? (
           <BookRegister onBack={handleGoToList} />
         ) : page === 'deleted' ? (
-          <DeletedBookPage key={deletedRefreshKey} />
-        ) : selectedBook ? (
-          <BookDetail book={selectedBook} onBack={handleGoToList} onDelete={() => handleDelete(selectedBook)} 
-            onUpdate={handleUpdate}/>
+          <DeletedBook key={deletedRefreshKey} />
         ) : (
-          <>
-            <button onClick={() => setPage('register')}>+ 도서 등록</button>
-            <BookList books={books} onSelectBook={handleSelectBook} onDeleteBook={handleDelete} />
-          </>
+          <BookList books={books} onSelectBook={handleSelectBook} onDeleteBook={handleDelete} />
         )}
       </main>
       <Footer />

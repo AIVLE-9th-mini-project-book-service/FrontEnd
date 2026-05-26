@@ -6,7 +6,7 @@ import TextArea from "../components/TextArea";
 const GENRE_LIST = ["소설", "고전", "역사", "IT", "동화", "자기계발", "과학", "경제", "철학", "예술"];
 const TAG_LIST = ["한국문학", "고전문학", "개발/프로그래밍", "역사/인문", "고전/동화", "베스트셀러", "추천도서", "과학/기술"];
 
-function BookRegister() {
+function BookRegister({ onBack }) {
   const [form, setForm] = useState({
     title: "",
     author: "",
@@ -56,8 +56,7 @@ const handleSubmit = async () => {
       }
 
       alert("도서가 등록되었습니다!");
-      setForm({ title: "", author: "", genre: "", likes: 0, content: "", tag: "", coverImageUrl: "" });
-      setSelectedTags([]);
+      onBack();
 
     } catch (error) {
       console.error("도서 등록 중 에러 발생:", error);

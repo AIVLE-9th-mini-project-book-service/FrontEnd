@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import logo from "../img/logo.png";
-function Header() {
+function Header({ onGoToMain }) {
   const [isHeaderOpen, setIsHeaderOpen] = useState(false);
   const [selectedTab, setSelectedTab] = useState("genre");
 
@@ -10,7 +10,7 @@ function Header() {
   return (
     <header className="header">
       <div className="header-inner">
-        <div className="logo">
+        <div className="logo" onClick={onGoToMain} style={{ cursor: "pointer" }}>
           <img src={logo} alt="로고" />
         </div>
 
@@ -31,7 +31,6 @@ function Header() {
           <button className="detail-btn">상세검색</button>
         </div>
 
-        <button className="Delete-btn">휴지통</button>
       </div>
     </header>
   );

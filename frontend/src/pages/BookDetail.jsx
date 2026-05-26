@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import  { useState } from 'react';
 
 function BookDetail({ book, onBack, onDelete, onUpdate }) {
   const tagsArray = book.tag ? book.tag.split(',') : [];

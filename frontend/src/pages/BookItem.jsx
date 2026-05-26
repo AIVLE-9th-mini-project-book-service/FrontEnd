@@ -1,7 +1,5 @@
 import React from 'react';
 import { useState, useEffect } from "react";
-import './BookItem.css'
-import './BookMain.css'
 <Book
   id={1}
   title="데미안"

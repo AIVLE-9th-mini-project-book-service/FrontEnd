@@ -2,7 +2,7 @@
  * 도서 삭제 페이지
  * deletedAt 필드에 삭제 날짜가 있는 도서만 표시합니다.
  */
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import DeletedBookCard from '../components/DeletedBookCard';
 
 async function parseResponse(res, fallbackMessage) {
@@ -47,23 +47,23 @@ function DeletedBookPage() {
   const [message, setMessage] = useState(null);
   const [busyId, setBusyId] = useState(null);
 
-  const loadDeleted = useCallback(async () => {
-    setLoading(true);
-    try {
-      const data = await fetchDeletedBooks();
-      setDeletedBooks(data);
-      setError(null);
-    } catch (e) {
-      console.error(e);
-      setError('삭제된 도서를 불러오지 못했습니다.');
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
   useEffect(() => {
+    const loadDeleted = async () => {
+      setLoading(true);
+      try {
+        const data = await fetchDeletedBooks();
+        setDeletedBooks(data);
+        setError(null);
+      } catch (e) {
+        console.error(e);
+        setError('삭제된 도서를 불러오지 못했습니다.');
+      } finally {
+        setLoading(false);
+      }
+    };
+
     loadDeleted();
-  }, [loadDeleted]);
+  }, []);
 
   const handleRestore = async (id) => {
     setBusyId(id);

@@ -5,7 +5,7 @@
       "title": "채식주의자",
       "author": "한강",
       "genre": "소설",
-      "likes": 245,
+      "likes": 252,
       "content": "평범한 여성이 어느 날 갑자기 채식을 선언하면서 벌어지는 가족 간의 갈등을 그린 소설",
       "tag": "한국문학",
       "coverImageUrl": "https://picsum.photos/seed/book2/200/300",
@@ -63,6 +63,18 @@
       "createdAt": "2026-05-22T07:39:51.583Z",
       "updatedAt": "2026-05-22T07:39:51.583Z",
       "id": "e0kE8XgTt3E"
+    },
+    {
+      "title": "1",
+      "author": "1",
+      "genre": "철학",
+      "likes": 0,
+      "content": "1",
+      "tag": "고전문학,추천도서",
+      "coverImageUrl": "",
+      "createdAt": "2026-05-26T03:46:51.995Z",
+      "updatedAt": "2026-05-26T03:46:51.996Z",
+      "id": "9OMe8HXEXaQ"
     }
   ],
   "$schema": "./node_modules/json-server/schema.json"

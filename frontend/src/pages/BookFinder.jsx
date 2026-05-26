@@ -1,6 +1,5 @@
 import { useMemo, useState } from 'react'
 import db from '../../db.json'
-import './BookFinder.css'
 
 const ICON_PROPS = {
   width: 18,

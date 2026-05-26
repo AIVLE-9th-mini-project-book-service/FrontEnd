@@ -1,0 +1,1366 @@
+/* ============================================================
+   CSS 변수 (Design Tokens)
+   ============================================================ */
+:root {
+  --main-color: #1b3a5c;
+  --point-color: #3ba4f6;
+  --bg-color: #ffffff;
+  --soft-bg: #f3f5ff;
+  --border-color: #e5e7eb;
+  --text-color: #222;
+  --sub-text: #7b879b;
+  --shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
+}
+
+/* ============================================================
+   Base / Reset
+   ============================================================ */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: system-ui, 'Segoe UI', 'Malgun Gothic', sans-serif;
+}
+
+#root {
+  width: 100%;
+  min-height: 100vh;
+}
+
+button {
+  font-family: inherit;
+}
+
+/* ============================================================
+   Header
+   ============================================================ */
+.header {
+  width: 100%;
+  height: 120px;
+  background: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.header-inner {
+  width: 1500px;
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.logo {
+  position: absolute;
+  left: 0;
+  width: 160px;
+  height: 80px;
+}
+
+.logo img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.search-area {
+  width: 820px;
+  height: 52px;
+  margin: 0 auto;
+  background: white;
+  border: 2px solid var(--main-color);
+  border-radius: 30px;
+  display: flex;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.search-type-btn {
+  height: 52px;
+  padding: 0 34px;
+  border: none;
+  border-radius: 30px;
+  background: var(--main-color);
+  color: white;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.search-input {
+  flex: 1;
+  min-width: 0;
+  border: none;
+  outline: none;
+  padding: 0 16px;
+  font-size: 15px;
+  color: #333;
+}
+
+.icon-btn {
+  width: 48px;
+  height: 48px;
+  border: none;
+  background: none;
+  font-size: 22px;
+  color: var(--main-color);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.detail-btn {
+  height: 44px;
+  margin-right: 4px;
+  padding: 0 28px;
+  border: none;
+  border-radius: 24px;
+  background: var(--main-color);
+  color: white;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.region-select {
+  border: none;
+  outline: none;
+  font-size: 15px;
+  color: #333;
+  padding: 0 18px;
+}
+
+.icon-btn,
+.join-btn {
+  border: none;
+  background: none;
+  cursor: pointer;
+}
+
+/* ============================================================
+   Category Menu
+   ============================================================ */
+.category-menu {
+  position: absolute;
+  top: 60px;
+  left: 0;
+  width: 100%;
+  height: 350px;
+  background: white;
+  border: 2px solid var(--main-color);
+  border-radius: 16px;
+  z-index: 20;
+  overflow: hidden;
+  box-shadow: var(--shadow);
+}
+
+.tab-area {
+  display: flex;
+  padding: 12px 12px 0;
+}
+
+.tab {
+  width: 180px;
+  padding: 14px 0;
+  border: none;
+  border-radius: 14px 14px 0 0;
+  background: #ddd;
+  color: #666;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.tab.active {
+  background: #dfe5ff;
+  color: var(--main-color);
+  font-weight: 700;
+}
+
+.menu-content {
+  display: flex;
+  height: 260px;
+  background: #eef1fb;
+}
+
+.category-list,
+.sub-category-list {
+  list-style: none;
+  margin: 0;
+  padding: 20px 28px;
+}
+
+.category-list {
+  width: 190px;
+  border-right: 1px solid #c9d1ef;
+  overflow-y: auto;
+}
+
+.sub-category-list {
+  width: 220px;
+  border-right: 1px solid #c9d1ef;
+}
+
+.category-list li,
+.sub-category-list li {
+  margin-bottom: 14px;
+  font-size: 16px;
+  color: #444;
+  cursor: pointer;
+}
+
+.category-list li.selected,
+.category-list li:hover,
+.sub-category-list li:hover {
+  color: var(--main-color);
+  font-weight: 800;
+}
+
+.empty-column {
+  flex: 1;
+}
+
+.close-btn {
+  position: absolute;
+  right: 14px;
+  bottom: 10px;
+  border: none;
+  background: none;
+  color: var(--main-color);
+  font-size: 15px;
+  cursor: pointer;
+}
+
+/* ============================================================
+   Navigation
+   ============================================================ */
+.nav-wrap {
+  position: relative;
+  background: white;
+  z-index: 10;
+  margin-top: 40px;
+}
+
+.nav-bar {
+  height: 100px;
+  display: flex;
+  align-items: center;
+  padding: 0 200px;
+  gap: 60px;
+}
+
+.menu-btn {
+  width: 48px;
+  height: 48px;
+  border: none;
+  border-radius: 50%;
+  background: white;
+  font-size: 30px;
+  cursor: pointer;
+  box-shadow: var(--shadow);
+}
+
+.nav-menu-area {
+  flex: 1;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 8px;
+}
+
+.nav-item-wrap {
+  position: relative;
+  padding-bottom: 25px;
+}
+
+.nav-item {
+  border: none;
+  background: none;
+  font-size: 20px;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 15px 20px;
+  border-radius: 50px;
+}
+
+.nav-item:hover,
+.nav-item.active {
+  color: var(--main-color);
+  box-shadow: 0 2px 8px rgba(27, 58, 92, 0.35);
+}
+
+.all-dropdown {
+  position: absolute;
+  top: 110px;
+  left: 0;
+  width: 100%;
+  min-height: 260px;
+  background: white;
+  display: grid;
+  grid-template-columns: 80px repeat(5, 1fr);
+  padding: 28px 70px 34px 0;
+  z-index: 30;
+}
+
+.all-dropdown::before {
+  content: "";
+}
+
+.all-column {
+  text-align: center;
+}
+
+.all-column p,
+.single-dropdown p {
+  cursor: pointer;
+}
+
+.all-column p {
+  margin: 0 0 22px;
+  font-size: 16px;
+  color: #666;
+}
+
+.all-column p:hover,
+.single-dropdown p:hover {
+  color: var(--main-color);
+  font-weight: 700;
+}
+
+.single-dropdown {
+  position: absolute;
+  top: 62px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 170px;
+  background: white;
+  border-radius: 10px;
+  padding: 16px 0;
+  box-shadow: var(--shadow);
+  z-index: 40;
+  text-align: center;
+}
+
+.single-dropdown::before {
+  content: "";
+  position: absolute;
+  top: -25px;
+  left: 0;
+  width: 100%;
+  height: 25px;
+}
+
+.single-dropdown p {
+  margin: 0;
+  padding: 10px;
+  font-size: 15px;
+  color: #333;
+}
+
+/* ============================================================
+   Main Slide
+   ============================================================ */
+.slide-section {
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.slide-box {
+  width: 100%;
+  height: 440px;
+  overflow: hidden;
+  border-radius: 16px;
+}
+
+.slide-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.slide-btn {
+  position: absolute;
+  top: 42%;
+  transform: translateY(-50%);
+  width: 62px;
+  height: 62px;
+  font-size: 44px;
+  border: none;
+  border-radius: 50%;
+  background: white;
+  color: #999;
+  cursor: pointer;
+  box-shadow: var(--shadow);
+  z-index: 10;
+}
+
+.slide-btn.left {
+  left: 20px;
+}
+
+.slide-btn.right {
+  right: 20px;
+}
+
+.slide-control {
+  position: absolute;
+  bottom: -54px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.dots {
+  display: flex;
+  gap: 8px;
+  padding: 10px 18px;
+  border: 1px solid #333;
+  border-radius: 24px;
+  background: white;
+}
+
+.dot {
+  width: 18px;
+  height: 18px;
+  border: none;
+  border-radius: 6px;
+  background: #999;
+  cursor: pointer;
+}
+
+.dot.active {
+  width: 30px;
+  background: var(--point-color);
+}
+
+.count {
+  padding: 9px 18px;
+  border: 1px solid #333;
+  border-radius: 24px;
+  background: white;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+/* ============================================================
+   Book Section (좋아요 높은 순)
+   ============================================================ */
+.likes-book-wrap {
+  width: 94%;
+  max-width: 1500px;
+  margin: 50px auto 0;
+}
+
+.likes-book-section {
+  min-width: 0;
+  overflow: visible;
+}
+
+.likes-book-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 28px;
+}
+
+.likes-book-header h2 {
+  font-size: 30px;
+  font-weight: 800;
+}
+
+.likes-book-slider {
+  position: relative;
+  padding: 0 40px;
+}
+
+.likes-book-list {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 28px;
+  overflow: hidden;
+}
+
+.likes-book-card {
+  min-width: 0;
+  text-align: center;
+}
+
+.likes-book-thumbnail {
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  max-height: 280px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #d8d8d8, #bfbfbf);
+  color: white;
+  display: flex;
+  align-items: center;
+  box-shadow: var(--shadow);
+}
+
+.likes-book-cover {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 10px;
+}
+
+
+.likes-book-card h3 {
+  margin: 12px 0 6px;
+  font-size: 16px;
+  font-weight: 800;
+}
+
+.likes-book-author,
+.likes-book-publisher {
+  font-size: 13px;
+}
+
+.likes-book-btn {
+  position: absolute;
+  top: 38%;
+  transform: translateY(-50%);
+  width: 52px;
+  height: 52px;
+  border: none;
+  border-radius: 50%;
+  background-color: white;
+  color: var(--main-color);
+  font-size: 32px;
+  box-shadow: var(--shadow);
+  cursor: pointer;
+}
+
+.likes-book-btn.left {
+  left: -10px;
+}
+
+.likes-book-btn.right {
+  right: -10px;
+}
+
+/* ============================================================
+   Statistics Section
+   ============================================================ */
+.stats-section {
+  width: 94%;
+  max-width: 1500px;
+  margin: 50px auto 0;
+  background: white;
+}
+
+.stats-section h2 {
+  display: flex;
+  font-size: 30px;
+  font-weight: 800;
+  margin-bottom: 30px;
+  color: var(--text-color);
+}
+
+.stats-chart-wrap {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 28px;
+}
+
+.chart-card {
+  min-height: 500px;
+  background: white;
+  border: 1px solid var(--border-color);
+  border-radius: 18px;
+  padding: 28px;
+  display: flex;
+  flex-direction: column;
+}
+
+.chart-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.chart-top h3 {
+  font-size: 28px;
+  font-weight: 800;
+  color: var(--text-color);
+}
+
+.chart-top p {
+  margin-top: 12px;
+  font-size: 18px;
+}
+
+.chart-top strong {
+  color: var(--main-color);
+  font-size: 30px;
+}
+
+.chart-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+.chart-buttons button {
+  width: 64px;
+  height: 44px;
+  border: 1px solid #d6dae1;
+  border-radius: 8px;
+  background: white;
+  color: var(--text-color);
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.chart-buttons button.active {
+  background: var(--main-color);
+  color: white;
+  border-color: var(--main-color);
+}
+
+.chart-content {
+  margin-top: 34px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 28px;
+  align-items: start;
+  flex: 1;
+}
+
+.chart-box {
+  width: 100%;
+  height: 250px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pie-bg {
+  width: 100%;
+  height: 270px;
+  background: var(--soft-bg);
+  border-radius: 18px;
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.chart-list {
+  height: 100%;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.chart-list li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 0;
+  border-bottom: 1px solid #eceff4;
+  font-size: 16px;
+}
+
+.chart-list li:last-child {
+  border-bottom: none;
+}
+
+.chart-list span {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.chart-list strong {
+  font-weight: 800;
+}
+
+/* ============================================================
+   Book List (도서 목록)
+   ============================================================ */
+.book-list-container {
+  padding: 20px;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.book-list-title {
+  text-align: center;
+  margin-bottom: 25px;
+  color: #333;
+}
+
+.book-list-search-bar {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 30px;
+}
+
+.book-list-search-input {
+  flex: 1;
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+}
+
+.book-list-search-btn {
+  padding: 10px 20px;
+  background-color: #333;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.book-list-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.book-list-card {
+  display: flex;
+  border: 1px solid #eaeaea;
+  padding: 20px;
+  border-radius: 8px;
+  gap: 20px;
+  background-color: #f9f9f9;
+}
+
+.book-list-cover {
+  width: 120px;
+  height: 160px;
+  object-fit: cover;
+  border-radius: 4px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.book-list-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  justify-content: center;
+}
+
+.book-list-name {
+  margin: 0;
+  font-size: 20px;
+  color: #222;
+}
+
+.book-list-author {
+  margin: 0;
+  color: #666;
+  font-size: 14px;
+}
+
+.book-list-description {
+  margin: 5px 0 10px 0;
+  color: #555;
+  font-style: italic;
+  font-size: 14px;
+  background-color: #fff;
+  padding: 8px;
+  border-radius: 4px;
+  border-left: 3px solid #007bff;
+}
+
+.book-list-like-btn {
+  align-self: flex-start;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.book-list-no-result {
+  text-align: center;
+  color: #999;
+  padding: 20px;
+}
+
+/* ============================================================
+   Book Item (도서 상세 카드)
+   ============================================================ */
+.book-detail-card {
+  cursor: pointer;
+  border: 1px solid #e5e7eb;
+  border-radius: 18px;
+  margin: 40px auto;
+  padding: 36px;
+  background: white;
+  list-style: none;
+  width: 94%;
+  max-width: 1500px;
+}
+
+.book-detail-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 40px;
+}
+
+.book-detail-header h2 {
+  font-size: 32px;
+  font-weight: 800;
+  color: #222;
+}
+
+.book-action-buttons {
+  display: flex;
+  gap: 12px;
+}
+
+.book-action-buttons button {
+  height: 42px;
+  padding: 0 18px;
+  border: none;
+  border-radius: 10px;
+  background: var(--main-color);
+  color: white;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.book-action-buttons button:hover {
+  background: #28527d;
+}
+
+.book-detail-content {
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  gap: 50px;
+}
+
+.book-cover-area {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+}
+
+.book-detail-image {
+  width: 100%;
+  max-width: 300px;
+  aspect-ratio: 3 / 4;
+  object-fit: cover;
+}
+
+.like-btn {
+  width: 100%;
+  max-width: 100px;
+  height: 50px;
+  border: none;
+  border-radius: 12px;
+  background: var(--soft-bg);
+  color: var(--main-color);
+  font-size: 17px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.book-info-area {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+}
+
+.book-info-area h1 {
+  text-align: left;
+  width: 100%;
+  margin-bottom: 30px;
+  font-size: 30px;
+  font-weight: 800;
+  color: #111;
+}
+
+.book-author,
+.book-tags,
+.book-description {
+  width: 100%;
+  text-align: left;
+}
+
+.book-author strong,
+.book-tags strong,
+.book-description strong {
+  display: block;
+  margin-bottom: 15px;
+  font-size: 20px;
+  color: var(--main-color);
+}
+
+.book-author p {
+  font-size: 20px;
+  color: #333;
+}
+
+.tag-wrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.tag-wrap span {
+  padding: 8px 14px;
+  border-radius: 20px;
+  background: var(--soft-bg);
+  color: var(--main-color);
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.book-description p {
+  min-height: 200px;
+  padding: 22px;
+  border-radius: 14px;
+  background: var(--soft-bg);
+  color: #333;
+  font-size: 17px;
+  line-height: 1.8;
+}
+
+/* ============================================================
+   Book Edit (도서 수정)
+   ============================================================ */
+.book-edit {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  padding: 30px;
+  margin-bottom: 40px;
+}
+
+.book-edit h2 {
+  font-size: 1.4rem;
+  margin-bottom: 24px;
+  color: #1e1e2e;
+}
+
+.edit-layout {
+  display: flex;
+  gap: 30px;
+}
+
+.cover-preview {
+  width: 200px;
+  min-width: 200px;
+  height: 300px;
+  background-color: #e8eaf6;
+  border-radius: 8px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cover-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.no-cover {
+  color: #999;
+  font-size: 0.9rem;
+}
+
+.edit-form {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.form-group label {
+  font-size: 0.85rem;
+  font-weight: bold;
+  color: #555;
+}
+
+.form-group input,
+.form-group textarea,
+.form-group select {
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  outline: none;
+  transition: border 0.2s;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+  border-color: #7c4dff;
+}
+
+.form-group textarea {
+  resize: vertical;
+}
+
+.ai-section {
+  margin-top: 8px;
+  padding: 16px;
+  background-color: #f8f6ff;
+  border-radius: 8px;
+  border: 1px solid #e0d7ff;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.ai-section h3 {
+  font-size: 1rem;
+  color: #7c4dff;
+}
+
+.generate-btn {
+  padding: 10px;
+  background-color: #7c4dff;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.generate-btn:hover {
+  background-color: #6535e0;
+}
+
+.generate-btn:disabled,
+.save-btn:disabled {
+  background-color: #aaa;
+  cursor: not-allowed;
+}
+
+.save-btn {
+  padding: 10px;
+  background-color: #1e1e2e;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.save-btn:hover {
+  background-color: #3a3a5c;
+}
+
+/* ============================================================
+   Book Finder (도서 검색)
+   ============================================================ */
+.book-finder {
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+}
+
+.book-finder__main {
+  flex: 1;
+  max-width: 1100px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 56px 32px 64px;
+}
+
+.book-finder__search-section {
+  text-align: center;
+  margin-bottom: 48px;
+}
+
+.book-finder__search-section h1 {
+  margin: 0 0 12px;
+  font-size: 2.25rem;
+  font-weight: 700;
+  line-height: 1.35;
+  color: #212529;
+}
+
+.book-finder__subtitle {
+  margin: 0 0 28px;
+  font-size: 1.125rem;
+  line-height: 1.6;
+  color: #495057;
+}
+
+.book-finder__search {
+  position: relative;
+  max-width: 560px;
+  margin: 0 auto;
+}
+
+.book-finder__search input {
+  width: 100%;
+  height: 52px;
+  padding: 0 88px 0 20px;
+  border: 1px solid #ced4da;
+  border-radius: 8px;
+  font: inherit;
+  font-size: 1rem;
+  color: #212529;
+  outline: none;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+
+.book-finder__search input::placeholder {
+  color: #adb5bd;
+}
+
+.book-finder__search input:focus {
+  border-color: #0d6efd;
+}
+
+.book-finder__search-actions {
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  transform: translateY(-50%);
+}
+
+.book-finder__search-clear,
+.book-finder__search-submit {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: #6c757d;
+  cursor: pointer;
+}
+
+.book-finder__search-clear:hover,
+.book-finder__search-submit:hover {
+  color: #212529;
+}
+
+.book-finder__popular h2 {
+  margin: 0 0 24px;
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: #212529;
+}
+
+.book-finder__popular-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 20px;
+}
+
+.book-card {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  padding: 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  text-align: left;
+}
+
+.book-card__cover-wrap {
+  position: relative;
+}
+
+.book-card__rank {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 24px;
+  height: 24px;
+  padding: 0 6px;
+  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.72);
+  font-size: 0.8125rem;
+  font-weight: 700;
+  line-height: 1;
+  color: #fff;
+}
+
+.book-card:hover .book-card__cover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+}
+
+.book-card:hover .book-card__title {
+  color: #0d6efd;
+}
+
+.book-card__cover {
+  width: 100%;
+  aspect-ratio: 2 / 3;
+  object-fit: cover;
+  border-radius: 4px;
+  background: #f1f3f5;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+  transition: box-shadow 0.2s;
+}
+
+.book-card__cover--fallback {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px;
+  text-align: center;
+}
+
+.book-card__cover--fallback span {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  line-height: 1.4;
+  color: #495057;
+  word-break: keep-all;
+}
+
+.book-card__title {
+  margin-top: 10px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  line-height: 1.4;
+  color: #212529;
+  word-break: keep-all;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+/* ============================================================
+   Footer
+   ============================================================ */
+.footer {
+  width: 94%;
+  max-width: 1500px;
+  margin: 0 auto;
+}
+
+.footer-inner {
+  padding: 10px 36px;
+}
+
+.footer-logo {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.footer-logo img {
+  width: 200px;
+  height: 200px;
+  object-fit: contain;
+}
+
+.footer-logo span {
+  font-size: 24px;
+  font-weight: 800;
+  color: #555;
+}
+
+.footer-info {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.footer-info p {
+  margin: 0;
+  font-size: 18px;
+  color: #222;
+  text-align: left;
+}
+
+/* ============================================================
+   Responsive
+   ============================================================ */
+@media (max-width: 1200px) {
+  .header-inner {
+    width: 94%;
+  }
+
+  .search-area {
+    width: 100%;
+  }
+
+  .nav-bar {
+    padding: 0 40px;
+  }
+
+  .likes-book-list {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .stats-chart-wrap {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 900px) {
+  .book-finder__popular-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 768px) {
+  .book-finder__main {
+    padding: 40px 20px 48px;
+  }
+
+  .book-finder__search-section h1 {
+    font-size: 1.75rem;
+  }
+
+  .book-finder__subtitle {
+    font-size: 1rem;
+  }
+
+  .book-finder__popular-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+  }
+
+  .book-detail-content {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .book-finder__popular-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}

@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import { generateBookCover } from '../components/api/openai'
-import './BookEdit.css'
 
 const JSON_SERVER_URL = 'http://localhost:3000'
 
