@@ -13,102 +13,6 @@ import {
   ResponsiveContainer,
 } from "recharts";
 
-
-function Navigation({ onGoToList, onGoToRegister, onGoToDeleted }) {
-  const NAV_LIST = [
-    {
-      title: "도서목록",
-      onClick: onGoToList,
-    },
-    {
-      title: "새 도서 등록",
-      onClick: onGoToRegister,
-    },
-    {
-      title: "휴지통",
-      onClick: onGoToDeleted,
-    },
-  ];
-
-  return (
-    <nav className="nav-wrap">
-      <div className="nav-bar">
-        <div className="nav-menu-area">
-          {NAV_LIST.map((menu) => (
-            <button
-              key={menu.title}
-              className="nav-item"
-              onClick={menu.onClick}
-            >
-              {menu.title}
-            </button>
-          ))}
-        </div>
-      </div>
-    </nav>
-  );
-}
-
-/*
-function SlideSection() {
-  const [slide, setSlide] = useState(0);
-  const slides = ["#d9d9d9", "#cfcfcf", "#bfbfbf", "#a9a9a9"];
-
-  const movePrev = () => {
-    setSlide((prev) => (prev === 0 ? slides.length - 1 : prev - 1));
-  };
-
-  const moveNext = () => {
-    setSlide((prev) => (prev === slides.length - 1 ? 0 : prev + 1));
-  };
-
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setSlide((prev) => (prev === slides.length - 1 ? 0 : prev + 1));
-    }, 2000);
-
-    return () => clearInterval(timer);
-  }, [slides.length]);
-
-  return (
-    <section className="slide-section">
-      <div className="slide-box">
-        <button className="slide-btn left" onClick={movePrev}>
-          ‹
-        </button>
-
-        <div
-          className="slide-img"
-          style={{ backgroundColor: slides[slide] }}
-        >
-          <h1>{slide + 1}</h1>
-        </div>
-
-        <button className="slide-btn right" onClick={moveNext}>
-          ›
-        </button>
-      </div>
-
-      <div className="slide-control">
-        <div className="dots">
-          {slides.map((_, index) => (
-            <button
-              key={index}
-              className={slide === index ? "dot active" : "dot"}
-              onClick={() => setSlide(index)}
-            />
-          ))}
-        </div>
-
-        <div className="count">
-          {slide + 1} / {slides.length}
-        </div>
-      </div>
-    </section>
-  );
-}
-*/
-
 function BookSection({ onSelectBook }) {
   const visibleCount = 5;
 
@@ -374,13 +278,39 @@ function StatisticsSection() {
   );
 }
 
-function BookMain({ onGoToList, onGoToRegister, onGoToDeleted, onSelectBook }) {
+function BookMain({ onSelectBook }) {
+  const [searchTerm, setSearchTerm] = useState("");
+  const [isHeaderOpen, setIsHeaderOpen] = useState(false);
+
+  const handleSearch = () => {
+    alert(`'${searchTerm}' 검색 기능 작동 예정`);
+  };
+
   return (
-    <>
-      <Navigation onGoToList={onGoToList} onGoToRegister={onGoToRegister} onGoToDeleted={onGoToDeleted} />
+    <div className="main-container" style={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+      <div className="search-area">
+        <button
+          className="search-type-btn"
+          onClick={() => setIsHeaderOpen(!isHeaderOpen)}
+        >
+          자료검색
+        </button>
+
+        <input
+          className="search-input"
+          placeholder="도서명 또는 저자를 입력하세요."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
+        />
+
+        <button className="icon-btn" onClick={handleSearch}>🔍</button>
+        <button className="detail-btn">상세검색</button>
+      </div>
+
       <BookSection onSelectBook={onSelectBook} />
       <StatisticsSection />
-    </>
+    </div>
   );
 }
 

@@ -85,61 +85,76 @@ function App() {
     }
   };
 
-const handleUpdate = async (updatedBook) => {
+  const handleUpdate = async (updatedBook) => {
+    try {
+      const now = new Date();
+      const res = await fetch(
+        `http://localhost:3000/books/${updatedBook.id}`,
+        {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            title: updatedBook.title,
+            author: updatedBook.author,
+            genre: updatedBook.genre,
+            content: updatedBook.content,
+            tag: updatedBook.tag,
+            coverImageUrl: updatedBook.coverImageUrl,
+            updatedAt: now
+          })
+        }
+      );
+      const data = await res.json();
+      // books 상태 업데이트
+      setBooks(prev =>
+        prev.map(book =>
+          book.id === data.id ? data : book
+        )
+      );
+      alert('수정 완료');
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
-  try {
-    const now = new Date();
-    const res = await fetch(
-      `http://localhost:3000/books/${updatedBook.id}`,
-      {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          title: updatedBook.title,
-          author: updatedBook.author,
-          genre: updatedBook.genre,
-          content: updatedBook.content,
-          tag: updatedBook.tag,
-          coverImageUrl: updatedBook.coverImageUrl,
-          updatedAt: now
-        })
-      }
-    );
-    const data = await res.json();
-    // books 상태 업데이트
-    setBooks(prev =>
-      prev.map(book =>
-        book.id === data.id ? data : book
-      )
-    );
-    alert('수정 완료');
-  } catch (err) {
-    console.error(err);
-  }
-};
+  const renderHeader = () => (
+    <Header 
+      onGoToMain={() => setPage('main')} 
+      onGoToList={handleGoToList} 
+      onGoToRegister={() => setPage('register')} 
+      onGoToDeleted={handleGoToDeleted} 
+    />
+  );
 
-  if (loading) return <><Header onGoToList={handleGoToList} onGoToDeleted={handleGoToDeleted} onGoToMain={() => setPage('main')} /><p>도서 정보를 불러오는 중...</p></>;
-  if (error) return <><Header onGoToList={handleGoToList} onGoToDeleted={handleGoToDeleted} onGoToMain={() => setPage('main')} /><p>에러 발생: {error}</p></>;
+  if (loading) return <>{renderHeader()}<p>도서 정보를 불러오는 중...</p></>;
+  if (error) return <>{renderHeader()}<p>에러 발생: {error}</p></>;
 
   const selectedBook = books.find(b => b.id === selectedBookId);
 
   return (
     <>
-      <Header onGoToList={handleGoToList} onGoToDeleted={handleGoToDeleted} onGoToMain={() => setPage('main')} />
+      {renderHeader()}
+      
       <main>
         {page === 'detail' && selectedBook ? (
-          <BookDetail book={selectedBook} onBack={handleGoToList} onDelete={() => handleDelete(selectedBook)}
-            onUpdate={handleUpdate} />
+          <BookDetail 
+            book={selectedBook} 
+            onBack={handleGoToList} 
+            onDelete={() => handleDelete(selectedBook)}
+            onUpdate={handleUpdate} 
+          />
         ) : page === 'main' ? (
-          <BookMain onGoToList={handleGoToList} onGoToRegister={() => setPage('register')} onGoToDeleted={handleGoToDeleted} onSelectBook={handleSelectBook} />
+          <BookMain onSelectBook={handleSelectBook} />
         ) : page === 'register' ? (
           <BookRegister onBack={handleGoToList} />
         ) : page === 'deleted' ? (
           <DeletedBook key={deletedRefreshKey} />
-        ) : (
+        ) : page === 'list' ? (
           <BookList books={books} onSelectBook={handleSelectBook} onDeleteBook={handleDelete} />
+        ) : (
+          <div style={{ textAlign: 'center', padding: '50px' }}>페이지를 찾을 수 없습니다.</div>
         )}
       </main>
       <Footer />

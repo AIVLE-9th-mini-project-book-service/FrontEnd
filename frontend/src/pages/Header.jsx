@@ -1,11 +1,12 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import logo from "../img/logo.png";
-function Header({ onGoToMain }) {
-  const [isHeaderOpen, setIsHeaderOpen] = useState(false);
-  const [selectedTab, setSelectedTab] = useState("genre");
 
-  const GENRE_LIST = ["소설", "고전", "역사"];
-  const TAG_LIST = ["한국문학", "고전문학", "개발/프로그래밍"];
+function Header({ onGoToMain, onGoToList, onGoToRegister, onGoToDeleted }) {
+  const NAV_LIST = [
+    { title: "도서목록", onClick: onGoToList },
+    { title: "새 도서 등록", onClick: onGoToRegister },
+    { title: "휴지통", onClick: onGoToDeleted },
+  ];
 
   return (
     <header className="header">
@@ -14,23 +15,21 @@ function Header({ onGoToMain }) {
           <img src={logo} alt="로고" />
         </div>
 
-        <div className="search-area">
-          <button
-            className="search-type-btn"
-            onClick={() => setIsHeaderOpen(!isHeaderOpen)}
-          >
-            자료검색
-          </button>
-
-          <input
-            className="search-input"
-            placeholder="도서명 또는 저자를 입력하세요."
-          />
-
-          <button className="icon-btn">🔍</button>
-          <button className="detail-btn">상세검색</button>
-        </div>
-
+        <nav className="nav-wrap">
+          <div className="nav-bar">
+            <div className="nav-menu-area">
+              {NAV_LIST.map((menu) => (
+                <button
+                  key={menu.title}
+                  className="nav-item"
+                  onClick={menu.onClick}
+                >
+                  {menu.title}
+                </button>
+              ))}
+            </div>
+          </div>
+        </nav>
       </div>
     </header>
   );
