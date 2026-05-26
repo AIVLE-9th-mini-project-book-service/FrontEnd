@@ -138,7 +138,7 @@ function BookSection({ onSelectBook }) {
     <div className="likes-book-wrap">
       <section className="likes-book-section">
         <div className="likes-book-header">
-          <h2>좋아요 높은 순</h2>
+          <h2>인기 도서</h2>
         </div>
 
         <div className="likes-book-slider">

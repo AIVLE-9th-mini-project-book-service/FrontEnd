@@ -191,7 +191,7 @@ function BookFinder({ onSelectBook }) {
         </section>
 
         <section className="book-finder__popular">
-          <h2>인기검색어</h2>
+          <h2>인기 도서</h2>
 
           {loading ? (
             <div className="book-finder__status">

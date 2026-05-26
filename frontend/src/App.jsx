@@ -232,7 +232,9 @@ function App() {
             onSelectBook={handleSelectBook}
           />
         ) : page === 'finder' ? (
-          <BookFinder />
+         <BookFinder
+            onSelectBook={handleSelectBook}
+          />
         ) : page === 'edit' ? (
           selectedBook ? (
             <BookEdit book={selectedBook} onCoverUpdate={handleCoverUpdate} />
