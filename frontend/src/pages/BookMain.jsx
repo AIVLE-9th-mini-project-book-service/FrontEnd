@@ -24,6 +24,10 @@ function Navigation() {
       items: ["통합검색"],
     },
     {
+      title: "도서목록",
+      items: ["도서목록"],
+    },
+    {
       title: "종류별",
       items: ["장르별", "태그별", "좋아요순"],
     },
