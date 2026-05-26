@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import { generateBookCover } from '../components/api/Openapi'
-import './BookEdit.css'
 
 const JSON_SERVER_URL = 'http://localhost:3000'
 
@@ -58,8 +57,7 @@ function BookEdit({ book, onCoverUpdate, onBack, onSave }) {
       const editedBook = { title, author, content, tag, genre: book.genre }
       const imageSrc = await generateBookCover(editedBook, apiKey, quality)
       setCoverPreview(imageSrc)
-      await onCoverUpdate(book.id, imageSrc)
-      alert(`"${title}" 표지가 생성되었습니다!`)
+      alert(`"${title}" 표지가 생성되었습니다! 저장 버튼을 눌러 저장하세요.`)
     } catch (err) {
       if (err.message === '401')          alert('API Key가 올바르지 않습니다.')
       else if (err.message === '429')     alert('요청 한도 초과. 잠시 후 다시 시도해주세요.')
