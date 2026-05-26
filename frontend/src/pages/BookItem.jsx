@@ -1,8 +1,13 @@
 import React from 'react';
 
-function BookItem({ id, title, author, tag, coverImageUrl, onSelect }) {
+function BookItem({ id, title, author, tag, coverImageUrl, onSelect, onDelete }) {
   // 컴마(,)로 들어온 태그 문자열을 배열로 쪼갬 (예: "React,Java" -> ["React", "Java"])
   const tagsArray = tag ? tag.split(',') : [];
+
+  const handleDeleteClick = (e) => {
+    e.stopPropagation();
+    onDelete?.({ id, title, author, tag, coverImageUrl });
+  };
 
   return (
     <li onClick={() => onSelect(id)} style={{ cursor: 'pointer', border: '1px solid #ccc', margin: '10px', padding: '10px' }}>
@@ -21,6 +26,10 @@ function BookItem({ id, title, author, tag, coverImageUrl, onSelect }) {
           <span key={idx} style={{ marginRight: '5px' }}>#{t.trim()}</span>
         ))}
       </div>
+
+      <button type="button" onClick={handleDeleteClick}>
+        삭제 도서
+      </button>
     </li>
   );
 }

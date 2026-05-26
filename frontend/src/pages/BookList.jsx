@@ -1,7 +1,7 @@
 import React from 'react';
 import BookItem from './BookItem'; // 개별 아이템 가져오기
 
-function BookList({ books, onSelectBook }) {
+function BookList({ books, onSelectBook, onDeleteBook }) {
   return (
     <div style={{ padding: '20px' }}>
       <h2>📖 도서 목록</h2>
@@ -16,7 +16,8 @@ function BookList({ books, onSelectBook }) {
             author={book.author}
             tag={book.tag}
             coverImageUrl={book.coverImageUrl}
-            onSelect={onSelectBook} // 
+            onSelect={onSelectBook}
+            onDelete={onDeleteBook} // 
           />
         ))}
       </ul>
