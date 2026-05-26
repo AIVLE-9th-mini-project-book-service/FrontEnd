@@ -1,16 +1,64 @@
-# React + Vite
+# 📚도서관리시스템
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+---
 
-Currently, two official plugins are available:
+## 프로젝트 소개&구성
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+AI 표지 생성을 지원하는 도서관리 시스템 "걷기가 서재"입니다. 누가나 작가가 되어 자유롭게 글을 집필하고 공개할 수 있는 창작 플랫폼입니다.
 
-## React Compiler
+책의 내용을 시각적으로 전달하고, 내용에 맞는 표지를 선정하여 독자로 하여금 책을 클릭하고 싶게 만듭니다.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
 
-## Expanding the ESLint configuration
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## 팀원 구성
+
+PM / 기획 : 박유경
+
+UI / 레이아웃 :  심유리
+
+CRUD 연동 : 한승연, 최지흠, 윤빈
+
+OpenAI 연동 : 김완수, 박형우
+
+스타일링 / QA: 신가람
+
+발표 / 문서ﾠ: 박선호
+
+
+
+## 기능 소개
+
+- 도서 등록, 조회, 수정, 삭제
+
+- API
+
+- OpenAI 표지 생성
+
+
+
+## 기술 스택
+
+- Frontend : React 19 / vite / fetch
+
+- Data : json-server
+
+- AI : OpenAI API (GPT Image)
+
+- Coporation : Github
+
+
+
+## 실행 방법
+
+npm run dev
+
+
+
+## 설치 방법
+
+
+
+#### Bash
+
+
+
