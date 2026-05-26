@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import './BookMain.css'
-import logo from "./img/logo.png";
 import {
   PieChart,
   Pie,
@@ -14,79 +13,6 @@ import {
   ResponsiveContainer,
 } from "recharts";
 
-function Header() {
-  const [isHeaderOpen, setIsHeaderOpen] = useState(false);
-  const [selectedTab, setSelectedTab] = useState("genre");
-
-  const GENRE_LIST = ["소설", "고전", "역사"];
-  const TAG_LIST = ["한국문학", "고전문학", "개발/프로그래밍"];
-
-  return (
-    <header className="header">
-      <div className="header-inner">
-        <div className="logo">
-          <img src={logo} alt="로고" />
-        </div>
-
-        <div className="search-area">
-          <button
-            className="search-type-btn"
-            onClick={() => setIsHeaderOpen(!isHeaderOpen)}
-          >
-            자료검색
-          </button>
-
-          <input
-            className="search-input"
-            placeholder="도서명 또는 저자를 입력하세요."
-          />
-
-          <button className="icon-btn">🔍</button>
-          <button className="detail-btn">상세검색</button>
-
-          {isHeaderOpen && (
-            <div className="category-menu">
-              <div className="tab-area">
-                <button
-                  className={`tab ${selectedTab === "genre" ? "active" : ""}`}
-                  onClick={() => setSelectedTab("genre")}
-                >
-                  장르분류
-                </button>
-
-                <button
-                  className={`tab ${selectedTab === "tag" ? "active" : ""}`}
-                  onClick={() => setSelectedTab("tag")}
-                >
-                  태그분류
-                </button>
-              </div>
-
-              <div className="menu-content">
-                <ul className="category-list">
-                  {(selectedTab === "genre" ? GENRE_LIST : TAG_LIST).map(
-                    (item) => (
-                      <li key={item}>{item}</li>
-                    )
-                  )}
-                </ul>
-              </div>
-
-              <button
-                className="close-btn"
-                onClick={() => setIsHeaderOpen(false)}
-              >
-                닫기 X
-              </button>
-            </div>
-          )}
-        </div>
-
-        <button className="Delete-btn">휴지통</button>
-      </div>
-    </header>
-  );
-}
 
 function Navigation() {
   const [isAllNavOpen, setIsAllNavOpen] = useState(false);
@@ -226,19 +152,19 @@ function BookSection() {
   const [suggestIndex, setSuggestIndex] = useState(0);
 
   const popularBooks = [
-    { title: "도서명1", author: "저자명"},
-    { title: "도서명2", author: "저자명"},
-    { title: "도서명3", author: "저자명"},
-    { title: "도서명4", author: "저자명"},
-    { title: "도서명5", author: "저자명"},
+    { title: "도서명1", author: "저자명" },
+    { title: "도서명2", author: "저자명" },
+    { title: "도서명3", author: "저자명" },
+    { title: "도서명4", author: "저자명" },
+    { title: "도서명5", author: "저자명" },
   ];
 
   const suggestBooks = [
-    { title: "도서명1", author: "저자명"},
-    { title: "도서명2", author: "저자명"},
-    { title: "도서명3", author: "저자명"},
-    { title: "도서명4", author: "저자명"},
-    { title: "도서명5", author: "저자명"},
+    { title: "도서명1", author: "저자명" },
+    { title: "도서명2", author: "저자명" },
+    { title: "도서명3", author: "저자명" },
+    { title: "도서명4", author: "저자명" },
+    { title: "도서명5", author: "저자명" },
   ];
 
   const movePrev = (books, startIndex, setStartIndex) => {
@@ -488,36 +414,12 @@ function StatisticsSection() {
   );
 }
 
-function Footer() {
-  return (
-    <footer className="footer">
-      <div className="footer-inner">
-        <div className="footer-logo">
-          <img src={logo} alt="에이블스쿨" />
-        </div>
-
-        <div className="footer-info">
-          <p>(35262) 대전광역시 서구 문정로48번길 30 KT탄방타워 (탄방동)</p>
-          <p>
-            대표전화 042-000-0000 (운영시간: 09:00~18:00, 휴관일 / 공휴일 제외)
-          </p>
-          <p>
-            팩스 042-000-0000
-          </p>
-        </div>
-      </div>
-    </footer>
-  );
-}
-
 function BookMain() {
   return (
     <>
-      <Header />
       <Navigation />
       <BookSection />
       <StatisticsSection />
-      <Footer />
     </>
   );
 }
