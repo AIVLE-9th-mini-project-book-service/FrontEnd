@@ -11,22 +11,27 @@ function App() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [selectedBookId, setSelectedBookId] = useState(null);
-  const [page, setPage] = useState("list");
+  const [page, setPage] = useState('list');
+  const [deletedRefreshKey, setDeletedRefreshKey] = useState(0);
+
+  const loadBooks = async () => {
+    const res = await fetch('http://localhost:3000/books');
+    if (!res.ok) throw new Error('서버 연결 실패');
+    const data = await res.json();
+    setBooks(data.filter((book) => !book.deletedAt));
+  };
 
   useEffect(() => {
-    async function loadBooks() {
+    async function initBooks() {
       try {
-        const res = await fetch('http://localhost:3000/books');
-        if (!res.ok) throw new Error('서버 연결 실패');
-        const data = await res.json();
-        setBooks(data);
+        await loadBooks();
       } catch (err) {
         console.error(err);
         setError('도서 목록을 불러오지 못했습니다.');
       }
       setLoading(false);
     }
-    loadBooks();
+    initBooks();
   }, []);
 
   const handleSelectBook = (id) => {
@@ -35,22 +40,46 @@ function App() {
 
   const handleGoToList = () => {
     setSelectedBookId(null);
-    setPage("list");
-    
-    fetch('http://localhost:3000/books')
-      .then((res) => res.json())
-      .then((data) => setBooks(data));
+    setPage('list');
+    loadBooks().catch((err) => {
+      console.error(err);
+      setError('도서 목록을 불러오지 못했습니다.');
+    });
+  };
+
+  const handleGoToDeleted = () => {
+    setSelectedBookId(null);
+    setDeletedRefreshKey((prev) => prev + 1);
+    setPage('deleted');
   };
   
-  const handleDelete = async (id) => {
+  const handleDelete = async (book) => {
+    const targetBook = books.find((b) => b.id === book.id) ?? book;
+    const ok = window.confirm(`"${targetBook.title}"을(를) 삭제 도서로 이동할까요?`);
+    if (!ok) return;
+
     try {
-      await fetch(`http://localhost:3000/books/${id}`, {
-        method: 'DELETE'
+      const res = await fetch(`http://localhost:3000/books/${targetBook.id}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          deletedAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString()
+        })
       });
-      alert('삭제 완료');
-      handleGoToList();
+
+      if (!res.ok) throw new Error('삭제 도서 이동 실패');
+
+      setBooks((prev) => prev.filter((item) => item.id !== targetBook.id));
+      setSelectedBookId(null);
+      setDeletedRefreshKey((prev) => prev + 1);
+      setPage('deleted');
+      alert('삭제 도서로 이동했습니다.');
     } catch (err) {
       console.error(err);
+      alert('삭제 도서 이동에 실패했습니다.');
     }
   };
 
@@ -89,8 +118,8 @@ const handleUpdate = async (updatedBook) => {
   }
 };
 
-  if (loading) return <><Header /><p>도서 정보를 불러오는 중...</p></>;
-  if (error) return <><Header /><p>에러 발생: {error}</p></>;
+  if (loading) return <><Header onGoToList={handleGoToList} onGoToDeleted={handleGoToDeleted} /><p>도서 정보를 불러오는 중...</p></>;
+  if (error) return <><Header onGoToList={handleGoToList} onGoToDeleted={handleGoToDeleted} /><p>에러 발생: {error}</p></>;
 
   const selectedBook = books.find(b => b.id === selectedBookId);
 
@@ -99,15 +128,17 @@ const handleUpdate = async (updatedBook) => {
       <Header />
       <BookMain />
       <main>
-        {page === "register" ? (
+        {page === 'register' ? (
           <BookRegister onBack={handleGoToList} />
+        ) : page === 'deleted' ? (
+          <DeletedBookPage key={deletedRefreshKey} />
         ) : selectedBook ? (
-          <BookDetail book={selectedBook} onBack={handleGoToList} onDelete={() => handleDelete(selectedBook.id)} 
+          <BookDetail book={selectedBook} onBack={handleGoToList} onDelete={() => handleDelete(selectedBook)} 
             onUpdate={handleUpdate}/>
         ) : (
           <>
-            <button onClick={() => setPage("register")}>+ 도서 등록</button>
-            <BookList books={books} onSelectBook={handleSelectBook} />
+            <button onClick={() => setPage('register')}>+ 도서 등록</button>
+            <BookList books={books} onSelectBook={handleSelectBook} onDeleteBook={handleDelete} />
           </>
         )}
       </main>
