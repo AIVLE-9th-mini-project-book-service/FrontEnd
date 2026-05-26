@@ -21,8 +21,10 @@ function App() {
 
   const [deletedRefreshKey, setDeletedRefreshKey] = useState(0);
 
+  const bookUrl= 'http://localhost:3000/books';
+
   const loadBooks = async () => {
-    const res = await fetch('http://localhost:3000/books');
+    const res = await fetch(bookUrl);
 
     if (!res.ok) {
       throw new Error('서버 연결 실패');
@@ -96,7 +98,7 @@ function App() {
   // 커버 이미지 업데이트
   const handleCoverUpdate = async (bookId, imageSrc) => {
     try {
-      const res = await fetch(`http://localhost:3000/books/${bookId}`, {
+      const res = await fetch(bookUrl+`/${bookId}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ coverImageUrl: imageSrc }),
@@ -131,7 +133,7 @@ function App() {
 
     try {
       const res = await fetch(
-        `http://localhost:3000/books/${targetBook.id}`,
+        bookUrl+`/${targetBook.id}`,
         {
           method: 'PATCH',
           headers: {
@@ -170,7 +172,7 @@ function App() {
       const now = new Date();
 
       const res = await fetch(
-        `http://localhost:3000/books/${updatedBook.id}`,
+        bookUrl+`/${updatedBook.id}`,
         {
           method: 'PATCH',
           headers: {

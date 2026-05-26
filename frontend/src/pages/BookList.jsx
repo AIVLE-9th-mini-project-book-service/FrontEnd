@@ -6,12 +6,13 @@ import Input from "../components/Input";
 function BookList({ onSelectBook }) {
   const [books, setBooks] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
+  const bookUrl = 'http://localhost:3000/books';
 
   // 컴포넌트 로드 시 서버에서 데이터를 가져오는 로직 추가
   useEffect(() => {
     const fetchBooks = async () => {
       try {
-        const res = await fetch("http://localhost:3000/books");
+        const res = await fetch(bookUrl);
         
         if (!res.ok) {
           throw new Error("서버 응답 오류");
@@ -32,7 +33,7 @@ function BookList({ onSelectBook }) {
   // 추천 카운트 증가 함수 (서버 반영 버전)
   const handleLike = async (id, currentLikes) => {
     try {
-      const res = await fetch(`http://localhost:3000/books/${id}`, {
+      const res = await fetch(bookUrl+`/${id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ likes: currentLikes + 1 }),

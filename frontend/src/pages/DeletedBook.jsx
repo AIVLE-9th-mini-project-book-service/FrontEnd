@@ -5,6 +5,8 @@
 import { useEffect, useState } from 'react';
 import DeletedBookCard from '../components/DeletedBookCard';
 
+const bookUrl = 'http://localhost:3000/books';
+
 async function parseResponse(res, fallbackMessage) {
   if (!res.ok) {
     throw new Error(fallbackMessage);
@@ -16,13 +18,13 @@ async function parseResponse(res, fallbackMessage) {
 }
 
 async function fetchDeletedBooks() {
-  const res = await fetch('http://localhost:3000/books');
+  const res = await fetch(bookUrl);
   const books = await parseResponse(res, '삭제된 도서 목록을 불러오지 못했습니다.');
   return books.filter((book) => book.deletedAt);
 }
 
 async function restoreDeletedBook(id) {
-  const res = await fetch(`http://localhost:3000/books/${id}`, {
+  const res = await fetch(bookUrl+`/${id}`, {
     method: 'PATCH',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
@@ -34,7 +36,7 @@ async function restoreDeletedBook(id) {
 }
 
 async function permanentDeleteBook(id) {
-  const res = await fetch(`http://localhost:3000/books/${id}`, {
+  const res = await fetch(bookUrl+`/${id}`, {
     method: 'DELETE',
   });
   return parseResponse(res, '영구 삭제에 실패했습니다.');
