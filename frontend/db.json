@@ -1,80 +1,198 @@
 {
   "books": [
     {
-      "id": "2",
+      "id": "1",
       "title": "채식주의자",
       "author": "한강",
       "genre": "소설",
       "likes": 252,
       "content": "평범한 여성이 어느 날 갑자기 채식을 선언하면서 벌어지는 가족 간의 갈등을 그린 소설",
       "tag": "한국문학",
-      "coverImageUrl": "https://picsum.photos/seed/book2/200/300",
+      "coverImageUrl": "/src/img/book/채식주의자.jpg",
       "createdAt": "2026-05-05T10:00:00",
-      "updatedAt": "2026-05-05T10:00:00",
+      "updatedAt": "2026-05-26T05:20:29.891Z",
       "deletedAt": ""
     },
     {
-      "id": "3",
+      "id": "2",
       "title": "총균쇠",
       "author": "재레드 다이아몬드",
       "genre": "역사",
       "likes": 312,
-      "content": "왜 어떤 문명은 다른 문명을 정복할 수 있었는지 지리와 환경의 관점에서 분석한 책",
+      "content": "인류 문명의 격차가 지리와 환경, 병균과 기술의 차이에서 비롯되었음을 설명하는 인문 역사서",
       "tag": "역사/인문",
-      "coverImageUrl": "https://picsum.photos/seed/book3/200/300",
+      "coverImageUrl": "/src/img/book/총균쇠.jpg",
       "createdAt": "2026-05-08T10:00:00",
-      "updatedAt": "2026-05-08T10:00:00",
+      "updatedAt": "2026-05-26T05:26:35.816Z",
       "deletedAt": ""
     },
     {
-      "id": "4",
+      "id": "3",
       "title": "어린 왕자",
-      "author": "생텍쥐페리",
+      "author": "앙투안 드 생텍쥐페리",
       "genre": "동화",
       "likes": 528,
-      "content": "사막에 불시착한 비행사가 어린 왕자를 만나 삶과 사랑의 의미를 깨달아가는 이야기",
+      "content": "별에서 온 어린 왕자의 여행을 통해 사랑과 책임, 순수의 의미를 돌아보게 하는 동화",
       "tag": "고전/동화",
-      "coverImageUrl": "https://picsum.photos/seed/book4/200/300",
+      "coverImageUrl": "/src/img/book/어린왕자.jpg",
       "createdAt": "2026-05-10T10:00:00",
       "updatedAt": "2026-05-10T10:00:00",
       "deletedAt": ""
     },
     {
-      "id": "5",
-      "title": "클린 코드",
+      "id": "4",
+      "title": "Clean Code 클린 코드",
       "author": "로버트 C. 마틴",
       "genre": "IT",
       "likes": 198,
-      "content": "좋은 코드란 무엇인지, 어떻게 하면 읽기 쉽고 유지보수하기 좋은 코드를 작성할 수 있는지 설명하는 책",
+      "content": "읽기 쉽고 유지보수하기 좋은 코드를 작성하기 위한 원칙과 실천 방법을 다룬 개발서",
       "tag": "개발/프로그래밍",
-      "coverImageUrl": "https://picsum.photos/seed/book5/200/300",
+      "coverImageUrl": "/src/img/book/Clean Code 클린 코드.jpg",
       "createdAt": "2026-05-15T10:00:00",
       "updatedAt": "2026-05-15T10:00:00",
       "deletedAt": ""
     },
     {
+      "id": "5",
       "title": "데미안",
       "author": "헤르만 헤세",
       "genre": "소설",
       "likes": 0,
-      "content": "데미안",
+      "content": "싱클레어가 데미안을 만나 선과 악의 경계를 넘으며 자기 자신을 찾아가는 성장 소설",
       "tag": "베스트셀러,추천도서",
-      "coverImageUrl": "",
+      "coverImageUrl": "/src/img/book/데미안.jpg",
       "createdAt": "2026-05-22T07:39:51.583Z",
       "updatedAt": "2026-05-22T07:39:51.583Z",
-      "id": "e0kE8XgTt3E"
+      "deletedAt": ""
     },
     {
-      "title": "1",
-      "author": "1",
-      "genre": "철학",
+      "id": "6",
+      "title": "품격 있는 대화를 위한 지식 브리핑",
+      "author": "김진",
+      "genre": "인문",
       "likes": 0,
-      "content": "1",
-      "tag": "고전문학,추천도서",
-      "coverImageUrl": "",
-      "createdAt": "2026-05-26T03:46:51.995Z",
-      "updatedAt": "2026-05-26T03:46:51.996Z",
-      "id": "9OMe8HXEXaQ"
+      "content": "대화의 깊이를 더해 주는 시사와 역사, 문화 지식을 짧고 쉽게 풀어낸 인문 교양서",
+      "tag": "교양",
+      "coverImageUrl": "/src/img/book/품격 있는 대화를 위한 지식 브리핑.jpg",
+      "createdAt": "2026-05-22T07:39:51.583Z",
+      "updatedAt": "2026-05-22T07:39:51.583Z",
+      "deletedAt": ""
+    },
+    {
+      "id": "7",
+      "title": "프로젝트 헤일메리",
+      "author": "앤디 위어",
+      "genre": "SF",
+      "likes": 0,
+      "content": "태양 에너지 감소로 위기에 빠진 지구를 구하기 위해 우주 임무에 나선 과학자의 SF 소설",
+      "tag": "영화와 드라마 원작",
+      "coverImageUrl": "/src/img/book/프로젝트 헤일메리.jpg",
+      "createdAt": "2026-05-22T07:39:51.583Z",
+      "updatedAt": "2026-05-22T07:39:51.583Z",
+      "deletedAt": ""
+    },
+    {
+      "id": "8",
+      "title": "주식 투자를 잘한다는 것",
+      "author": "육과장",
+      "genre": "투자/재태크",
+      "likes": 0,
+      "content": "시장의 변동성 속에서 투자 원칙과 판단 기준을 세우는 방법을 설명하는 주식 투자서",
+      "tag": "경제 경영",
+      "coverImageUrl": "/src/img/book/주식 투자를 잘한다는 것.jpg",
+      "createdAt": "2026-05-22T07:39:51.583Z",
+      "updatedAt": "2026-05-22T07:39:51.583Z",
+      "deletedAt": ""
+    },
+    {
+      "id": "9",
+      "title": "내면 근력",
+      "author": "짐 머피",
+      "genre": "성공학/경력관리",
+      "likes": 0,
+      "content": "성과보다 내면의 태도와 감정을 단련해 잠재력을 끌어올리는 법을 전하는 자기계발서",
+      "tag": "자기계발",
+      "coverImageUrl": "/src/img/book/내면 근력.jpg",
+      "createdAt": "2026-05-22T07:39:51.583Z",
+      "updatedAt": "2026-05-22T07:39:51.583Z",
+      "deletedAt": ""
+    },
+    {
+      "id": "10",
+      "title": "박곰희 연금 부자 수업",
+      "author": "박곰희",
+      "genre": "투자/재태크",
+      "likes": 0,
+      "content": "연금 계좌와 세제 혜택을 활용해 안정적인 노후 현금흐름을 만드는 방법을 알려 주는 재테크서",
+      "tag": "경제 경영",
+      "coverImageUrl": "/src/img/book/박곰희 연금 부자 수업.jpg",
+      "createdAt": "2026-05-22T07:39:51.583Z",
+      "updatedAt": "2026-05-22T07:39:51.583Z",
+      "deletedAt": ""
+    }
+  ],
+  "comments": [
+    {
+      "bookId": "3",
+      "author": "박유경",
+      "text": "어린 왕자의 순수한 시선이 사랑과 책임의 의미를 따뜻하게 전해 주는 좋은 책이에요.",
+      "createdAt": "2026-05-26T05:02:40.700Z",
+      "id": "OYwjoCac2hM"
+    },
+    {
+      "bookId": "3",
+      "author": "신가람",
+      "text": "짧은 이야기 안에 깊은 여운이 담겨 있어서 읽을 때마다 새롭게 다가옵니다.",
+      "createdAt": "2026-05-26T05:03:00.723Z",
+      "id": "jAFSXjf5Zv4"
+    },
+    {
+      "bookId": "2",
+      "author": "윤빈",
+      "text": "문명의 차이를 지리와 환경으로 풀어내는 관점이 넓고 설득력 있어서 유익했습니다.",
+      "password": "1111",
+      "createdAt": "2026-05-26T05:12:44.382Z",
+      "id": "sSAImVKMbkY"
+    },
+    {
+      "bookId": "5",
+      "author": "박선호",
+      "text": "싱클레어가 자신을 찾아가는 과정이 섬세하게 그려져 깊이 몰입해서 읽었습니다.",
+      "password": "111",
+      "createdAt": "2026-05-26T05:14:08.936Z",
+      "id": "4zYSMxB50Ps"
+    },
+    {
+      "bookId": "2",
+      "author": "한승연",
+      "text": "방대한 역사와 문명 이야기를 체계적으로 설명해 주어서 이해하기 좋았습니다.",
+      "password": "qq",
+      "createdAt": "2026-05-26T05:16:45.842Z",
+      "id": "_u24crg7PGw"
+    },
+    {
+      "bookId": "1",
+      "author": "심유리",
+      "text": "인물의 내면을 강렬하게 보여 주어서 오래 생각하게 만드는 인상적인 작품입니다.",
+      "password": "dd",
+      "createdAt": "2026-05-26T05:20:42.722Z",
+      "id": "7RiiNUjd-Fo"
+    },
+    {
+      "bookId": "4",
+      "author": "박형우",
+      "text": "좋은 코드의 기준을 구체적으로 알려 줘서 개발 습관을 돌아보게 하는 유익한 책입니다.",
+      "password": "dd",
+      "createdAt": "2026-05-26T05:20:42.722Z",
+      "id": "7RiiNUjd-Fo"
+    },
+    {
+      "bookId": "5",
+      "author": "김완수",
+      "text": "자기 자신을 찾아가는 여정을 깊이 있게 보여 줘서 여운이 오래 남는 작품입니다.",
+      "password": "dd",
+      "createdAt": "2026-05-26T05:20:42.722Z",
+      "id": "7RiiNUjd-Fo"
     }
   ],
   "$schema": "./node_modules/json-server/schema.json"

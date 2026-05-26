@@ -1,15 +1,24 @@
 import { useState } from 'react'
 import { generateBookCover } from '../components/api/Openapi'
 import { generateOneLiner } from '../components/api/Openapi_text'
+import { useState, useEffect } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
+import { generateBookCover } from '../components/api/Openapi';
 
-const JSON_SERVER_URL = 'http://localhost:3000'
+const JSON_SERVER_URL = 'http://localhost:3000';
 
-function BookEdit({ book, onCoverUpdate, onBack, onSave }) {
+function BookEdit() {
+  const { id } = useParams();
+  const navigate = useNavigate();
+
+  const [book, setBook] = useState(null);
+  const [bookLoading, setBookLoading] = useState(true);
+
   // 도서 수정 필드 상태
-  const [title, setTitle] = useState(book.title)
-  const [author, setAuthor] = useState(book.author)
-  const [content, setContent] = useState(book.content)
-  const [tag, setTag] = useState(book.tag)
+  const [title, setTitle] = useState('');
+  const [author, setAuthor] = useState('');
+  const [content, setContent] = useState('');
+  const [tag, setTag] = useState('');
 
   // AI 표지 생성 관련 상태
   const [apiKey, setApiKey] = useState('')
@@ -20,11 +29,35 @@ function BookEdit({ book, onCoverUpdate, onBack, onSave }) {
   const [summary, setSummary] = useState(book.summary || '')
   const [oneLinerLoading, setOneLinerLoading] = useState(false)
 
-  //제목, 작가, 내용, 태그 수정 내용을 json-server에 PATCH 저장
+  // 도서 데이터 fetch
+  useEffect(() => {
+    const fetchBook = async () => {
+      try {
+        const res = await fetch(`${JSON_SERVER_URL}/books/${id}`);
+        if (!res.ok) throw new Error('도서 정보를 불러오지 못했습니다.');
+        const data = await res.json();
+        setBook(data);
+        setTitle(data.title);
+        setAuthor(data.author);
+        setContent(data.content);
+        setTag(data.tag);
+        setCoverPreview(data.coverImageUrl || '');
+      } catch (err) {
+        console.error(err);
+        alert(err.message);
+        navigate('/books');
+      } finally {
+        setBookLoading(false);
+      }
+    };
+    fetchBook();
+  }, [id, navigate]);
+
+  // 저장
   async function handleSave() {
-    setSaving(true)
+    setSaving(true);
     try {
-      const res = await fetch(`${JSON_SERVER_URL}/books/${book.id}`, {
+      const res = await fetch(`${JSON_SERVER_URL}/books/${id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -36,15 +69,13 @@ function BookEdit({ book, onCoverUpdate, onBack, onSave }) {
           summary,
           updatedAt: new Date().toISOString(),
         }),
-      })
-      if (!res.ok) throw new Error('저장 실패')
-      const data = await res.json()
-      onSave(data)
-      onBack()
+      });
+      if (!res.ok) throw new Error('저장 실패');
+      navigate(`/books/${id}`);
     } catch (err) {
-      alert(`저장 오류: ${err.message}`)
+      alert(`저장 오류: ${err.message}`);
     } finally {
-      setSaving(false)
+      setSaving(false);
     }
   }
 
@@ -72,29 +103,35 @@ function BookEdit({ book, onCoverUpdate, onBack, onSave }) {
   // AI 표지 생성 버튼
   async function handleGenerateCover() {
     if (!apiKey.trim()) {
-      alert('OpenAI API Key를 입력해주세요.')
-      return
+      alert('OpenAI API Key를 입력해주세요.');
+      return;
     }
-
-    setLoading(true)
+    setLoading(true);
     try {
-      const editedBook = { title, author, content, tag, genre: book.genre }
-      const imageSrc = await generateBookCover(editedBook, apiKey, quality)
-      setCoverPreview(imageSrc)
-      alert(`"${title}" 표지가 생성되었습니다! 저장 버튼을 눌러 저장하세요.`)
+      const editedBook = { title, author, content, tag, genre: book.genre };
+      const imageSrc = await generateBookCover(editedBook, apiKey, quality);
+      setCoverPreview(imageSrc);
+      alert(`"${title}" 표지가 생성되었습니다! 저장 버튼을 눌러 저장하세요.`);
     } catch (err) {
-      if (err.message === '401')          alert('API Key가 올바르지 않습니다.')
-      else if (err.message === '429')     alert('요청 한도 초과. 잠시 후 다시 시도해주세요.')
-      else if (err.message === 'PARSE_ERROR') alert('응답 형식 오류가 발생했습니다.')
-      else                                alert(`오류: ${err.message}`)
+      if (err.message === '401')              alert('API Key가 올바르지 않습니다.');
+      else if (err.message === '429')         alert('요청 한도 초과. 잠시 후 다시 시도해주세요.');
+      else if (err.message === 'PARSE_ERROR') alert('응답 형식 오류가 발생했습니다.');
+      else                                    alert(`오류: ${err.message}`);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
   }
 
+  if (bookLoading) return (
+    <p style={{ textAlign: 'center', marginTop: '60px', color: '#888' }}>
+      도서 정보를 불러오는 중...
+    </p>
+  );
+  if (!book) return null;
+
   return (
     <div className="book-edit">
-      <button onClick={onBack}>← 뒤로 가기</button>
+      <button onClick={() => navigate(-1)}>← 뒤로 가기</button>
       <h2>📝 도서 수정</h2>
 
       <div className="edit-layout">
@@ -110,7 +147,6 @@ function BookEdit({ book, onCoverUpdate, onBack, onSave }) {
         {/* 오른쪽: 수정 폼 + AI 생성 */}
         <div className="edit-form">
 
-          {/* 도서 정보 수정 */}
           <div className="form-group">
             <label>제목</label>
             <input
@@ -147,7 +183,6 @@ function BookEdit({ book, onCoverUpdate, onBack, onSave }) {
             />
           </div>
 
-          {/* 저장 버튼 */}
           <button
             className="save-btn"
             onClick={handleSave}
@@ -217,7 +252,7 @@ function BookEdit({ book, onCoverUpdate, onBack, onSave }) {
         </div>
       </div>
     </div>
-  )
+  );
 }
 
-export default BookEdit
+export default BookEdit;
