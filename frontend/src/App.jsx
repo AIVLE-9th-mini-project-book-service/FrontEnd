@@ -7,7 +7,7 @@ import BookEdit from './pages/BookEdit';
 import Footer from './pages/Footer';
 import BookMain from './pages/BookMain';
 import DeletedBook from './pages/DeletedBook';
-import BookFinder from './pages/BookFinder';
+import BookFinder from './pages/BookFinder';  
 
 function App() {
   const [books, setBooks] = useState([]);
@@ -167,42 +167,90 @@ function App() {
     }
   };
 
-  if (loading) return (
-    <>
-      <Header onGoToList={handleGoToList} onGoToDeleted={handleGoToDeleted} onGoToMain={handleGoToMain} />
-      <p style={{ textAlign: 'center', marginTop: '60px', color: '#888' }}>도서 정보를 불러오는 중...</p>
-    </>
-  );
+  // 로딩 화면 (Header 프롭스 통합 및 깔끔한 스타일 적용)
+  if (loading) {
+    return (
+      <>
+        <Header
+          onGoToMain={handleGoToMain}
+          onGoToList={handleGoToList}
+          onGoToRegister={() => setPage('register')}
+          onGoToDeleted={handleGoToDeleted}
+        />
+        <p style={{ textAlign: 'center', marginTop: '60px', color: '#888' }}>
+          도서 정보를 불러오는 중...
+        </p>
+      </>
+    );
+  }
 
-  if (error) return (
-    <>
-      <Header onGoToList={handleGoToList} onGoToDeleted={handleGoToDeleted} onGoToMain={handleGoToMain} />
-      <p style={{ textAlign: 'center', marginTop: '60px', color: '#c53030' }}>에러 발생: {error}</p>
-    </>
-  );
+  // 에러 화면
+  if (error) {
+    return (
+      <>
+        <Header
+          onGoToMain={handleGoToMain}
+          onGoToList={handleGoToList}
+          onGoToRegister={() => setPage('register')}
+          onGoToDeleted={handleGoToDeleted}
+        />
+        <p style={{ textAlign: 'center', marginTop: '60px', color: '#c53030' }}>
+          에러 발생: {error}
+        </p>
+      </>
+    );
+  }
 
   return (
     <>
-      <Header onGoToList={handleGoToList} onGoToDeleted={handleGoToDeleted} onGoToMain={handleGoToMain} />
+      <Header
+        onGoToMain={handleGoToMain}
+        onGoToList={handleGoToList}
+        onGoToRegister={() => setPage('register')}
+        onGoToDeleted={handleGoToDeleted}
+      />
       <main>
         {page === 'detail' ? (
-          selectedBook
-            ? <BookDetail book={selectedBook} onDelete={() => handleDelete(selectedBook)} onUpdate={handleUpdate} onEdit={handleGoToEdit} />
-            : <p style={{ textAlign: 'center', marginTop: '60px', color: '#888' }}>도서 정보를 찾을 수 없습니다.</p>
+          selectedBook ? (
+            <BookDetail
+              book={selectedBook}
+              onDelete={() => handleDelete(selectedBook)}
+              onUpdate={handleUpdate}
+              onEdit={handleGoToEdit}
+            />
+          ) : (
+            <p style={{ textAlign: 'center', marginTop: '60px', color: '#888' }}>
+              도서 정보를 찾을 수 없습니다.
+            </p>
+          )
         ) : page === 'main' ? (
-          <BookMain onGoToList={handleGoToList} onGoToRegister={() => goToPage('register')} onGoToDeleted={handleGoToDeleted} onSelectBook={handleSelectBook} />
+          <BookMain
+            onGoToList={handleGoToList}
+            onGoToRegister={() => goToPage('register')}
+            onGoToDeleted={handleGoToDeleted}
+            onGoToFinder={handleGoToFinder}
+            onSelectBook={handleSelectBook}
+          />
         ) : page === 'finder' ? (
           <BookFinder />
         ) : page === 'edit' ? (
-          selectedBook
-            ? <BookEdit book={selectedBook} onCoverUpdate={handleCoverUpdate} />
-            : <p style={{ textAlign: 'center', marginTop: '60px', color: '#888' }}>도서 정보를 찾을 수 없습니다.</p>
+          selectedBook ? (
+            <BookEdit book={selectedBook} onCoverUpdate={handleCoverUpdate} />
+          ) : (
+            <p style={{ textAlign: 'center', marginTop: '60px', color: '#888' }}>
+              도서 정보를 찾을 수 없습니다.
+            </p>
+          )
         ) : page === 'register' ? (
           <BookRegister onBack={handleGoToList} />
         ) : page === 'deleted' ? (
           <DeletedBook key={deletedRefreshKey} />
         ) : (
-          <BookList books={books} onSelectBook={handleSelectBook} onDeleteBook={handleDelete} />
+          <BookList
+            books={books}
+            onSelectBook={handleSelectBook}
+            onDeleteBook={handleDelete}
+          />
         )}
       </main>
       <Footer />
