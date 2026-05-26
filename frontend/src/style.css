@@ -1262,6 +1262,71 @@ button {
 }
 
 /* ============================================================
+   BookRegister
+   ============================================================ */
+   .register-container {
+  padding: 30px;
+  max-width: 550px;
+  margin: 40px auto;
+  font-family: sans-serif;
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+  border: 1px solid #eee;
+  box-sizing: border-box;
+}
+
+.register-title {
+  text-align: center;
+  margin-bottom: 30px;
+  color: #222;
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.register-form-group {
+  margin-bottom: 22px;
+}
+
+.register-label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: bold;
+  color: #444;
+  font-size: 14px;
+}
+
+.register-chip-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.register-chip {
+  padding: 6px 14px;
+  border-radius: 99px;
+  cursor: pointer;
+  font-size: 13px;
+  transition: all 0.15s ease;
+  user-select: none;
+}
+
+.register-submit-btn {
+  width: 100%;
+  padding: 14px;
+  background-color: #1D9E75;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: bold;
+  box-shadow: 0 2px 6px rgba(29, 158, 117, 0.2);
+  transition: background-color 0.2s;
+}
+
+/* ============================================================
    Footer
    ============================================================ */
 .footer {
