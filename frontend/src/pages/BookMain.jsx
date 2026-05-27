@@ -422,7 +422,7 @@ function BookSection() {
               onTransitionEnd={handleTransitionEnd}
             >
               {extendedBooks.map((book, index) => (
-                <div className="likes-book-card" key={book.id || index}>
+                <div className="likes-book-card" key={`${book.id}-${index}`}>
                   <div
                     className="likes-book-thumbnail"
                     onClick={() => navigate(`/books/${book.id}`)}
