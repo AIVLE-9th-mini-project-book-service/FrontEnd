@@ -54,7 +54,7 @@ AI 표지 생성을 지원하는 도서관리 시스템 "걷기가 서재"입니
 
 - 신가람 : 검토 담당자 · 스타일링/QA · 도서 검색 기능
 
-- 심유리 : UI 작성 · 메인페이지 작성
+- 심유리 : UI 작성 · 메인 페이지 작성 · 통계 구현
 
 - 윤빈 : PPT 작성 · 도서 등록 기능 · Router Dom 적용
 
@@ -153,6 +153,14 @@ src/
 │   ├── icon02.png
 │   ├── icon03.png
 │   ├── logo.png
+│   ├── icon01.png
+│   ├── icon02.png
+│   ├── icon03.png
+│   ├── Add.png
+│   ├── Search.png
+│   ├── List.png
+│   ├── Chart.png
+│   ├── Trash.png
 │   └── no-cover.svg
 ├── pages/
 │   ├── BookChart.jsx
