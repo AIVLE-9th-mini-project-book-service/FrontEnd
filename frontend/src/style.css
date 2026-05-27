@@ -783,21 +783,21 @@ button {
 
 .likes-book-thumbnail {
   width: 100%;
-  aspect-ratio: 3 / 4;
-  max-height: 280px;
   border-radius: 10px;
   background: linear-gradient(135deg, #d8d8d8, #bfbfbf);
   color: white;
   display: flex;
   align-items: center;
   box-shadow: var(--shadow);
+  overflow: hidden;
 }
 
 .likes-book-cover {
   width: 100%;
-  height: 100%;
-  object-fit: cover;
+  height: auto;
+  object-fit: contain;
   border-radius: 10px;
+  display: block;
 }
 
 
@@ -975,10 +975,121 @@ button {
 /* ============================================================
    Book List (도서 목록)
    ============================================================ */
-.book-list-container {
-  padding: 20px;
-  max-width: 800px;
+/* 사이드바 + 목록 전체 래퍼 */
+.book-list-wrapper {
+  display: flex;
+  align-items: flex-start;
+  max-width: 1100px;
   margin: 0 auto;
+  padding: 20px;
+  gap: 28px;
+}
+
+/* 사이드바 */
+.book-list-sidebar {
+  width: 200px;
+  flex-shrink: 0;
+  position: sticky;
+  top: 20px;
+  background: #fff;
+  border: 1px solid #eee;
+  border-radius: 10px;
+  padding: 20px 16px;
+}
+
+.sidebar-section {
+  margin-bottom: 24px;
+}
+
+.sidebar-section:last-child {
+  margin-bottom: 0;
+}
+
+.sidebar-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: #888;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin: 0 0 10px 0;
+}
+
+.sidebar-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.sidebar-item {
+  width: 100%;
+  text-align: left;
+  padding: 7px 10px;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  font-size: 14px;
+  color: #444;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+
+.sidebar-item:hover {
+  background: #f0faf5;
+  color: #1D9E75;
+}
+
+.sidebar-item--active {
+  background: #E1F5EE;
+  color: #1D9E75;
+  font-weight: 700;
+}
+
+.sidebar-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.sidebar-tag {
+  padding: 4px 10px;
+  border: 1px solid #ddd;
+  border-radius: 99px;
+  background: #fff;
+  font-size: 12px;
+  color: #555;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+
+.sidebar-tag:hover {
+  border-color: #1D9E75;
+  color: #1D9E75;
+}
+
+.sidebar-tag--active {
+  background: #1D9E75;
+  border-color: #1D9E75;
+  color: #fff;
+}
+
+.book-list-filter-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  background: #E1F5EE;
+  color: #1D9E75;
+  border-radius: 99px;
+  font-size: 12px;
+  font-weight: 600;
+  margin-right: 4px;
+}
+
+.book-list-container {
+  flex: 1;
+  min-width: 0;
+  padding: 0;
 }
 
 .book-list-title {
@@ -1079,6 +1190,66 @@ button {
   text-align: center;
   color: #999;
   padding: 20px;
+}
+
+.book-list-result-info {
+  margin: -10px 0 16px;
+  font-size: 14px;
+  color: #555;
+}
+
+/* 페이지네이션 */
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+  margin-top: 36px;
+  padding-bottom: 20px;
+}
+
+.pagination__btn {
+  min-width: 36px;
+  height: 36px;
+  padding: 0 8px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  background: #fff;
+  color: #333;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+
+.pagination__btn:hover:not(:disabled) {
+  border-color: #1D9E75;
+  color: #1D9E75;
+}
+
+.pagination__btn--active {
+  background: #1D9E75;
+  border-color: #1D9E75;
+  color: #fff;
+  font-weight: 700;
+}
+
+.pagination__btn--arrow {
+  font-size: 18px;
+  line-height: 1;
+}
+
+.pagination__btn:disabled {
+  color: #ccc;
+  border-color: #eee;
+  cursor: default;
+}
+
+.pagination__ellipsis {
+  color: #aaa;
+  font-size: 14px;
+  padding: 0 2px;
+  user-select: none;
 }
 
 /* ============================================================
@@ -1433,6 +1604,23 @@ button {
 @media (max-width: 900px) {
   .book-finder__popular-grid {
     grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 768px) {
+  .book-list-wrapper {
+    flex-direction: column;
+  }
+  .book-list-sidebar {
+    width: 100%;
+    position: static;
+  }
+  .sidebar-list {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+  .sidebar-item {
+    width: auto;
   }
 }
 
