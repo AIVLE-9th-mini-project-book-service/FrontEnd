@@ -98,7 +98,7 @@ AI 표지 생성을 지원하는 도서관리 시스템 "걷기가 서재"입니
 
 git clone
 
-cd [프로젝트명]
+cd frontend
 
 npm install
 
