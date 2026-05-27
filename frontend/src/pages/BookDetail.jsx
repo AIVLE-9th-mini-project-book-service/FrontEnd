@@ -28,6 +28,10 @@ function BookDetail() {
   // 수정/삭제 비밀번호 확인 UI 상태
   const [pwPrompt, setPwPrompt] = useState(null);
 
+  // 도서 내용 더보기 상태
+  const [contentExpanded, setContentExpanded] = useState(false);
+  const CONTENT_LIMIT = 150;
+
   // 도서 데이터 fetch
   useEffect(() => {
     const fetchBook = async () => {
@@ -308,7 +312,21 @@ function BookDetail() {
                   style={styles.textarea}
                 />
               ) : (
-                <p style={styles.content}>{book.content}</p>
+                <>
+                  <p style={styles.content}>
+                    {contentExpanded || book.content.length <= CONTENT_LIMIT
+                      ? book.content
+                      : book.content.slice(0, CONTENT_LIMIT) + '...'}
+                  </p>
+                  {book.content.length > CONTENT_LIMIT && (
+                    <button
+                      onClick={() => setContentExpanded((prev) => !prev)}
+                      style={styles.moreBtn}
+                    >
+                      {contentExpanded ? '접기 ▲' : '더보기 ▼'}
+                    </button>
+                  )}
+                </>
               )}
             </div>
 
@@ -457,6 +475,7 @@ const styles = {
   contentSection: { backgroundColor: '#f3effe', border: '1px solid #d8c8fa', borderRadius: '10px', padding: '16px 18px' },
   contentTitle: { fontSize: '14px', fontWeight: 'bold', color: '#6b3fa0', margin: '0 0 8px 0' },
   content: { fontSize: '14px', lineHeight: '1.8', color: '#4a3060', whiteSpace: 'pre-wrap', margin: 0 },
+  moreBtn: { marginTop: '8px', background: 'none', border: 'none', color: '#6b3fa0', fontSize: '13px', cursor: 'pointer', padding: 0, fontWeight: 'bold' },
   input: { width: '100%', padding: '8px 12px', borderRadius: '6px', border: '1px solid #ccc', fontSize: '14px', boxSizing: 'border-box' },
   select: { width: '100%', padding: '8px 12px', borderRadius: '6px', border: '1px solid #ccc', fontSize: '14px', backgroundColor: '#fff' },
   textarea: { width: '100%', padding: '12px', borderRadius: '6px', border: '1px solid #ccc', fontSize: '14px', lineHeight: '1.7', resize: 'vertical', boxSizing: 'border-box' },
