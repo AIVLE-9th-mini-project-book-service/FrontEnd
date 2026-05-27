@@ -60,6 +60,7 @@ function BookFinder() {
   const [books, setBooks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const bookUrl = 'http://localhost:3000/books';
 
   // db.json 직접 import 대신 서버에서 fetch
   useEffect(() => {
@@ -70,7 +71,7 @@ function BookFinder() {
         setLoading(true);
         setError(null);
 
-        const res = await fetch('http://localhost:3000/books');
+        const res = await fetch(bookUrl);
         if (!res.ok) throw new Error('서버 응답 오류');
         const data = await res.json();
 

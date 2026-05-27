@@ -9,6 +9,7 @@ import { GENRE_LIST, TAG_LIST } from "../bookOption";
 
 function BookRegister() {
   const navigate = useNavigate();
+  const bookUrl = 'http://localhost:3000/books';
 
   const [form, setForm] = useState({
     title: '',
@@ -109,7 +110,7 @@ function BookRegister() {
     };
 
     try {
-      const res = await fetch('http://localhost:3000/books', {
+      const res = await fetch(bookUrl, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(newBook),

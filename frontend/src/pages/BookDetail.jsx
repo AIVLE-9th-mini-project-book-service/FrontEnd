@@ -6,6 +6,8 @@ import { GENRE_LIST, TAG_LIST } from "../bookOption";
 function BookDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const bookUrl = 'http://localhost:3000/books';
+  const commentUrl = 'http://localhost:3000/comments';
 
   const [book, setBook] = useState(null);
   const [bookLoading, setBookLoading] = useState(true);
@@ -36,7 +38,7 @@ function BookDetail() {
   useEffect(() => {
     const fetchBook = async () => {
       try {
-        const res = await fetch(`http://localhost:3000/books/${id}`);
+        const res = await fetch(bookUrl+`/${id}`);
         if (!res.ok) throw new Error('도서 정보를 불러오지 못했습니다.');
         const data = await res.json();
         setBook(data);
@@ -63,7 +65,7 @@ function BookDetail() {
       setCommentLoading(true);
       try {
         // json-server v1 쿼리 파라미터 타입 불일치 방지 → 전체 조회 후 클라이언트 필터링
-        const res = await fetch(`http://localhost:3000/comments`);
+        const res = await fetch(commentUrl);
         if (!res.ok) throw new Error(`서버 오류: ${res.status}`);
         const data = await res.json();
         const filtered = data.filter(
@@ -83,7 +85,7 @@ function BookDetail() {
   const handleDelete = async () => {
     if (!window.confirm(`"${book.title}"을(를) 삭제 도서로 이동할까요?`)) return;
     try {
-      const res = await fetch(`http://localhost:3000/books/${id}`, {
+      const res = await fetch(bookUrl+`/${id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -103,7 +105,7 @@ function BookDetail() {
   // 도서 수정 완료
   const handleSubmitUpdate = async () => {
     try {
-      const res = await fetch(`http://localhost:3000/books/${id}`, {
+      const res = await fetch(bookUrl+`/${id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -138,7 +140,7 @@ function BookDetail() {
       createdAt: new Date().toISOString(),
     };
     try {
-      const res = await fetch('http://localhost:3000/comments', {
+      const res = await fetch(commentUrl, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(newComment),
@@ -168,7 +170,7 @@ function BookDetail() {
     }
     if (pwPrompt.mode === 'delete') {
       try {
-        const res = await fetch(`http://localhost:3000/comments/${pwPrompt.id}`, { method: 'DELETE' });
+        const res = await fetch(commentUrl+`/${pwPrompt.id}`, { method: 'DELETE' });
         if (!res.ok) throw new Error();
         setComments((prev) => prev.filter((c) => c.id !== pwPrompt.id));
         closePwPrompt();
@@ -177,7 +179,7 @@ function BookDetail() {
       }
     } else {
       try {
-        const res = await fetch(`http://localhost:3000/comments/${pwPrompt.id}`, {
+        const res = await fetch(commentUrl+`/${pwPrompt.id}`, {
           method: 'PATCH',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ text: pwPrompt.editText }),

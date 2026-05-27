@@ -17,8 +17,10 @@ function BookChart() {
     const [statsLoading, setStatsLoading] = useState(true);
     const [statsError, setStatsError] = useState(null);
 
+    const bookUrl = 'http://localhost:3000/books';
+
     useEffect(() => {
-        fetch('http://localhost:3000/books')
+        fetch(bookUrl)
             .then((res) => {
                 if (!res.ok) throw new Error('서버 연결 실패');
                 return res.json();
