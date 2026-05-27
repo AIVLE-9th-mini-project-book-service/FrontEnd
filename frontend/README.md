@@ -122,8 +122,6 @@ npm install
 
 npm install react-router-dom
 
-## 시스템 구상도
-![Uploading ChatGPT Image 2026년 5월 27일 오후 03_45_46.png…]()
 
 
 
