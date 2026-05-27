@@ -136,6 +136,18 @@
       "createdAt": "2026-05-22T07:39:51.583Z",
       "updatedAt": "2026-05-22T07:39:51.583Z",
       "deletedAt": ""
+    },
+    {
+      "title": "코스모스",
+      "author": "칼 세이",
+      "genre": "과학",
+      "likes": 0,
+      "content": "천문학을 대중에게 소개하고 이해를 도운 천문학자 칼 세이건의 대표 저서이다.",
+      "tag": "과학/기술",
+      "coverImageUrl": "",
+      "createdAt": "2026-05-27T04:21:10.971Z",
+      "updatedAt": "2026-05-27T04:21:10.971Z",
+      "id": "dm2WZUhT4qA"
     }
   ],
   "comments": [
