@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import noCover from '../img/no-cover.svg';
+import { GENRE_LIST, TAG_LIST } from "../bookOption";
 
 import {
   PieChart,
@@ -43,30 +44,6 @@ function BookSearch() {
 
   const [selectedGenres, setSelectedGenres] = useState([]);
   const [selectedTags, setSelectedTags] = useState([]);
-
-  const GENRE_LIST = [
-    "소설",
-    "고전",
-    "역사",
-    "IT",
-    "동화",
-    "자기계발",
-    "과학",
-    "경제",
-    "철학",
-    "예술"
-  ];
-
-  const TAG_LIST = [
-    "한국문학",
-    "고전문학",
-    "개발/프로그래밍",
-    "역사/인문",
-    "고전/동화",
-    "베스트셀러",
-    "추천도서",
-    "과학/기술"
-  ];
 
   // 도서 불러오기
   useEffect(() => {
@@ -138,6 +115,7 @@ function BookSearch() {
 
       const matchesGenre =
         selectedGenres.length === 0 ||
+        selectedGenres.includes('전체') ||
         selectedGenres.includes(book.genre);
 
       const bookTags =

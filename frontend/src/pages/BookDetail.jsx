@@ -1,9 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import noCover from '../img/no-cover.svg';
-
-const GENRE_LIST = ['소설', '고전', '역사', 'IT', '동화', '자기계발', '과학', '경제', '철학', '예술'];
-const TAG_LIST = ['한국문학', '고전문학', '개발/프로그래밍', '역사/인문', '고전/동화', '베스트셀러', '추천도서', '과학/기술'];
+import { GENRE_LIST, TAG_LIST } from "../bookOption";
 
 function BookDetail() {
   const { id } = useParams();
