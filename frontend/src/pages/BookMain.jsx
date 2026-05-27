@@ -2,6 +2,12 @@ import { useState, useEffect, useRef, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import noCover from '../img/no-cover.svg';
 import { GENRE_LIST, TAG_LIST } from "../bookOption";
+import Add from '../img/Add.png'
+import Search from '../img/Search.png'
+import List from '../img/List.png'
+import Chart from '../img/Chart.png'
+import Trash from '../img/Trash.png'
+
 
 import {
   PieChart,
@@ -146,209 +152,214 @@ function BookSearch() {
   return (
     <>
       {/* 검색창 */}
-      <div className="search-area">
+      <div className='book-search'>
+        <div className='search-title'>
+          <p>AIVLE School</p>
+          <h1>걷기가 서재</h1>
+        </div>
 
-        <button
-          className="search-type-btn"
-        >
-          자료검색
-        </button>
+        <div className="search-area">
+          <h1 className="search-type">
+            자료검색
+          </h1>
 
-        <div className="search-input-wrap">
+          <div className="search-input-wrap">
 
-          <input
-            className="search-input"
-            placeholder="도서명 또는 저자를 입력하세요."
-            value={searchQuery}
-            onChange={(e) =>
-              setSearchQuery(e.target.value)
+            <input
+              className="search-input"
+              placeholder="도서명 또는 저자를 입력하세요."
+              value={searchQuery}
+              onChange={(e) =>
+                setSearchQuery(e.target.value)
+              }
+            />
+
+            {/* 일반 검색 자동완성 */}
+            {searchQuery.trim() &&
+              selectedGenres.length === 0 &&
+              selectedTags.length === 0 && (
+
+                <div className="search-dropdown">
+
+                  {filteredBooks.length === 0 ? (
+
+                    <div className="search-item empty">
+                      검색 결과가 없습니다.
+                    </div>
+
+                  ) : (
+
+                    filteredBooks
+                      .slice(0, 8)
+                      .map((book) => (
+
+                        <div
+                          key={book.id}
+                          className="search-item"
+                          onClick={() =>
+                            navigate(`/books/${book.id}`)
+                          }
+                        >
+                          <span className="search-title">
+                            {book.title}
+                          </span>
+
+                          <span className="search-author">
+                            {book.author}
+                          </span>
+                        </div>
+                      ))
+                  )}
+                </div>
+              )}
+          </div>
+
+          <button className="icon-btn">
+            🔍
+          </button>
+
+          <button
+            className="detail-btn"
+            onClick={() =>
+              setIsDetailOpen(!isDetailOpen)
             }
-          />
+          >
+            상세검색
+          </button>
 
-          {/* 일반 검색 자동완성 */}
-          {searchQuery.trim() &&
-            selectedGenres.length === 0 &&
-            selectedTags.length === 0 && (
 
-              <div className="search-dropdown">
+
+          {/* 상세검색 */}
+          {isDetailOpen && (
+
+            <div className="detail-search-panel">
+
+              <div className="detail-section">
+
+                <h4>장르</h4>
+
+                <div className="detail-button-wrap">
+
+                  {GENRE_LIST.map((genre) => (
+
+                    <button
+                      key={genre}
+                      type="button"
+                      className={
+                        selectedGenres.includes(genre)
+                          ? 'detail-chip active'
+                          : 'detail-chip'
+                      }
+                      onClick={() =>
+                        toggleGenre(genre)
+                      }
+                    >
+                      {genre}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="detail-section">
+
+                <h4>태그</h4>
+
+                <div className="detail-button-wrap">
+
+                  {TAG_LIST.map((tag) => (
+
+                    <button
+                      key={tag}
+                      type="button"
+                      className={
+                        selectedTags.includes(tag)
+                          ? 'detail-chip active'
+                          : 'detail-chip'
+                      }
+                      onClick={() =>
+                        toggleTag(tag)
+                      }
+                    >
+                      {tag}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* 상세검색 결과 */}
+          {(selectedGenres.length > 0 ||
+            selectedTags.length > 0) && (
+
+              <section className="detail-result-section">
+
+                <div className="detail-result-header">
+
+                  <h3>
+                    검색 결과
+                  </h3>
+
+                  <p>
+                    총 {filteredBooks.length}권
+                  </p>
+                </div>
 
                 {filteredBooks.length === 0 ? (
 
-                  <div className="search-item empty">
-                    검색 결과가 없습니다.
+                  <div className="detail-empty">
+                    조건에 맞는 도서가 없습니다.
                   </div>
 
                 ) : (
 
-                  filteredBooks
-                    .slice(0, 8)
-                    .map((book) => (
+                  <div className="detail-book-grid">
+
+                    {filteredBooks.map((book) => (
 
                       <div
                         key={book.id}
-                        className="search-item"
+                        className="detail-book-card"
                         onClick={() =>
                           navigate(`/books/${book.id}`)
                         }
                       >
-                        <span className="search-title">
-                          {book.title}
-                        </span>
 
-                        <span className="search-author">
-                          {book.author}
-                        </span>
+                        <div className="detail-book-image">
+
+                          <img
+                            src={
+                              book.coverImageUrl?.trim()
+                                ? book.coverImageUrl
+                                : noCover
+                            }
+                            alt={book.title}
+                            onError={(e) => {
+                              e.target.src = noCover;
+                            }}
+                          />
+                        </div>
+
+                        <div className="detail-book-info">
+
+                          <h4>{book.title}</h4>
+
+                          <p>{book.author}</p>
+
+                          <span>
+                            {book.genre}
+                          </span>
+
+                        </div>
                       </div>
-                    ))
-                )}
-              </div>
-            )}
-        </div>
-
-        <button className="icon-btn">
-          🔍
-        </button>
-
-        <button
-          className="detail-btn"
-          onClick={() =>
-            setIsDetailOpen(!isDetailOpen)
-          }
-        >
-          상세검색
-        </button>
-
-      </div>
-
-      {/* 상세검색 */}
-      {isDetailOpen && (
-
-        <div className="detail-search-panel">
-
-          <div className="detail-section">
-
-            <h4>장르</h4>
-
-            <div className="detail-button-wrap">
-
-              {GENRE_LIST.map((genre) => (
-
-                <button
-                  key={genre}
-                  type="button"
-                  className={
-                    selectedGenres.includes(genre)
-                      ? 'detail-chip active'
-                      : 'detail-chip'
-                  }
-                  onClick={() =>
-                    toggleGenre(genre)
-                  }
-                >
-                  {genre}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          <div className="detail-section">
-
-            <h4>태그</h4>
-
-            <div className="detail-button-wrap">
-
-              {TAG_LIST.map((tag) => (
-
-                <button
-                  key={tag}
-                  type="button"
-                  className={
-                    selectedTags.includes(tag)
-                      ? 'detail-chip active'
-                      : 'detail-chip'
-                  }
-                  onClick={() =>
-                    toggleTag(tag)
-                  }
-                >
-                  {tag}
-                </button>
-              ))}
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* 상세검색 결과 */}
-      {(selectedGenres.length > 0 ||
-        selectedTags.length > 0) && (
-
-          <section className="detail-result-section">
-
-            <div className="detail-result-header">
-
-              <h3>
-                검색 결과
-              </h3>
-
-              <p>
-                총 {filteredBooks.length}권
-              </p>
-            </div>
-
-            {filteredBooks.length === 0 ? (
-
-              <div className="detail-empty">
-                조건에 맞는 도서가 없습니다.
-              </div>
-
-            ) : (
-
-              <div className="detail-book-grid">
-
-                {filteredBooks.map((book) => (
-
-                  <div
-                    key={book.id}
-                    className="detail-book-card"
-                    onClick={() =>
-                      navigate(`/books/${book.id}`)
-                    }
-                  >
-
-                    <div className="detail-book-image">
-
-                      <img
-                        src={
-                          book.coverImageUrl?.trim()
-                            ? book.coverImageUrl
-                            : noCover
-                        }
-                        alt={book.title}
-                        onError={(e) => {
-                          e.target.src = noCover;
-                        }}
-                      />
-                    </div>
-
-                    <div className="detail-book-info">
-
-                      <h4>{book.title}</h4>
-
-                      <p>{book.author}</p>
-
-                      <span>
-                        {book.genre}
-                      </span>
-
-                    </div>
+                    ))}
                   </div>
-                ))}
-              </div>
-            )}
+                )}
 
-          </section>
-        )}
+              </section>
+            )}
+        </div>
+      </div>
     </>
   );
 }
@@ -361,11 +372,11 @@ function BookMenu() {
   const navigate = useNavigate();
 
   const MENU_LIST = [
-    { icon: "0️⃣", name: "새도서등록", path: '/books/register' },
-    { icon: "1️⃣", name: "도서검색", path: "/books/search" },
-    { icon: "2️⃣", name: "도서목록", path: '/books' },
-    { icon: "3️⃣", name: "사용자통계", path: 'books/chart' },
-    { icon: "4️⃣", name: "휴지통", path: '/books/deleted' },
+    { icon: Add, name: "새도서등록", path: '/books/register' },
+    { icon: Search, name: "도서검색", path: "/books/search" },
+    { icon: List, name: "도서목록", path: '/books' },
+    { icon: Chart, name: "사용자통계", path: 'books/chart' },
+    { icon: Trash, name: "휴지통", path: '/books/deleted' },
   ];
 
   return (
@@ -377,7 +388,7 @@ function BookMenu() {
           onClick={() => navigate(menu.path)}
         >
           <div className="book-menu-icon">
-            {menu.icon}
+            <img src={menu.icon} alt={menu.name} />
           </div>
           <span className="book-menu-name">
             {menu.name}
