@@ -5,6 +5,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import './BookEdit.css';
 
 const JSON_SERVER_URL = 'http://localhost:3000';
+const TAG_LIST = ['한국문학', '고전문학', '개발/프로그래밍', '역사/인문', '고전/동화', '베스트셀러', '추천도서', '과학/기술'];
 
 function BookEdit() {
   const { id } = useParams();
@@ -17,13 +18,14 @@ function BookEdit() {
   const [title, setTitle] = useState('');
   const [author, setAuthor] = useState('');
   const [content, setContent] = useState('');
-  const [tag, setTag] = useState('');
+  const [selectedTags, setSelectedTags] = useState([]);
+  const [tagError, setTagError] = useState(false);
 
   // AI 표지 생성 관련 상태
   const [apiKey, setApiKey] = useState('')
   const [quality, setQuality] = useState('low')
   const [loading, setLoading] = useState(false)
-  const [saving, setSaving] = useState(false)  // 저장 상태
+  const [saving, setSaving] = useState(false)
   const [coverPreview, setCoverPreview] = useState('')
   const [summary, setSummary] = useState('')
   const [oneLinerLoading, setOneLinerLoading] = useState(false)
@@ -39,7 +41,7 @@ function BookEdit() {
         setTitle(data.title);
         setAuthor(data.author);
         setContent(data.content);
-        setTag(data.tag);
+        setSelectedTags(data.tag ? data.tag.split(',').map((t) => t.trim()).filter(Boolean) : []);
         setCoverPreview(data.coverImageUrl || '');
         setSummary(data.summary || '');
       } catch (err) {
@@ -53,8 +55,20 @@ function BookEdit() {
     fetchBook();
   }, [id, navigate]);
 
+  const handleTagSelect = (t) => {
+    setSelectedTags((prev) => {
+      const next = prev.includes(t) ? prev.filter((x) => x !== t) : [...prev, t];
+      if (next.length > 0) setTagError(false);
+      return next;
+    });
+  };
+
   // 저장
   async function handleSave() {
+    if (selectedTags.length === 0) {
+      setTagError(true);
+      return;
+    }
     setSaving(true);
     try {
       const res = await fetch(`${JSON_SERVER_URL}/books/${id}`, {
@@ -64,7 +78,7 @@ function BookEdit() {
           title,
           author,
           content,
-          tag,
+          tag: selectedTags.join(','),
           coverImageUrl: coverPreview,
           summary,
           updatedAt: new Date().toISOString(),
@@ -79,7 +93,6 @@ function BookEdit() {
     }
   }
 
-
   async function handleGenerateOneLiner() {
     if (!apiKey.trim()) {
       alert('OpenAI API Key를 입력해주세요.')
@@ -88,7 +101,7 @@ function BookEdit() {
     if (!window.confirm('AI 한줄평 생성 시 OpenAI API 비용이 발생합니다. 계속하시겠습니까?')) return
     setOneLinerLoading(true)
     try {
-      const editedBook = { title, author, content, tag, genre: book.genre }
+      const editedBook = { title, author, content, tag: selectedTags.join(','), genre: book.genre }
       const result = await generateOneLiner(editedBook, apiKey)
       setSummary(result)
     } catch (err) {
@@ -110,7 +123,7 @@ function BookEdit() {
     if (!window.confirm('AI 표지 생성 시 OpenAI API 비용이 발생합니다. 계속하시겠습니까?')) return;
     setLoading(true);
     try {
-      const editedBook = { title, author, content, tag, genre: book.genre };
+      const editedBook = { title, author, content, tag: selectedTags.join(','), genre: book.genre };
       const imageSrc = await generateBookCover(editedBook, apiKey, quality);
       setCoverPreview(imageSrc);
       alert(`"${title}" 표지가 생성되었습니다! 저장 버튼을 눌러 저장하세요.`);
@@ -177,12 +190,19 @@ function BookEdit() {
           </div>
 
           <div className="form-group">
-            <label>태그</label>
-            <input
-              type="text"
-              value={tag}
-              onChange={(e) => setTag(e.target.value)}
-            />
+            <label>태그 <span className="tag-required">* 최소 1개 선택</span></label>
+            <div className={`tag-chip-container${tagError ? ' tag-error' : ''}`}>
+              {TAG_LIST.map((t) => (
+                <span
+                  key={t}
+                  className={`tag-chip${selectedTags.includes(t) ? ' selected' : ''}`}
+                  onClick={() => handleTagSelect(t)}
+                >
+                  {t} {selectedTags.includes(t) && '×'}
+                </span>
+              ))}
+            </div>
+            {tagError && <p className="tag-error-msg">태그를 최소 1개 선택해주세요.</p>}
           </div>
 
           <div className="form-group">
