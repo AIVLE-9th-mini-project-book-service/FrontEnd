@@ -34,6 +34,19 @@ button {
 }
 
 /* ============================================================
+   Main Search, Menu 가로 정렬
+   ============================================================ */
+
+.book-main-section {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  width: 100%;
+}
+
+
+/* ============================================================
    Header
    ============================================================ */
 .header {
@@ -94,6 +107,49 @@ button {
 }
 
 /* ============================================================
+   Header Right Icons
+   ============================================================ */
+   
+.header-inner {
+  position: relative;
+}
+
+.header-icons {
+  position: absolute;
+  right: 40px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.icon-link-btn {
+  background: transparent;
+  border: none;
+  padding: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s ease;
+}
+
+.icon-link-btn:hover {
+  transform: scale(1.1);
+}
+
+.icon-link-btn img {
+  width: 26px;
+  height: 26px;
+  object-fit: contain;
+}
+
+@media (max-width: 1200px) {
+  .header-icons {
+    right: 3%;
+  }
+}
+
+/* ============================================================
    Main (자료검색 창)
    ============================================================ */
 .search-area {
@@ -110,29 +166,45 @@ button {
   padding: 0 8px 0 0;
   margin: 40px auto 20px auto;
   box-shadow: 0 6px 20px rgba(27, 58, 92, 0.08);
-  overflow: hidden;
+  overflow: visible;
+  position: relative;
 }
 
 .search-type-btn {
   background: var(--main-color, #1b3a5c);
   color: white;
+
   border: none;
-  height: 100%;       
-  padding: 0 35px;    
-  font-size: 16px;    
+
+  height: 100%;
+
+  padding: 0 35px;
+
+  font-size: 16px;
   font-weight: 700;
+
   cursor: pointer;
   white-space: nowrap;
+
+  border-radius: 30px 0 0 30px;
+
+  margin-left: -1px;
+}
+
+.search-input-wrap {
+  flex: 1;
+  position: relative;
 }
 
 .search-input {
-  flex: 1;            
+  width: 100%;
   background: transparent;
   border: none;
   outline: none;
   font-size: 16px;    
   padding: 0 20px;
   color: var(--text-color, #222);
+  height: 64px;
 }
 
 .icon-btn {
@@ -161,6 +233,259 @@ button {
 .detail-btn:hover {
   background: var(--point-color, #3ba4f6);
 }
+
+/* ============================================================
+   Search Dropdown
+   ============================================================ */
+
+.search-dropdown {
+  position: absolute;
+
+  top: 78px;
+  left: 50%;
+
+  transform: translateX(-50%);
+
+  width: 90%;
+  max-width: 800px;
+
+  z-index: 1000;
+
+  overflow: hidden;
+
+  border: 1px solid #e5e5e5;
+  border-radius: 18px;
+
+  background: white;
+
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+}
+
+.search-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  padding: 18px 22px;
+
+  cursor: pointer;
+
+  transition: background 0.15s;
+}
+
+.search-item:hover {
+  background: #f5f7fa;
+}
+
+.search-item + .search-item {
+  border-top: 1px solid #f0f0f0;
+}
+
+.search-title {
+  font-size: 17px;
+  font-weight: 700;
+
+  color: #222;
+}
+
+.search-author {
+  font-size: 15px;
+  color: #666;
+}
+
+.search-item.empty {
+  justify-content: center;
+
+  color: #888;
+
+  cursor: default;
+}
+
+/* ============================================================
+   Detail Search
+   ============================================================ */
+
+.detail-search-panel {
+  width: 90%;
+  max-width: 800px;
+
+  margin: 0 auto 20px;
+
+  padding: 24px;
+
+  border-radius: 20px;
+
+  background: white;
+
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+}
+
+.detail-section + .detail-section {
+  margin-top: 24px;
+}
+
+.detail-section h4 {
+  margin-bottom: 14px;
+
+  font-size: 16px;
+  font-weight: 700;
+
+  color: #1b3a5c;
+}
+
+.detail-button-wrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.detail-chip {
+  padding: 10px 18px;
+
+  border: 1px solid #d9d9d9;
+  border-radius: 999px;
+
+  background: white;
+
+  font-size: 14px;
+
+  cursor: pointer;
+
+  transition: all 0.15s;
+}
+
+.detail-chip:hover {
+  border-color: #1b3a5c;
+}
+
+.detail-chip.active {
+  background: #1b3a5c;
+  color: white;
+
+  border-color: #1b3a5c;
+}
+
+/* ============================================================
+   Detail Result
+   ============================================================ */
+
+.detail-result-section {
+  width: 90%;
+  max-width: 1200px;
+
+  margin: 40px auto;
+}
+
+.detail-result-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  margin-bottom: 24px;
+}
+
+.detail-result-header h3 {
+  font-size: 28px;
+  font-weight: 700;
+
+  color: #1b3a5c;
+}
+
+.detail-result-header p {
+  color: #666;
+}
+
+.detail-book-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(auto-fill, minmax(220px, 1fr));
+
+  gap: 24px;
+}
+
+.detail-book-card {
+  background: white;
+
+  border-radius: 20px;
+
+  overflow: hidden;
+
+  cursor: pointer;
+
+  transition: all 0.2s;
+
+  box-shadow:
+    0 6px 18px rgba(0, 0, 0, 0.08);
+}
+
+.detail-book-card:hover {
+  transform: translateY(-6px);
+}
+
+.detail-book-image {
+  width: 100%;
+  height: 300px;
+
+  overflow: hidden;
+
+  background: #f5f5f5;
+}
+
+.detail-book-image img {
+  width: 100%;
+  height: 100%;
+
+  object-fit: cover;
+}
+
+.detail-book-info {
+  padding: 18px;
+}
+
+.detail-book-info h4 {
+  font-size: 18px;
+  font-weight: 700;
+
+  margin-bottom: 8px;
+
+  color: #222;
+}
+
+.detail-book-info p {
+  color: #666;
+
+  margin-bottom: 10px;
+}
+
+.detail-book-info span {
+  display: inline-block;
+
+  padding: 6px 12px;
+
+  border-radius: 999px;
+
+  background: #eef4ff;
+
+  color: #1b3a5c;
+
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.detail-empty {
+  padding: 80px 0;
+
+  text-align: center;
+
+  color: #888;
+
+  font-size: 18px;
+}
+/* ============================================================
+   Main Menu (메인 페이지 메뉴)
+   ============================================================ */
+
 
 /* ============================================================
    Category Menu
@@ -504,16 +829,24 @@ button {
   padding: 0 40px;
 }
 
-.likes-book-list {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 28px;
+.likes-book-track-wrap {
   overflow: hidden;
+  width: 100%;
+}
+
+.likes-book-track {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: calc(100% / 5);
+  transition: transform 0.5s ease;
+  will-change: transform;
 }
 
 .likes-book-card {
   min-width: 0;
   text-align: center;
+  padding: 0 14px;
+  box-sizing: border-box;
 }
 
 .likes-book-thumbnail {
@@ -710,10 +1043,121 @@ button {
 /* ============================================================
    Book List (도서 목록)
    ============================================================ */
-.book-list-container {
-  padding: 20px;
-  max-width: 800px;
+/* 사이드바 + 목록 전체 래퍼 */
+.book-list-wrapper {
+  display: flex;
+  align-items: flex-start;
+  max-width: 1100px;
   margin: 0 auto;
+  padding: 20px;
+  gap: 28px;
+}
+
+/* 사이드바 */
+.book-list-sidebar {
+  width: 200px;
+  flex-shrink: 0;
+  position: sticky;
+  top: 20px;
+  background: #fff;
+  border: 1px solid #eee;
+  border-radius: 10px;
+  padding: 20px 16px;
+}
+
+.sidebar-section {
+  margin-bottom: 24px;
+}
+
+.sidebar-section:last-child {
+  margin-bottom: 0;
+}
+
+.sidebar-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: #888;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin: 0 0 10px 0;
+}
+
+.sidebar-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.sidebar-item {
+  width: 100%;
+  text-align: left;
+  padding: 7px 10px;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  font-size: 14px;
+  color: #444;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+
+.sidebar-item:hover {
+  background: #f0faf5;
+  color: #1D9E75;
+}
+
+.sidebar-item--active {
+  background: #E1F5EE;
+  color: #1D9E75;
+  font-weight: 700;
+}
+
+.sidebar-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.sidebar-tag {
+  padding: 4px 10px;
+  border: 1px solid #ddd;
+  border-radius: 99px;
+  background: #fff;
+  font-size: 12px;
+  color: #555;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+
+.sidebar-tag:hover {
+  border-color: #1D9E75;
+  color: #1D9E75;
+}
+
+.sidebar-tag--active {
+  background: #1D9E75;
+  border-color: #1D9E75;
+  color: #fff;
+}
+
+.book-list-filter-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  background: #E1F5EE;
+  color: #1D9E75;
+  border-radius: 99px;
+  font-size: 12px;
+  font-weight: 600;
+  margin-right: 4px;
+}
+
+.book-list-container {
+  flex: 1;
+  min-width: 0;
+  padding: 0;
 }
 
 .book-list-title {
@@ -814,6 +1258,66 @@ button {
   text-align: center;
   color: #999;
   padding: 20px;
+}
+
+.book-list-result-info {
+  margin: -10px 0 16px;
+  font-size: 14px;
+  color: #555;
+}
+
+/* 페이지네이션 */
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+  margin-top: 36px;
+  padding-bottom: 20px;
+}
+
+.pagination__btn {
+  min-width: 36px;
+  height: 36px;
+  padding: 0 8px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  background: #fff;
+  color: #333;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+
+.pagination__btn:hover:not(:disabled) {
+  border-color: #1D9E75;
+  color: #1D9E75;
+}
+
+.pagination__btn--active {
+  background: #1D9E75;
+  border-color: #1D9E75;
+  color: #fff;
+  font-weight: 700;
+}
+
+.pagination__btn--arrow {
+  font-size: 18px;
+  line-height: 1;
+}
+
+.pagination__btn:disabled {
+  color: #ccc;
+  border-color: #eee;
+  cursor: default;
+}
+
+.pagination__ellipsis {
+  color: #aaa;
+  font-size: 14px;
+  padding: 0 2px;
+  user-select: none;
 }
 
 /* ============================================================
@@ -1097,235 +1601,113 @@ button {
 }
 
 /* ============================================================
-   Book Finder (도서 검색)
-   ============================================================ */
-.book-finder {
-  min-height: 100svh;
-  display: flex;
-  flex-direction: column;
-  background: #fff;
-}
-
-.book-finder__main {
-  flex: 1;
-  max-width: 1100px;
-  width: 100%;
-  margin: 0 auto;
-  padding: 56px 32px 64px;
-}
-
-.book-finder__search-section {
-  text-align: center;
-  margin-bottom: 48px;
-}
-
-.book-finder__search-section h1 {
-  margin: 0 0 12px;
-  font-size: 2.25rem;
-  font-weight: 700;
-  line-height: 1.35;
-  color: #212529;
-}
-
-.book-finder__subtitle {
-  margin: 0 0 28px;
-  font-size: 1.125rem;
-  line-height: 1.6;
-  color: #495057;
-}
-
-.book-finder__search {
-  position: relative;
-  max-width: 560px;
-  margin: 0 auto;
-}
-
-.book-finder__search input {
-  width: 100%;
-  height: 52px;
-  padding: 0 88px 0 20px;
-  border: 1px solid #ced4da;
-  border-radius: 8px;
-  font: inherit;
-  font-size: 1rem;
-  color: #212529;
-  outline: none;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
-}
-
-.book-finder__search input::placeholder {
-  color: #adb5bd;
-}
-
-.book-finder__search input:focus {
-  border-color: #0d6efd;
-}
-
-.book-finder__search-actions {
-  position: absolute;
-  top: 50%;
-  right: 10px;
-  display: flex;
-  align-items: center;
-  gap: 2px;
-  transform: translateY(-50%);
-}
-
-.book-finder__search-clear,
-.book-finder__search-submit {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 36px;
-  height: 36px;
-  padding: 0;
-  border: none;
-  background: transparent;
-  color: #6c757d;
-  cursor: pointer;
-}
-
-.book-finder__search-clear:hover,
-.book-finder__search-submit:hover {
-  color: #212529;
-}
-
-.book-finder__popular h2 {
-  margin: 0 0 24px;
-  font-size: 1.125rem;
-  font-weight: 700;
-  color: #212529;
-}
-
-.book-finder__popular-grid {
-  display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
-  gap: 20px;
-}
-
-.book-card {
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
-  padding: 0;
-  border: none;
-  background: transparent;
-  cursor: pointer;
-  text-align: left;
-}
-
-.book-card__cover-wrap {
-  position: relative;
-}
-
-.book-card__rank {
-  position: absolute;
-  top: 8px;
-  left: 8px;
-  z-index: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 24px;
-  height: 24px;
-  padding: 0 6px;
-  border-radius: 4px;
-  background: rgba(0, 0, 0, 0.72);
-  font-size: 0.8125rem;
-  font-weight: 700;
-  line-height: 1;
-  color: #fff;
-}
-
-.book-card:hover .book-card__cover {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
-}
-
-.book-card:hover .book-card__title {
-  color: #0d6efd;
-}
-
-.book-card__cover {
-  width: 100%;
-  aspect-ratio: 2 / 3;
-  object-fit: cover;
-  border-radius: 4px;
-  background: #f1f3f5;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
-  transition: box-shadow 0.2s;
-}
-
-.book-card__cover--fallback {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 12px;
-  text-align: center;
-}
-
-.book-card__cover--fallback span {
-  font-size: 0.8125rem;
-  font-weight: 600;
-  line-height: 1.4;
-  color: #495057;
-  word-break: keep-all;
-}
-
-.book-card__title {
-  margin-top: 10px;
-  font-size: 0.875rem;
-  font-weight: 600;
-  line-height: 1.4;
-  color: #212529;
-  word-break: keep-all;
-  overflow: hidden;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-}
-
-/* ============================================================
    Footer
    ============================================================ */
 .footer {
-  width: 94%;
-  max-width: 1500px;
-  margin: 0 auto;
+  width: 100%;
+  background: var(--main-color, #1b3a5c);
+  margin-top: 80px;
 }
 
 .footer-inner {
-  padding: 10px 36px;
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 56px 40px 0;
 }
 
-.footer-logo {
-  display: flex;
-  align-items: center;
-  gap: 14px;
+/* 상단 3단 레이아웃 */
+.footer-top {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+  padding-bottom: 40px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
 }
 
-.footer-logo img {
-  width: 200px;
-  height: 200px;
-  object-fit: contain;
-}
-
-.footer-logo span {
-  font-size: 24px;
-  font-weight: 800;
-  color: #555;
-}
-
-.footer-info {
+/* 브랜드 */
+.footer-brand {
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 12px;
 }
 
-.footer-info p {
+.footer-logo-img {
+  width: 120px;
+  height: auto;
+  object-fit: contain;
+  background: #fff;
+  border-radius: 10px;
+  padding: 8px 12px;
+}
+
+.footer-tagline {
   margin: 0;
-  font-size: 18px;
-  color: #222;
-  text-align: left;
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.6);
+  line-height: 1.5;
+}
+
+/* 섹션 제목 */
+.footer-section-title {
+  margin: 0 0 16px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--point-color, #3ba4f6);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+/* 프로젝트 개요 */
+.footer-project-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.footer-project-list li {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+}
+
+.footer-project-label {
+  flex-shrink: 0;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--point-color, #3ba4f6);
+  width: 60px;
+}
+
+.footer-project-value {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.8);
+  line-height: 1.6;
+}
+
+/* 하단 저작권 */
+.footer-bottom {
+  padding: 20px 0;
+  text-align: center;
+}
+
+.footer-bottom p {
+  margin: 0;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+@media (max-width: 768px) {
+  .footer-top {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+
+  .footer-inner {
+    padding: 40px 24px 0;
+  }
 }
 
 /* ============================================================
@@ -1356,6 +1738,23 @@ button {
 @media (max-width: 900px) {
   .book-finder__popular-grid {
     grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 768px) {
+  .book-list-wrapper {
+    flex-direction: column;
+  }
+  .book-list-sidebar {
+    width: 100%;
+    position: static;
+  }
+  .sidebar-list {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+  .sidebar-item {
+    width: auto;
   }
 }
 
