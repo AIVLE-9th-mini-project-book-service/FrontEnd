@@ -9,7 +9,7 @@ import { GENRE_LIST, TAG_LIST } from "../bookOption";
 
 function BookRegister() {
   const navigate = useNavigate();
-  const bookUrl = 'http://localhost:3000/books';
+  const bookUrl = 'http://localhost:8080/books';
 
   const [form, setForm] = useState({
     title: '',

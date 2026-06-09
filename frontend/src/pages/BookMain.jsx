@@ -10,7 +10,7 @@ import Trash from '../img/Trash.png'
 
 function BookMain() {
   const navigate = useNavigate();
-  const bookUrl = 'http://localhost:3000/books';
+  const bookUrl = 'http://localhost:8080/books';
 
   const [books, setBooks] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
@@ -324,7 +324,7 @@ function BookMenu() {
 function BookSection() {
   const navigate = useNavigate();
   const visibleCount = 5;
-  const bookUrl = 'http://localhost:3000/books';
+  const bookUrl = 'http://localhost:8080/books';
 
   const [popularIndex, setPopularIndex] = useState(0);
   const [popularBooks, setPopularBooks] = useState([]);
