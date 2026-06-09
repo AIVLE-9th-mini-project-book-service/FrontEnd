@@ -17,7 +17,7 @@ function BookChart() {
     const [statsLoading, setStatsLoading] = useState(true);
     const [statsError, setStatsError] = useState(null);
 
-    const bookUrl = 'http://localhost:3000/books';
+    const bookUrl = 'http://localhost:8080/books';
 
     useEffect(() => {
         fetch(bookUrl)
