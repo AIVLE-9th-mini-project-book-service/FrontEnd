@@ -10,6 +10,7 @@ import Trash from '../img/Trash.png'
 
 function BookMain() {
   const navigate = useNavigate();
+  const bookUrl = 'http://localhost:8080/books';
 
   const [books, setBooks] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
@@ -25,7 +26,7 @@ function BookMain() {
   useEffect(() => {
     const loadBooks = async () => {
       try {
-        const res = await fetch('http://localhost:3000/books');
+        const res = await fetch(bookUrl);
         if (!res.ok) throw new Error('도서 불러오기 실패');
         const data = await res.json();
         setBooks(data.filter((book) => !book.deletedAt));
@@ -323,6 +324,7 @@ function BookMenu() {
 function BookSection() {
   const navigate = useNavigate();
   const visibleCount = 5;
+  const bookUrl = 'http://localhost:8080/books';
 
   const [popularIndex, setPopularIndex] = useState(0);
   const [popularBooks, setPopularBooks] = useState([]);
@@ -334,7 +336,7 @@ function BookSection() {
     const load = async () => {
       setLoading(true);
       try {
-        const res = await fetch('http://localhost:3000/books');
+        const res = await fetch(bookUrl);
         if (!res.ok) throw new Error('서버 응답 오류');
         const data = await res.json();
         const sorted = data

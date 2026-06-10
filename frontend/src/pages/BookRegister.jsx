@@ -9,6 +9,7 @@ import { GENRE_LIST, TAG_LIST } from "../bookOption";
 
 function BookRegister() {
   const navigate = useNavigate();
+  const bookUrl = 'http://localhost:8080/books';
 
   const [form, setForm] = useState({
     title: '',
@@ -102,14 +103,11 @@ function BookRegister() {
 
     const newBook = {
       ...form,
-      tag: selectedTags.join(','),
-      likes: Number(form.likes),
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
+      tag: selectedTags.join(',')
     };
 
     try {
-      const res = await fetch('http://localhost:3000/books', {
+      const res = await fetch(bookUrl, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(newBook),
@@ -119,7 +117,7 @@ function BookRegister() {
       navigate('/books');
     } catch (error) {
       console.error('도서 등록 중 에러 발생:', error);
-      alert('등록 실패! json-server 실행 확인 및 네트워크 상태를 확인해주세요.');
+      alert('도서 등록에 실패했습니다.');
     }
   };
 

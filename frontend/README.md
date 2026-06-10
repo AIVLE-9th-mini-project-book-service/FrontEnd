@@ -54,7 +54,7 @@ AI 표지 생성을 지원하는 도서관리 시스템 "걷기가 서재"입니
 
 - 신가람 : 검토 담당자 · 스타일링/QA · 도서 검색 기능
 
-- 심유리 : UI 작성 · 메인페이지 작성
+- 심유리 : UI 작성 · 메인 페이지 작성 · 통계 구현
 
 - 윤빈 : PPT 작성 · 도서 등록 기능 · Router Dom 적용
 
@@ -96,15 +96,24 @@ AI 표지 생성을 지원하는 도서관리 시스템 "걷기가 서재"입니
 
 - Coporation : Github
 
-
-
-## 요구 사항
-
-- json-server : 0.17.4
+- json-server : 1.0.0-beta.15
 
 - node.js : 25.7.0
 
 - npm : 11.10.1
+
+
+## 요구 사항
+
+- 도서 목록 확인
+- 신규 도서 등록
+- 도서 상세 정보 조회
+- 도서 수정 및 삭제
+- AI 표지 이미지 생성
+
+## 시스템 아키텍처
+
+![시스템 아키텍처](src/img/system.png)
 
 
 
@@ -117,6 +126,8 @@ cd frontend
 npm install
 
 npm install react-router-dom
+
+
 
 
 
@@ -147,6 +158,14 @@ src/
 │   ├── icon02.png
 │   ├── icon03.png
 │   ├── logo.png
+│   ├── icon01.png
+│   ├── icon02.png
+│   ├── icon03.png
+│   ├── Add.png
+│   ├── Search.png
+│   ├── List.png
+│   ├── Chart.png
+│   ├── Trash.png
 │   └── no-cover.svg
 ├── pages/
 │   ├── BookChart.jsx
