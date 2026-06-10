@@ -6,7 +6,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import DeletedBookCard from '../components/DeletedBookCard';
 
-const bookUrl = 'http://localhost:3000/books';
+const bookUrl = 'http://localhost:8080/books';
 
 async function parseResponse(res, fallbackMessage) {
   if (!res.ok) throw new Error(fallbackMessage);
@@ -21,13 +21,8 @@ async function fetchDeletedBooks() {
 }
 
 async function restoreDeletedBook(id) {
-  const res = await fetch(bookUrl + `/${id}`, {
+  const res = await fetch(bookUrl + `/restore/${id}`, {
     method: 'PATCH',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      deletedAt: '',
-      updatedAt: new Date().toISOString(),
-    }),
   });
   return parseResponse(res, '도서 복원에 실패했습니다.');
 }

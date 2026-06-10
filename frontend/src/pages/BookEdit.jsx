@@ -1,10 +1,11 @@
 import { generateOneLiner } from '../components/api/Openapi_text'
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { GENRE_LIST, TAG_LIST } from "../bookOption";
 import './BookEdit.css';
 
-const BASE_URL = 'http://localhost:8080';
-const TAG_LIST = ['한국문학', '고전문학', '개발/프로그래밍', '역사/인문', '고전/동화', '베스트셀러', '추천도서', '과학/기술'];
+
+const JSON_SERVER_URL = 'http://localhost:8080';
 
 function BookEdit() {
   const { id } = useParams();
@@ -73,7 +74,14 @@ function BookEdit() {
       const res = await fetch(`${BASE_URL}/books/${id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ title, author, content, tag: selectedTags.join(','), summary }),
+        body: JSON.stringify({
+          title,
+          author,
+          content,
+          tag: selectedTags.join(','),
+          coverImageUrl: coverPreview,
+          summary,
+        }),
       });
       if (!res.ok) throw new Error('저장 실패');
       navigate(`/books/${id}`);

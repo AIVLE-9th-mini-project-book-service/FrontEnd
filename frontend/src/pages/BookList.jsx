@@ -163,17 +163,15 @@ function BookList() {
     fetchBooks();
   }, []);
 
-  const handleLike = async (id, currentLikes) => {
+  const handleLike = async (id) => {
     try {
-      const res = await fetch(bookUrl + `/${id}`, {
+      const res = await fetch(bookUrl + `/${id}/like`, {
         method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ likes: currentLikes + 1 }),
       });
       if (!res.ok) throw new Error('좋아요 반영 실패');
-      setBooks(
-        books.map((book) =>
-          book.id === id ? { ...book, likes: book.likes + 1 } : book
+      setBooks((prev) =>
+        prev.map((book) =>
+          book.id === id ? { ...book, likes: (book.likes ?? 0) + 1 } : book
         )
       );
     } catch (error) {
@@ -292,7 +290,7 @@ function BookList() {
                 </p>
                 <Button
                   label={`👍 추천 (${book.likes || 0})`}
-                  onClick={() => handleLike(book.id, book.likes || 0)}
+                  onClick={() => handleLike(book.id)}
                   className="book-list-like-btn"
                 />
               </div>
