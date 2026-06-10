@@ -173,7 +173,7 @@ function BookDetail() {
         const res = await fetch(commentUrl+`/${pwPrompt.id}`, {
           method: 'PATCH',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ text: pwPrompt.editText }),
+          body: JSON.stringify({ text: pwPrompt.editText,password: pwPrompt.pw }),
         });
         if (!res.ok) throw new Error();
         const updated = await res.json();
