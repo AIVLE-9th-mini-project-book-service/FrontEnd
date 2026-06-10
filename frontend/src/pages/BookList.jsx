@@ -155,7 +155,7 @@ function BookList() {
         setBooks(data.filter((book) => !book.deletedAt));
       } catch (error) {
         console.error('도서 목록 로딩 실패:', error);
-        setError('도서 목록을 불러오지 못했습니다. json-server가 실행 중인지 확인해주세요.');
+        setError('도서 목록을 불러오지 못했습니다.');
       } finally {
         setLoading(false);
       }
