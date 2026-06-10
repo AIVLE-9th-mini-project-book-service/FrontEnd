@@ -21,13 +21,8 @@ async function fetchDeletedBooks() {
 }
 
 async function restoreDeletedBook(id) {
-  const res = await fetch(bookUrl + `/${id}`, {
+  const res = await fetch(bookUrl + `/restore/${id}`, {
     method: 'PATCH',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      deletedAt: '',
-      updatedAt: new Date().toISOString(),
-    }),
   });
   return parseResponse(res, '도서 복원에 실패했습니다.');
 }
