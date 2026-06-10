@@ -217,6 +217,12 @@
       "password": "dd",
       "createdAt": "2026-05-26T05:20:42.722Z",
       "id": "7RiiNUjd-Fo"
+    },
+    {
+      "author": "박선호",
+      "text": "test text",
+      "password": "12334",
+      "id": "JJ4P0nLDjJA"
     }
   ],
   "$schema": "./node_modules/json-server/schema.json"
