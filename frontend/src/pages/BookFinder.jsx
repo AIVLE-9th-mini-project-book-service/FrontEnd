@@ -1,5 +1,6 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { getPopularBooks, searchBooks } from '../components/api/bookSearchApi';
 
 const ICON_PROPS = {
   width: 18,
@@ -7,6 +8,9 @@ const ICON_PROPS = {
   viewBox: '0 0 24 24',
   'aria-hidden': true,
 };
+
+const POPULAR_BOOK_LIMIT = 5;
+const SEARCH_RESULT_SIZE = 20;
 
 function SearchIcon() {
   return (
@@ -25,12 +29,6 @@ function ClearIcon() {
   );
 }
 
-function getTopBooksByLikes(books, limit = 5) {
-  return [...books]
-    .sort((a, b) => Number(b.likes) - Number(a.likes))
-    .slice(0, limit);
-}
-
 function BookCover({ book, rank }) {
   const [imageError, setImageError] = useState(false);
 
@@ -41,7 +39,7 @@ function BookCover({ book, rank }) {
       {!imageError && book.coverImageUrl ? (
         <img
           src={book.coverImageUrl}
-          alt={`${book.title} 표지`}
+          alt={`${book.title} cover`}
           className="book-card__cover"
           onError={() => setImageError(true)}
         />
@@ -60,62 +58,51 @@ function BookFinder() {
   const [books, setBooks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const bookUrl = 'http://localhost:8080/books';
 
-  // db.json 직접 import 대신 서버에서 fetch
+  const bookUrl = 'http://localhost:8080/books/search';
+
   useEffect(() => {
     let cancelled = false;
 
-    async function load() {
+    async function loadBooks() {
+      const trimmedQuery = query.trim();
+
       try {
         setLoading(true);
         setError(null);
 
-        const res = await fetch(bookUrl);
-        if (!res.ok) throw new Error('서버 응답 오류');
-        const data = await res.json();
+        const data = trimmedQuery
+          ? await searchBooks({ keyword: trimmedQuery, size: SEARCH_RESULT_SIZE })
+          : await getPopularBooks(POPULAR_BOOK_LIMIT);
 
         if (!cancelled) {
-          setBooks(data.filter((book) => !book.deletedAt));
+          setBooks(data);
         }
       } catch (e) {
         if (!cancelled) {
-          setError('도서 목록을 불러오지 못했습니다.');
+          console.error('Book search request failed:', e);
+          setError('도서 목록을 불러오지 못했습니다. 백엔드 서버 상태를 확인해주세요.');
           setBooks([]);
         }
       } finally {
-        if (!cancelled) setLoading(false);
+        if (!cancelled) {
+          setLoading(false);
+        }
       }
     }
 
-    load();
-    return () => { cancelled = true; };
-  }, []);
+    loadBooks();
 
-  const normalizedQuery = query.trim().toLowerCase();
-
-  const filteredBooks = useMemo(() => {
-    return books.filter((book) => {
-      const title = String(book?.title ?? '').toLowerCase();
-      const author = String(book?.author ?? '').toLowerCase();
-      return (
-        !normalizedQuery ||
-        title.includes(normalizedQuery) ||
-        author.includes(normalizedQuery)
-      );
-    });
-  }, [books, normalizedQuery]);
-
-  const popularBooks = useMemo(() => getTopBooksByLikes(books, 5), [books]);
-
-  const displayBooks = normalizedQuery.length > 0 ? filteredBooks : popularBooks;
+    return () => {
+      cancelled = true;
+    };
+  }, [query]);
 
   const handleClear = () => setQuery('');
 
   return (
     <div className="book-finder">
       <main className="book-finder__main">
-
         <section className="book-finder__search-section">
           <h1>도서 검색</h1>
 
@@ -159,17 +146,17 @@ function BookFinder() {
         </section>
 
         <section className="book-finder__popular">
-          <h2>인기 도서</h2>
+          <h2>{query.trim() ? '검색 결과' : '인기 도서'}</h2>
 
           {loading ? (
             <div className="book-finder__status">로딩 중...</div>
           ) : error ? (
             <div className="book-finder__status book-finder__status--error">{error}</div>
-          ) : displayBooks.length === 0 ? (
+          ) : books.length === 0 ? (
             <div className="book-finder__status book-finder__status--empty">검색 결과가 없습니다.</div>
           ) : (
             <div className="book-finder__popular-grid">
-              {displayBooks.map((book, index) => (
+              {books.map((book, index) => (
                 <button
                   key={book.id}
                   type="button"
