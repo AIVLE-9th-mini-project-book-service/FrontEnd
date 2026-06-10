@@ -170,7 +170,7 @@ function BookDetail() {
     }
     if (pwPrompt.mode === 'delete') {
       try {
-        const res = await fetch('http://localhost:8080/comments/${pwPrompt.id}`, { method: 'DELETE' });
+        const res = await fetch(`http://localhost:8080/comments/${pwPrompt.id}`, { method: 'DELETE' });
         if (!res.ok) throw new Error();
         setComments((prev) => prev.filter((c) => c.id !== pwPrompt.id));
         closePwPrompt();
