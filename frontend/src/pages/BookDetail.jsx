@@ -132,14 +132,6 @@ function BookDetail() {
       createdAt: new Date().toISOString(),
     };
     try {
-      const res = await fetchfetch(`http://localhost:8080/books/${id}/comments`,
-      {
-        method:'POST',
-        headers:{
-          'Content-Type':'application/json'
-        },
-        body: JSON.stringify({author: commentAuthor, text: commentText, password: commentPassword})
-      })
       const res = await fetch(`${bookUrl}/${id}/comments`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -170,7 +162,7 @@ function BookDetail() {
     }
     if (pwPrompt.mode === 'delete') {
       try {
-        const res = await fetch('http://localhost:8080/comments/${pwPrompt.id}`, { method: 'DELETE' });
+        const res = await fetch(`${commentUrl}/${pwPrompt.id}`, { method: 'DELETE' });
         if (!res.ok) throw new Error();
         setComments((prev) => prev.filter((c) => c.id !== pwPrompt.id));
         closePwPrompt();
@@ -179,7 +171,7 @@ function BookDetail() {
       }
     } else {
       try {
-        const res = await fetch('http://localhost:8080/comments/${pwPrompt.id}`, {
+        const res = await fetch(`${commentUrl}/${pwPrompt.id}`, {
           method: 'PATCH',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({text: pwPrompt.editText, password: pwPrompt.pw}),
