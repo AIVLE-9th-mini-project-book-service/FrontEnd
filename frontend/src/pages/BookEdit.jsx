@@ -1,10 +1,9 @@
-import { generateBookCover } from '../components/api/Openapi'
 import { generateOneLiner } from '../components/api/Openapi_text'
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import './BookEdit.css';
 
-const JSON_SERVER_URL = 'http://localhost:3000';
+const BASE_URL = 'http://localhost:8080';
 const TAG_LIST = ['한국문학', '고전문학', '개발/프로그래밍', '역사/인문', '고전/동화', '베스트셀러', '추천도서', '과학/기술'];
 
 function BookEdit() {
@@ -34,7 +33,7 @@ function BookEdit() {
   useEffect(() => {
     const fetchBook = async () => {
       try {
-        const res = await fetch(`${JSON_SERVER_URL}/books/${id}`);
+        const res = await fetch(`${BASE_URL}/books/${id}`);
         if (!res.ok) throw new Error('도서 정보를 불러오지 못했습니다.');
         const data = await res.json();
         setBook(data);
@@ -71,22 +70,12 @@ function BookEdit() {
     }
     setSaving(true);
     try {
-      const res = await fetch(`http://localhost:8080/books/${id}`, {
+      const res = await fetch(`${BASE_URL}/books/${id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ title, author, content, tag: selectedTags.join(','), summary }),
       });
       if (!res.ok) throw new Error('저장 실패');
-
-      if (coverPreview) {
-        const coverRes = await fetch(`http://localhost:8080/books/${id}/cover`, {
-          method: 'PATCH',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ coverImageUrl: coverPreview }),
-        });
-        if (!coverRes.ok) throw new Error('표지 저장 실패');
-      }
-
       navigate(`/books/${id}`);
     } catch (err) {
       alert(`저장 오류: ${err.message}`);
@@ -125,15 +114,23 @@ function BookEdit() {
     if (!window.confirm('AI 표지 생성 시 OpenAI API 비용이 발생합니다. 계속하시겠습니까?')) return;
     setLoading(true);
     try {
-      const editedBook = { title, author, content, tag: selectedTags.join(','), genre: book.genre };
-      const imageSrc = await generateBookCover(editedBook, apiKey, quality);
-      setCoverPreview(imageSrc);
+      const res = await fetch(`${BASE_URL}/books/${id}/cover/generate`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ apiKey, quality }),
+      });
+      if (res.status === 401) { alert('API Key가 올바르지 않습니다.'); return; }
+      if (res.status === 429) { alert('요청 한도 초과. 잠시 후 다시 시도해주세요.'); return; }
+      if (!res.ok) {
+        const err = await res.json();
+        alert(`오류: ${err.message}`);
+        return;
+      }
+      const data = await res.json();
+      setCoverPreview(data.coverImageUrl);
       alert(`"${title}" 표지가 생성되었습니다! 저장 버튼을 눌러 저장하세요.`);
     } catch (err) {
-      if (err.message === '401')              alert('API Key가 올바르지 않습니다.');
-      else if (err.message === '429')         alert('요청 한도 초과. 잠시 후 다시 시도해주세요.');
-      else if (err.message === 'PARSE_ERROR') alert('응답 형식 오류가 발생했습니다.');
-      else                                    alert(`오류: ${err.message}`);
+      alert(`오류: ${err.message}`);
     } finally {
       setLoading(false);
     }
