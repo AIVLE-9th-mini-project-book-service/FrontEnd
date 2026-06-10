@@ -63,7 +63,7 @@ function BookDetail() {
       setCommentLoading(true);
       try {
         // json-server v1 쿼리 파라미터 타입 불일치 방지 → 전체 조회 후 클라이언트 필터링
-        const res = await fetch(`http://localhost:3000/comments`);
+        const res = await fetch(`http://localhost:8080/books/${id}/comments`);
         if (!res.ok) throw new Error(`서버 오류: ${res.status}`);
         const data = await res.json();
         const filtered = data.filter(
@@ -138,11 +138,14 @@ function BookDetail() {
       createdAt: new Date().toISOString(),
     };
     try {
-      const res = await fetch('http://localhost:3000/comments', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(newComment),
-      });
+      const res = await fetchfetch(`http://localhost:8080/books/${id}/comments`,
+      {
+        method:'POST',
+        headers:{
+          'Content-Type':'application/json'
+        },
+        body: JSON.stringify({author: commentAuthor, text: commentText, password: commentPassword})
+      })
       if (!res.ok) throw new Error();
       const saved = await res.json();
       setComments((prev) => [...prev, saved]);
@@ -180,8 +183,8 @@ function BookDetail() {
         const res = await fetch(`http://localhost:3000/comments/${pwPrompt.id}`, {
           method: 'PATCH',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ text: pwPrompt.editText }),
-        });
+          body: JSON.stringify({text: pwPrompt.editText, password: pwPrompt.pw}),
+        }); 
         if (!res.ok) throw new Error();
         const updated = await res.json();
         setComments((prev) => prev.map((c) => (c.id === updated.id ? updated : c)));
