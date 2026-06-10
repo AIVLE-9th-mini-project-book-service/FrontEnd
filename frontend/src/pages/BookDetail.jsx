@@ -81,13 +81,8 @@ function BookDetail() {
   const handleDelete = async () => {
     if (!window.confirm(`"${book.title}"을(를) 삭제 도서로 이동할까요?`)) return;
     try {
-      const res = await fetch(bookUrl+`/${id}`, {
+      const res = await fetch(bookUrl+`/trash/${id}`, {
         method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          deletedAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString(),
-        }),
       });
       if (!res.ok) throw new Error('삭제 도서 이동 실패');
       alert('삭제 도서로 이동했습니다.');
