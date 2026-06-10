@@ -6,7 +6,7 @@ import { GENRE_LIST, TAG_LIST } from "../bookOption";
 import './BookEdit.css';
 
 
-const JSON_SERVER_URL = 'http://localhost:3000';
+const JSON_SERVER_URL = 'http://localhost:8080';
 
 function BookEdit() {
   const { id } = useParams();

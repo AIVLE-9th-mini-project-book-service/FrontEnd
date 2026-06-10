@@ -6,8 +6,8 @@ import { GENRE_LIST, TAG_LIST } from "../bookOption";
 function BookDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const bookUrl = 'http://localhost:3000/books';
-  const commentUrl = 'http://localhost:3000/comments';
+  const bookUrl = 'http://localhost:8080/books';
+  const commentUrl = 'http://localhost:8080/comments';
 
   const [book, setBook] = useState(null);
   const [bookLoading, setBookLoading] = useState(true);

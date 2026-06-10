@@ -60,7 +60,7 @@ function BookFinder() {
   const [books, setBooks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const bookUrl = 'http://localhost:3000/books';
+  const bookUrl = 'http://localhost:8080/books';
 
   // db.json 직접 import 대신 서버에서 fetch
   useEffect(() => {
