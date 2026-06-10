@@ -71,20 +71,22 @@ function BookEdit() {
     }
     setSaving(true);
     try {
-      const res = await fetch(`${JSON_SERVER_URL}/books/${id}`, {
+      const res = await fetch(`http://localhost:8080/books/${id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          title,
-          author,
-          content,
-          tag: selectedTags.join(','),
-          coverImageUrl: coverPreview,
-          summary,
-          updatedAt: new Date().toISOString(),
-        }),
+        body: JSON.stringify({ title, author, content, tag: selectedTags.join(','), summary }),
       });
       if (!res.ok) throw new Error('저장 실패');
+
+      if (coverPreview) {
+        const coverRes = await fetch(`http://localhost:8080/books/${id}/cover`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ coverImageUrl: coverPreview }),
+        });
+        if (!coverRes.ok) throw new Error('표지 저장 실패');
+      }
+
       navigate(`/books/${id}`);
     } catch (err) {
       alert(`저장 오류: ${err.message}`);
