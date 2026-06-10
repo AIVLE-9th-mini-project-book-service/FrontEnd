@@ -6,7 +6,7 @@ import { GENRE_LIST, TAG_LIST } from "../bookOption";
 import './BookEdit.css';
 
 
-const JSON_SERVER_URL = 'http://localhost:3000';
+const JSON_SERVER_URL = 'http://localhost:8080';
 
 function BookEdit() {
   const { id } = useParams();
@@ -82,7 +82,6 @@ function BookEdit() {
           tag: selectedTags.join(','),
           coverImageUrl: coverPreview,
           summary,
-          updatedAt: new Date().toISOString(),
         }),
       });
       if (!res.ok) throw new Error('저장 실패');

@@ -42,12 +42,12 @@ function BookDetail() {
         if (!res.ok) throw new Error('도서 정보를 불러오지 못했습니다.');
         const data = await res.json();
         setBook(data);
-        setEditTitle(data.title);
-        setEditAuthor(data.author);
-        setEditGenre(data.genre);
-        setEditContent(data.content);
-        setEditTag(data.tag);
-        setEditImageUrl(data.coverImageUrl);
+        setEditTitle(data.title ?? '');
+        setEditAuthor(data.author ?? '');
+        setEditGenre(data.genre ?? '');
+        setEditContent(data.content ?? '');
+        setEditTag(data.tag ?? '');
+        setEditImageUrl(data.coverImageUrl ?? '');
       } catch (err) {
         console.error(err);
         alert(err.message);
@@ -64,14 +64,10 @@ function BookDetail() {
     const fetchComments = async () => {
       setCommentLoading(true);
       try {
-        // json-server v1 쿼리 파라미터 타입 불일치 방지 → 전체 조회 후 클라이언트 필터링
-        const res = await fetch(commentUrl);
+        const res = await fetch(`${bookUrl}/${id}/comments`);
         if (!res.ok) throw new Error(`서버 오류: ${res.status}`);
         const data = await res.json();
-        const filtered = data.filter(
-          (c) => String(c.bookId) === String(id)
-        );
-        setComments(filtered);
+        setComments(data);
       } catch (err) {
         console.error('댓글을 불러오지 못했습니다.', err);
       } finally {
@@ -85,13 +81,8 @@ function BookDetail() {
   const handleDelete = async () => {
     if (!window.confirm(`"${book.title}"을(를) 삭제 도서로 이동할까요?`)) return;
     try {
-      const res = await fetch(bookUrl+`/${id}`, {
+      const res = await fetch(bookUrl+`/trash/${id}`, {
         method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          deletedAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString(),
-        }),
       });
       if (!res.ok) throw new Error('삭제 도서 이동 실패');
       alert('삭제 도서로 이동했습니다.');
@@ -140,7 +131,7 @@ function BookDetail() {
       createdAt: new Date().toISOString(),
     };
     try {
-      const res = await fetch(commentUrl, {
+      const res = await fetch(`${bookUrl}/${id}/comments`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(newComment),
@@ -316,11 +307,13 @@ function BookDetail() {
               ) : (
                 <>
                   <p style={styles.content}>
-                    {contentExpanded || book.content.length <= CONTENT_LIMIT
+                    {!book.content
+                      ? '등록된 내용이 없습니다.'
+                      : contentExpanded || book.content.length <= CONTENT_LIMIT
                       ? book.content
                       : book.content.slice(0, CONTENT_LIMIT) + '...'}
                   </p>
-                  {book.content.length > CONTENT_LIMIT && (
+                  {book.content?.length > CONTENT_LIMIT && (
                     <button
                       onClick={() => setContentExpanded((prev) => !prev)}
                       style={styles.moreBtn}
