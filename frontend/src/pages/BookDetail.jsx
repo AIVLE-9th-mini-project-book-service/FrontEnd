@@ -161,7 +161,7 @@ function BookDetail() {
     }
     if (pwPrompt.mode === 'delete') {
       try {
-        const res = await fetch(commentUrl+`/${pwPrompt.id}`, { method: 'DELETE' });
+        const res = await fetch(`${commentUrl}/${pwPrompt.id}`, { method: 'DELETE' });
         if (!res.ok) throw new Error();
         setComments((prev) => prev.filter((c) => c.id !== pwPrompt.id));
         closePwPrompt();
@@ -170,7 +170,7 @@ function BookDetail() {
       }
     } else {
       try {
-        const res = await fetch(commentUrl+`/${pwPrompt.id}`, {
+        const res = await fetch(`${commentUrl}/${pwPrompt.id}`, {
           method: 'PATCH',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ text: pwPrompt.editText,password: pwPrompt.pw }),
