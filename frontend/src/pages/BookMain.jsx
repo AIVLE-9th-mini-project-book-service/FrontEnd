@@ -1,85 +1,99 @@
-import { useState, useEffect, useRef, useMemo } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import noCover from '../img/no-cover.svg';
-import { GENRE_LIST, TAG_LIST } from "../bookOption";
-import Add from '../img/Add.png'
-import Search from '../img/Search.png'
-import List from '../img/List.png'
-import Chart from '../img/Chart.png'
-import Trash from '../img/Trash.png'
+import { GENRE_LIST, TAG_LIST } from '../bookOption';
+import { getPopularBooks, searchBooksByFilters } from '../components/api/bookSearchApi';
+import Add from '../img/Add.png';
+import Search from '../img/Search.png';
+import List from '../img/List.png';
+import Chart from '../img/Chart.png';
+import Trash from '../img/Trash.png';
+
+const SEARCH_DROPDOWN_PAGE_SIZE = 3;
+const DETAIL_PAGE_SIZE = 5;
+const MAIN_SEARCH_SIZE = 50;
+const POPULAR_VISIBLE_COUNT = 5;
+const POPULAR_FETCH_LIMIT = 10;
 
 function BookMain() {
   const navigate = useNavigate();
-  const bookUrl = 'http://localhost:8080/books';
-
-  const [books, setBooks] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
+  const [filteredBooks, setFilteredBooks] = useState([]);
   const [isDetailOpen, setIsDetailOpen] = useState(false);
   const [selectedGenres, setSelectedGenres] = useState([]);
   const [selectedTags, setSelectedTags] = useState([]);
   const [searchPage, setSearchPage] = useState(1);
-  const PAGE_SIZE = 3;
-
   const [detailPage, setDetailPage] = useState(1);
-  const DETAIL_PAGE_SIZE = 5;
 
   useEffect(() => {
-    const loadBooks = async () => {
-      try {
-        const res = await fetch(bookUrl);
-        if (!res.ok) throw new Error('도서 불러오기 실패');
-        const data = await res.json();
-        setBooks(data.filter((book) => !book.deletedAt));
-      } catch (err) {
-        console.error(err);
+    let cancelled = false;
+
+    async function loadSearchResults() {
+      const keyword = searchQuery.trim();
+      const genres = selectedGenres.filter((genre) => genre !== GENRE_LIST[0]);
+      const tags = selectedTags;
+      const hasSearchCondition = keyword || genres.length > 0 || tags.length > 0;
+
+      if (!hasSearchCondition) {
+        setFilteredBooks([]);
+        return;
       }
+
+      try {
+        const data = await searchBooksByFilters({
+          keyword,
+          genres,
+          tags,
+          size: MAIN_SEARCH_SIZE,
+        });
+
+        if (!cancelled) {
+          setFilteredBooks(data);
+        }
+      } catch (err) {
+        if (!cancelled) {
+          console.error('Book main search request failed:', err);
+          setFilteredBooks([]);
+        }
+      }
+    }
+
+    loadSearchResults();
+
+    return () => {
+      cancelled = true;
     };
-    loadBooks();
-  }, []);
+  }, [searchQuery, selectedGenres, selectedTags]);
 
   const toggleGenre = (genre) => {
     setSelectedGenres((prev) =>
-      prev.includes(genre) ? prev.filter((g) => g !== genre) : [...prev, genre]
+      prev.includes(genre) ? prev.filter((item) => item !== genre) : [...prev, genre]
     );
     setDetailPage(1);
   };
 
   const toggleTag = (tag) => {
     setSelectedTags((prev) =>
-      prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]
+      prev.includes(tag) ? prev.filter((item) => item !== tag) : [...prev, tag]
     );
     setDetailPage(1);
   };
 
-  const filteredBooks = useMemo(() => {
-    const query = searchQuery.trim().toLowerCase();
-    if (!query && selectedGenres.length === 0 && selectedTags.length === 0) return [];
-
-    return books.filter((book) => {
-      const title = String(book.title ?? '').toLowerCase();
-      const author = String(book.author ?? '').toLowerCase();
-      const matchesKeyword = !query || title.includes(query) || author.includes(query);
-      const matchesGenre =
-        selectedGenres.length === 0 ||
-        selectedGenres.includes('전체') ||
-        selectedGenres.includes(book.genre);
-      const bookTags = String(book.tag ?? '').split(',').map((t) => t.trim());
-      const matchesTag =
-        selectedTags.length === 0 || selectedTags.some((tag) => bookTags.includes(tag));
-      return matchesKeyword && matchesGenre && matchesTag;
-    });
-  }, [books, searchQuery, selectedGenres, selectedTags]);
+  const hasDetailFilter = selectedGenres.length > 0 || selectedTags.length > 0;
+  const detailTotalPages = Math.ceil(filteredBooks.length / DETAIL_PAGE_SIZE);
+  const detailBooks = filteredBooks.slice(
+    (detailPage - 1) * DETAIL_PAGE_SIZE,
+    detailPage * DETAIL_PAGE_SIZE
+  );
 
   return (
     <>
-      {/* 검색창 + 메뉴 */}
-      <div className='book-main-section'>
+      <div className={isDetailOpen ? 'book-main-section book-main-section--detail-open' : 'book-main-section'}>
         <BookSearch
           searchQuery={searchQuery}
           setSearchQuery={setSearchQuery}
           searchPage={searchPage}
           setSearchPage={setSearchPage}
-          PAGE_SIZE={PAGE_SIZE}
           filteredBooks={filteredBooks}
           isDetailOpen={isDetailOpen}
           setIsDetailOpen={setIsDetailOpen}
@@ -92,46 +106,43 @@ function BookMain() {
         <BookMenu />
       </div>
 
-      {/* 상세검색 결과 — book-main-section 밖 */}
-      {(selectedGenres.length > 0 || selectedTags.length > 0) && (
+      {hasDetailFilter && (
         <section className="detail-result-section">
           <div className="detail-result-header">
             <h3>검색 결과</h3>
             <p>총 {filteredBooks.length}권</p>
           </div>
+
           {filteredBooks.length === 0 ? (
             <div className="detail-empty">조건에 맞는 도서가 없습니다.</div>
           ) : (
             <>
               <div className="detail-book-grid">
-                {filteredBooks
-                  .slice((detailPage - 1) * DETAIL_PAGE_SIZE, detailPage * DETAIL_PAGE_SIZE)
-                  .map((book) => (
-                    <div
-                      key={book.id}
-                      className="detail-book-card"
-                      onClick={() => navigate(`/books/${book.id}`)}
-                    >
-                      <div className="detail-book-image">
-                        <img
-                          src={book.coverImageUrl?.trim() ? book.coverImageUrl : noCover}
-                          alt={book.title}
-                          onError={(e) => { e.target.src = noCover; }}
-                        />
-                      </div>
-                      <div className="detail-book-info">
-                        <h4>{book.title}</h4>
-                        <p>{book.author}</p>
-                        <span>{book.genre}</span>
-                      </div>
+                {detailBooks.map((book) => (
+                  <div
+                    key={book.id}
+                    className="detail-book-card"
+                    onClick={() => navigate(`/books/${book.id}`)}
+                  >
+                    <div className="detail-book-image">
+                      <img
+                        src={book.coverImageUrl?.trim() ? book.coverImageUrl : noCover}
+                        alt={book.title}
+                        onError={(e) => { e.target.src = noCover; }}
+                      />
                     </div>
-                  ))}
+                    <div className="detail-book-info">
+                      <h4>{book.title}</h4>
+                      <p>{book.author}</p>
+                      <span>{book.genre}</span>
+                    </div>
+                  </div>
+                ))}
               </div>
 
-              {/* 페이지네이션 */}
-              {Math.ceil(filteredBooks.length / DETAIL_PAGE_SIZE) > 1 && (
+              {detailTotalPages > 1 && (
                 <div className="detail-pagination">
-                  {Array.from({ length: Math.ceil(filteredBooks.length / DETAIL_PAGE_SIZE) }, (_, i) => i + 1).map((page) => (
+                  {Array.from({ length: detailTotalPages }, (_, i) => i + 1).map((page) => (
                     <button
                       key={page}
                       className={`detail-page-btn ${detailPage === page ? 'active' : ''}`}
@@ -152,35 +163,42 @@ function BookMain() {
   );
 }
 
-/* ============================================================
-   왼쪽 검색
-   ============================================================ */
-
 function BookSearch({
-  searchQuery, setSearchQuery,
-  searchPage, setSearchPage,
-  PAGE_SIZE, filteredBooks,
-  isDetailOpen, setIsDetailOpen,
-  selectedGenres, selectedTags,
-  toggleGenre, toggleTag,
+  searchQuery,
+  setSearchQuery,
+  searchPage,
+  setSearchPage,
+  filteredBooks,
+  isDetailOpen,
+  setIsDetailOpen,
+  selectedGenres,
+  selectedTags,
+  toggleGenre,
+  toggleTag,
   navigate,
 }) {
+  const dropdownTotalPages = Math.ceil(filteredBooks.length / SEARCH_DROPDOWN_PAGE_SIZE);
+  const dropdownBooks = filteredBooks.slice(
+    (searchPage - 1) * SEARCH_DROPDOWN_PAGE_SIZE,
+    searchPage * SEARCH_DROPDOWN_PAGE_SIZE
+  );
+  const showSearchDropdown =
+    searchQuery.trim() && selectedGenres.length === 0 && selectedTags.length === 0;
+
   return (
-    <div className='book-search'>
-      <div className='search-title'>
+    <div className={isDetailOpen ? 'book-search book-search--detail-open' : 'book-search'}>
+      <div className="search-title">
         <p>AIVLE School</p>
-        <h1>걷기가 서재</h1>
+        <h1>걸기가 서재</h1>
       </div>
 
       <div className="search-area">
-        <h1 className="search-type">
-          자료검색
-        </h1>
+        <h1 className="search-type">자료검색</h1>
 
         <div className="search-input-wrap">
           <input
             className="search-input"
-            placeholder="도서명 또는 저자를 입력하세요."
+            placeholder="도서명 또는 저자를 입력하세요"
             value={searchQuery}
             onChange={(e) => {
               setSearchQuery(e.target.value);
@@ -188,40 +206,41 @@ function BookSearch({
             }}
           />
 
-          {/* 일반 검색 드롭다운 */}
-          {searchQuery.trim() && selectedGenres.length === 0 && selectedTags.length === 0 && (
+          {showSearchDropdown && (
             <div className="search-dropdown">
               {filteredBooks.length === 0 ? (
                 <div className="search-item empty">검색 결과가 없습니다.</div>
               ) : (
                 <>
-                  {filteredBooks
-                    .slice((searchPage - 1) * PAGE_SIZE, searchPage * PAGE_SIZE)
-                    .map((book) => (
-                      <div
-                        key={book.id}
-                        className="search-item"
-                        onClick={() => navigate(`/books/${book.id}`)}
-                      >
-                        <img
-                          className="search-item-cover"
-                          src={book.coverImageUrl?.trim() ? book.coverImageUrl : noCover}
-                          alt={book.title}
-                          onError={(e) => { e.target.src = noCover; }}
-                        />
-                        <div className="search-item-info">
-                          <span className="search-title">{book.title}</span>
-                          <span className="search-author">{book.author} · {book.genre}</span>
-                        </div>
+                  {dropdownBooks.map((book) => (
+                    <div
+                      key={book.id}
+                      className="search-item"
+                      onClick={() => navigate(`/books/${book.id}`)}
+                    >
+                      <img
+                        className="search-item-cover"
+                        src={book.coverImageUrl?.trim() ? book.coverImageUrl : noCover}
+                        alt={book.title}
+                        onError={(e) => { e.target.src = noCover; }}
+                      />
+                      <div className="search-item-info">
+                        <span className="search-title">{book.title}</span>
+                        <span className="search-author">{book.author} · {book.genre}</span>
                       </div>
-                    ))}
-                  {Math.ceil(filteredBooks.length / PAGE_SIZE) > 1 && (
+                    </div>
+                  ))}
+
+                  {dropdownTotalPages > 1 && (
                     <div className="search-pagination">
-                      {Array.from({ length: Math.ceil(filteredBooks.length / PAGE_SIZE) }, (_, i) => i + 1).map((page) => (
+                      {Array.from({ length: dropdownTotalPages }, (_, i) => i + 1).map((page) => (
                         <button
                           key={page}
                           className={`search-page-btn ${searchPage === page ? 'active' : ''}`}
-                          onClick={(e) => { e.stopPropagation(); setSearchPage(page); }}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setSearchPage(page);
+                          }}
                         >
                           {page}
                         </button>
@@ -234,7 +253,7 @@ function BookSearch({
           )}
         </div>
 
-        <button className="icon-btn">🔍</button>
+        <button className="icon-btn">🔎</button>
         <button
           className="detail-btn"
           onClick={() => setIsDetailOpen(!isDetailOpen)}
@@ -243,7 +262,6 @@ function BookSearch({
         </button>
       </div>
 
-      {/* 상세검색 패널 — search-area 바로 아래 */}
       {isDetailOpen && (
         <div className="detail-search-panel">
           <div className="detail-section">
@@ -282,50 +300,38 @@ function BookSearch({
   );
 }
 
-/* ============================================================
-   왼쪽 메뉴
-   ============================================================ */
-
 function BookMenu() {
   const navigate = useNavigate();
-
-  const MENU_LIST = [
-    { icon: Add, name: "새도서등록", path: '/books/register' },
-    { icon: Search, name: "도서검색", path: "/books/search" },
-    { icon: List, name: "도서목록", path: '/books' },
-    { icon: Chart, name: "사용자통계", path: 'books/chart' },
-    { icon: Trash, name: "휴지통", path: '/books/deleted' },
+  const menuList = [
+    { icon: Add, name: '신규도서등록', path: '/books/register' },
+    { icon: Search, name: '도서검색', path: '/books/search' },
+    { icon: List, name: '도서목록', path: '/books' },
+    { icon: Chart, name: '사용자통계', path: '/books/chart' },
+    { icon: Trash, name: '휴지통', path: '/books/deleted' },
   ];
 
   return (
     <div className="book-menu">
-      {MENU_LIST.map((menu, index) => (
+      {menuList.map((menu) => (
         <button
-          key={index}
+          key={menu.path}
           className="book-menu-item"
           onClick={() => navigate(menu.path)}
         >
           <div className="book-menu-icon">
             <img src={menu.icon} alt={menu.name} />
           </div>
-          <span className="book-menu-name">
-            {menu.name}
-          </span>
+          <span className="book-menu-name">{menu.name}</span>
         </button>
       ))}
     </div>
   );
 }
 
-/* ============================================================
-   인기 도서
-   ============================================================ */
-
 function BookSection() {
   const navigate = useNavigate();
-  const visibleCount = 5;
-  const bookUrl = 'http://localhost:8080/books';
-
+  const trackRef = useRef(null);
+  const moveNextRef = useRef(null);
   const [popularIndex, setPopularIndex] = useState(0);
   const [popularBooks, setPopularBooks] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -333,36 +339,44 @@ function BookSection() {
   const [isPaused, setIsPaused] = useState(false);
 
   useEffect(() => {
-    const load = async () => {
-      setLoading(true);
+    let cancelled = false;
+
+    async function loadPopularBooks() {
       try {
-        const res = await fetch(bookUrl);
-        if (!res.ok) throw new Error('서버 응답 오류');
-        const data = await res.json();
-        const sorted = data
-          .filter((book) => !book.deletedAt)
-          .sort((a, b) => (b.likes ?? 0) - (a.likes ?? 0))
-          .slice(0, 10);
-        setPopularBooks(sorted);
+        setLoading(true);
+        const data = await getPopularBooks(POPULAR_FETCH_LIMIT);
+
+        if (!cancelled) {
+          setPopularBooks(data);
+        }
       } catch (err) {
-        console.error('도서 목록 불러오기 실패:', err);
-        setError('도서 목록을 불러오지 못했습니다.');
+        if (!cancelled) {
+          console.error('Popular books request failed:', err);
+          setError('인기 도서를 불러오지 못했습니다.');
+        }
       } finally {
-        setLoading(false);
+        if (!cancelled) {
+          setLoading(false);
+        }
       }
+    }
+
+    loadPopularBooks();
+
+    return () => {
+      cancelled = true;
     };
-    load();
   }, []);
 
-  const trackRef = useRef(null);
-  const moveNextRef = useRef(null);
-
-  // 앞 visibleCount개를 뒤에 복제 → 끝에서 처음으로 자연스럽게 이어짐
-  const extendedBooks = [...popularBooks, ...popularBooks.slice(0, visibleCount)];
+  const extendedBooks = [
+    ...popularBooks,
+    ...popularBooks.slice(0, POPULAR_VISIBLE_COUNT),
+  ];
 
   const disableTransition = () => {
     if (trackRef.current) trackRef.current.style.transition = 'none';
   };
+
   const enableTransition = () => {
     if (trackRef.current) trackRef.current.style.transition = '';
   };
@@ -374,14 +388,13 @@ function BookSection() {
   const movePrev = () => {
     if (popularIndex === 0) {
       disableTransition();
-      setPopularIndex(popularBooks.length - visibleCount);
+      setPopularIndex(popularBooks.length - POPULAR_VISIBLE_COUNT);
       requestAnimationFrame(() => requestAnimationFrame(enableTransition));
     } else {
       setPopularIndex((prev) => prev - 1);
     }
   };
 
-  // 복제 구간에 도달하면 transition 끝난 후 조용히 처음으로 점프
   const handleTransitionEnd = () => {
     if (popularIndex >= popularBooks.length) {
       disableTransition();
@@ -395,7 +408,7 @@ function BookSection() {
   });
 
   useEffect(() => {
-    if (isPaused || popularBooks.length <= visibleCount) return;
+    if (isPaused || popularBooks.length <= POPULAR_VISIBLE_COUNT) return undefined;
     const timer = setInterval(() => moveNextRef.current?.(), 3000);
     return () => clearInterval(timer);
   }, [isPaused, popularBooks.length]);
@@ -419,7 +432,7 @@ function BookSection() {
               ref={trackRef}
               className="likes-book-track"
               style={{
-                transform: `translateX(calc(-${popularIndex} * 100% / ${visibleCount}))`,
+                transform: `translateX(calc(-${popularIndex} * 100% / ${POPULAR_VISIBLE_COUNT}))`,
               }}
               onTransitionEnd={handleTransitionEnd}
             >
