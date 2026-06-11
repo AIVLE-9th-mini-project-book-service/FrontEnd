@@ -163,7 +163,7 @@ button {
   font-size: 22px;
   font-weight: 500;
   color: #5f6b7a;
-  
+
   letter-spacing: 2px;
   margin-bottom: 15px;
 }
@@ -302,7 +302,7 @@ button {
   object-fit: cover;
   border-radius: 4px;
   flex-shrink: 0;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.12);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
 }
 
 .search-item-info {
@@ -1760,84 +1760,77 @@ button {
   width: 100%;
   background: var(--main-color, #1b3a5c);
   margin-top: 80px;
+  padding: 70px 70px;
 }
 
 .footer-inner {
-  max-width: 1440px;
+  width: 100%;
+  max-width: 1200px;
   margin: 0 auto;
-  padding: 56px 40px 0;
+  color: #fff;
+
+  box-sizing: border-box;
 }
 
-/* 상단 3단 레이아웃 */
-.footer-top {
+/* 상단 5단 레이아웃 */
+.footer-content {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 40px;
-  padding-bottom: 40px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+  grid-template-columns: 1.4fr 1fr 1fr 0.3fr 0.5fr;
+  gap: 50px;
+  margin: 0 auto;
+  padding-bottom: 50px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.4);
 }
 
 /* 브랜드 */
-.footer-brand {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
+.footer-brand,
+.footer-project h4 {
+  margin: 0 0 22px;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.footer-brand p {
+  color: #aaa;
+  font-size: 14px;
 }
 
 .footer-logo-img {
-  width: 120px;
+  width: 170px;
   height: auto;
   object-fit: contain;
   background: #fff;
   border-radius: 10px;
-  padding: 8px 12px;
 }
 
-.footer-tagline {
-  margin: 0;
-  font-size: 14px;
-  color: rgba(255, 255, 255, 0.6);
-  line-height: 1.5;
+.social-list {
+  display: flex;
+  gap: 8px;
 }
 
-/* 섹션 제목 */
-.footer-section-title {
-  margin: 0 0 16px;
-  font-size: 13px;
-  font-weight: 700;
-  color: var(--point-color, #3ba4f6);
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
+.social-list img {
+    width: 32px;
+    height: 32px;
 }
 
-/* 프로젝트 개요 */
-.footer-project-list {
-  list-style: none;
-  margin: 0;
-  padding: 0;
+.footer-project,
+.member-list {
   display: flex;
   flex-direction: column;
-  gap: 12px;
 }
 
-.footer-project-list li {
-  display: flex;
-  align-items: baseline;
-  gap: 12px;
-}
 
-.footer-project-label {
-  flex-shrink: 0;
-  font-size: 12px;
-  font-weight: 700;
-  color: var(--point-color, #3ba4f6);
-  width: 60px;
-}
-
-.footer-project-value {
+.footer-project p,
+.member-list p {
+  margin: 0 0 8px;
+  color: #aaa;
   font-size: 14px;
-  color: rgba(255, 255, 255, 0.8);
-  line-height: 1.6;
+}
+
+.member-list {
+  display: grid;
+  grid-template-columns: repeat(2, 50px);
+  gap: 0 18px;
 }
 
 /* 하단 저작권 */
