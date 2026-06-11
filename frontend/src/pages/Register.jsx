@@ -12,8 +12,8 @@ function Register() {
         nickname: '',
         password: '',
     });
-    const [email, setEmail] = useState({ id: '', domain: 'gmail.com', custom: '' });
-    const [isDirect, setIsDirect] = useState(false);
+    const [email, setEmail] = useState({ id: '', domain: '', custom: '' });
+    const [isDirect, setIsDirect] = useState(true);
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const [phone, setPhone] = useState({ p1: '', p2: '', p3: '' });
     const [error, setError] = useState('');
@@ -40,7 +40,6 @@ function Register() {
         setDropdownOpen(false);
     };
 
-    // 바깥 클릭 시 드롭다운 닫기
     useEffect(() => {
         const handleClickOutside = (e) => {
             if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
@@ -61,12 +60,6 @@ function Register() {
     //
     //     if (!username || !email.id || (isDirect && !email.custom) || !nickname || !password || !phone.p1 || !phone.p2 || !phone.p3) {
     //         setError('모든 항목을 입력해주세요.');
-    //         return;
-    //     }
-    //
-    //     const emailRegex = /^[^\s@]+$/;
-    //     if (!emailRegex.test(email.id)) {
-    //         setError('이메일 아이디를 올바르게 입력해주세요.');
     //         return;
     //     }
     //
