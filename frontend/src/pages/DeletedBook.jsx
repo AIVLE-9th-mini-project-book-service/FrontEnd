@@ -11,9 +11,8 @@ async function parseResponse(res, fallbackMessage) {
 }
 
 async function fetchDeletedBooks() {
-  const res = await fetch(bookUrl);
-  const books = await parseResponse(res, '삭제된 도서 목록을 불러오지 못했습니다.');
-  return books.filter((book) => book.deletedAt);
+  const res = await fetch(bookUrl + '/trash');
+  return parseResponse(res, '삭제된 도서 목록을 불러오지 못했습니다.');
 }
 
 async function restoreDeletedBook(id) {
