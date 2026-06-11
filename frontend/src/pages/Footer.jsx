@@ -22,7 +22,7 @@ function Footer() {
             />
             <p>체계적인 도서 관리 시스템</p>
 
-            <div class="social-list">
+            <div className="social-list">
               <a
                 href="https://github.com/AIVLE-9th-mini-project-book-service"
                 target="_blank"
