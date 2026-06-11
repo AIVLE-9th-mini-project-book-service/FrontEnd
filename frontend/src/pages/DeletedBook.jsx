@@ -1,12 +1,8 @@
-/**
- * 도서 삭제 페이지
- * deletedAt 필드에 삭제 날짜가 있는 도서만 표시합니다.
- */
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import DeletedBookCard from '../components/DeletedBookCard';
 
-const bookUrl = 'http://localhost:8080/books';
+const bookUrl = '/books';
 
 async function parseResponse(res, fallbackMessage) {
   if (!res.ok) throw new Error(fallbackMessage);
@@ -21,14 +17,24 @@ async function fetchDeletedBooks() {
 }
 
 async function restoreDeletedBook(id) {
+  const token = localStorage.getItem('accessToken');
   const res = await fetch(bookUrl + `/restore/${id}`, {
     method: 'PATCH',
+    headers: {
+      'Authorization': `Bearer ${token}`,
+    },
   });
   return parseResponse(res, '도서 복원에 실패했습니다.');
 }
 
 async function permanentDeleteBook(id) {
-  const res = await fetch(bookUrl + `/${id}`, { method: 'DELETE' });
+  const token = localStorage.getItem('accessToken');
+  const res = await fetch(bookUrl + `/${id}`, {
+    method: 'DELETE',
+    headers: {
+      'Authorization': `Bearer ${token}`,
+    },
+  });
   return parseResponse(res, '영구 삭제에 실패했습니다.');
 }
 
@@ -75,7 +81,7 @@ function DeletedBookPage() {
 
   const handlePermanentDelete = async (book) => {
     const ok = window.confirm(
-      `"${book.title}"을(를) 영구 삭제할까요?\n이 작업은 되돌릴 수 없습니다.`
+        `"${book.title}"을(를) 영구 삭제할까요?\n이 작업은 되돌릴 수 없습니다.`
     );
     if (!ok) return;
 
@@ -95,49 +101,45 @@ function DeletedBookPage() {
 
   if (loading) {
     return (
-      <section className="app-content trash-page">
-        <p className="status-message">삭제 도서를 불러오는 중입니다...</p>
-      </section>
+        <section className="app-content trash-page">
+          <p className="status-message">삭제 도서를 불러오는 중입니다...</p>
+        </section>
     );
   }
 
   return (
-    <section className="app-content trash-page">
-      <div className="trash-header">
-        <h1 className="page-title">휴지통</h1>
-        <p className="page-desc">
-          삭제된 도서를 복원하거나 영구 삭제할 수 있습니다.
-        </p>
-      </div>
-
-      {error && <p className="status-message status-message--error">{error}</p>}
-      {message && <p className="status-message status-message--success">{message}</p>}
-
-      {!deletedBooks.length ? (
-        <div className="trash-empty">
-          <span className="trash-empty-icon" aria-hidden>🗑️</span>
-          <p className="empty-message">휴지통이 비어 있습니다.</p>
-          <p className="page-desc">
-            도서 상세·목록에서 삭제한 도서가 여기에 표시됩니다.
-          </p>
+      <section className="app-content trash-page">
+        <div className="trash-header">
+          <h1 className="page-title">휴지통</h1>
+          <p className="page-desc">삭제된 도서를 복원하거나 영구 삭제할 수 있습니다.</p>
         </div>
-      ) : (
-        <>
-          <p className="trash-count">총 {deletedBooks.length}권</p>
-          <ul className="book-list">
-            {deletedBooks.map((book) => (
-              <DeletedBookCard
-                key={book.id}
-                book={book}
-                onRestore={handleRestore}
-                onPermanentDelete={handlePermanentDelete}
-                busyId={busyId}
-              />
-            ))}
-          </ul>
-        </>
-      )}
-    </section>
+
+        {error && <p className="status-message status-message--error">{error}</p>}
+        {message && <p className="status-message status-message--success">{message}</p>}
+
+        {!deletedBooks.length ? (
+            <div className="trash-empty">
+              <span className="trash-empty-icon" aria-hidden>🗑️</span>
+              <p className="empty-message">휴지통이 비어 있습니다.</p>
+              <p className="page-desc">도서 상세·목록에서 삭제한 도서가 여기에 표시됩니다.</p>
+            </div>
+        ) : (
+            <>
+              <p className="trash-count">총 {deletedBooks.length}권</p>
+              <ul className="book-list">
+                {deletedBooks.map((book) => (
+                    <DeletedBookCard
+                        key={book.id}
+                        book={book}
+                        onRestore={handleRestore}
+                        onPermanentDelete={handlePermanentDelete}
+                        busyId={busyId}
+                    />
+                ))}
+              </ul>
+            </>
+        )}
+      </section>
   );
 }
 

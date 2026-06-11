@@ -6,12 +6,12 @@ import { GENRE_LIST, TAG_LIST } from "../bookOption";
 function BookDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const bookUrl = 'http://localhost:8080/books';
-  const commentUrl = 'http://localhost:8080/comments';
+  const token = localStorage.getItem('accessToken');
+  const bookUrl = '/books';
+  const commentUrl = '/comments';
 
   const [book, setBook] = useState(null);
   const [bookLoading, setBookLoading] = useState(true);
-
   const [isEditMode, setIsEditMode] = useState(false);
   const [editTitle, setEditTitle] = useState('');
   const [editAuthor, setEditAuthor] = useState('');
@@ -19,22 +19,15 @@ function BookDetail() {
   const [editContent, setEditContent] = useState('');
   const [editTag, setEditTag] = useState('');
   const [editImageUrl, setEditImageUrl] = useState('');
-
-  // 댓글 상태
   const [comments, setComments] = useState([]);
   const [commentText, setCommentText] = useState('');
   const [commentAuthor, setCommentAuthor] = useState('');
   const [commentPassword, setCommentPassword] = useState('');
   const [commentLoading, setCommentLoading] = useState(true);
-
-  // 수정/삭제 비밀번호 확인 UI 상태
   const [pwPrompt, setPwPrompt] = useState(null);
-
-  // 도서 내용 더보기 상태
   const [contentExpanded, setContentExpanded] = useState(false);
   const CONTENT_LIMIT = 150;
 
-  // 도서 데이터 fetch
   useEffect(() => {
     const fetchBook = async () => {
       try {
@@ -59,7 +52,6 @@ function BookDetail() {
     fetchBook();
   }, [id, navigate]);
 
-  // 댓글 fetch
   useEffect(() => {
     const fetchComments = async () => {
       setCommentLoading(true);
@@ -77,12 +69,14 @@ function BookDetail() {
     fetchComments();
   }, [id]);
 
-  // 도서 삭제 (휴지통 이동)
   const handleDelete = async () => {
     if (!window.confirm(`"${book.title}"을(를) 삭제 도서로 이동할까요?`)) return;
     try {
-      const res = await fetch(bookUrl+`/trash/${id}`, {
+      const res = await fetch(`${bookUrl}/trash/${id}`, {
         method: 'PATCH',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
       });
       if (!res.ok) throw new Error('삭제 도서 이동 실패');
       alert('삭제 도서로 이동했습니다.');
@@ -93,12 +87,14 @@ function BookDetail() {
     }
   };
 
-  // 도서 수정 완료
   const handleSubmitUpdate = async () => {
     try {
-      const res = await fetch(bookUrl+`/${id}`, {
+      const res = await fetch(`${bookUrl}/${id}`, {
         method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
         body: JSON.stringify({
           title: editTitle,
           author: editAuthor,
@@ -120,7 +116,6 @@ function BookDetail() {
     }
   };
 
-  // 댓글 등록
   const handleAddComment = async () => {
     if (!commentText.trim()) return;
     const newComment = {
@@ -147,7 +142,6 @@ function BookDetail() {
     }
   };
 
-  // 수정/삭제 버튼 클릭 → 비밀번호 입력 UI 열기
   const openPwPrompt = (comment, mode) => {
     setPwPrompt({ id: comment.id, mode, pw: '', editText: comment.text, storedPw: comment.password });
   };
@@ -173,7 +167,7 @@ function BookDetail() {
         const res = await fetch(`${commentUrl}/${pwPrompt.id}`, {
           method: 'PATCH',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ text: pwPrompt.editText,password: pwPrompt.pw }),
+          body: JSON.stringify({ text: pwPrompt.editText, password: pwPrompt.pw }),
         });
         if (!res.ok) throw new Error();
         const updated = await res.json();
@@ -186,264 +180,182 @@ function BookDetail() {
   };
 
   if (bookLoading) return (
-    <p style={{ textAlign: 'center', marginTop: '60px', color: '#888' }}>
-      도서 정보를 불러오는 중...
-    </p>
+      <p style={{ textAlign: 'center', marginTop: '60px', color: '#888' }}>
+        도서 정보를 불러오는 중...
+      </p>
   );
   if (!book) return null;
 
   const tagsArray = book.tag ? book.tag.split(',').filter(Boolean) : [];
 
   return (
-    <div style={styles.page}>
-      <div style={styles.card}>
-
-        {/* 상단 버튼 */}
-        <div style={styles.buttonRow}>
-          {!isEditMode ? (
-            <button style={styles.editBtn} onClick={() => navigate(`/books/${id}/edit`)}>수정</button>
-          ) : (
-            <button style={styles.saveBtn} onClick={handleSubmitUpdate}>✅ 수정 완료</button>
-          )}
-          <button style={styles.deleteBtn} onClick={handleDelete}>삭제</button>
-        </div>
-
-        {/* 이미지 + 정보 가로 배치 */}
-        <div style={styles.topSection}>
-
-          {/* 이미지 */}
-          <div style={styles.coverWrap}>
-            {isEditMode ? (
-              <input
-                type="text"
-                placeholder="이미지 URL"
-                value={editImageUrl}
-                onChange={(e) => setEditImageUrl(e.target.value)}
-                style={styles.input}
-              />
-            ) : (
-              <img
-                src={book.coverImageUrl || noCover}
-                alt={book.title}
-                style={styles.coverImg}
-              />
+      <div style={styles.page}>
+        <div style={styles.card}>
+          <div style={styles.buttonRow}>
+            {token && (
+                <>
+                  {!isEditMode ? (
+                      <button style={styles.editBtn} onClick={() => navigate(`/books/${id}/edit`)}>수정</button>
+                  ) : (
+                      <button style={styles.saveBtn} onClick={handleSubmitUpdate}>✅ 수정 완료</button>
+                  )}
+                  <button style={styles.deleteBtn} onClick={handleDelete}>삭제</button>
+                </>
             )}
           </div>
 
-          {/* 텍스트 정보 */}
-          <div style={styles.infoCol}>
-
-            {/* 제목 + 좋아요 */}
-            {isEditMode ? (
-              <input
-                type="text"
-                value={editTitle}
-                onChange={(e) => setEditTitle(e.target.value)}
-                style={{ ...styles.input, fontSize: '20px', fontWeight: 'bold' }}
-              />
-            ) : (
-              <div style={styles.titleRow}>
-                <h2 style={styles.title}>{book.title}</h2>
-                <span style={styles.likes}>❤️ {book.likes ?? 0}</span>
-              </div>
-            )}
-
-            {/* 저자 */}
-            {isEditMode ? (
-              <input
-                type="text"
-                value={editAuthor}
-                onChange={(e) => setEditAuthor(e.target.value)}
-                style={styles.input}
-              />
-            ) : (
-              <p style={styles.author}>저자: {book.author}</p>
-            )}
-
-            {/* 장르 */}
-            {isEditMode ? (
-              <select
-                value={editGenre}
-                onChange={(e) => setEditGenre(e.target.value)}
-                style={styles.select}
-              >
-                {GENRE_LIST.map((g) => (
-                  <option key={g} value={g}>{g}</option>
-                ))}
-              </select>
-            ) : (
-              <span style={styles.genreBadge}>{book.genre}</span>
-            )}
-
-            {/* 태그 */}
-            {isEditMode ? (
-              <select
-                value={editTag}
-                onChange={(e) => setEditTag(e.target.value)}
-                style={styles.select}
-              >
-                {TAG_LIST.map((t) => (
-                  <option key={t} value={t}>{t}</option>
-                ))}
-              </select>
-            ) : (
-              <div style={styles.tagRow}>
-                {tagsArray.map((t, idx) => (
-                  <span key={idx} style={styles.tag}>#{t.trim()}</span>
-                ))}
-              </div>
-            )}
-
-            {/* 도서 내용 */}
-            <div style={styles.contentSection}>
-              <h4 style={styles.contentTitle}>도서 내용</h4>
+          <div style={styles.topSection}>
+            <div style={styles.coverWrap}>
               {isEditMode ? (
-                <textarea
-                  value={editContent}
-                  onChange={(e) => setEditContent(e.target.value)}
-                  rows={6}
-                  style={styles.textarea}
-                />
+                  <input type="text" placeholder="이미지 URL" value={editImageUrl}
+                         onChange={(e) => setEditImageUrl(e.target.value)} style={styles.input} />
               ) : (
-                <>
-                  <p style={styles.content}>
-                    {!book.content
-                      ? '등록된 내용이 없습니다.'
-                      : contentExpanded || book.content.length <= CONTENT_LIMIT
-                      ? book.content
-                      : book.content.slice(0, CONTENT_LIMIT) + '...'}
-                  </p>
-                  {book.content?.length > CONTENT_LIMIT && (
-                    <button
-                      onClick={() => setContentExpanded((prev) => !prev)}
-                      style={styles.moreBtn}
-                    >
-                      {contentExpanded ? '접기 ▲' : '더보기 ▼'}
-                    </button>
-                  )}
-                </>
+                  <img src={book.coverImageUrl || noCover} alt={book.title} style={styles.coverImg} />
               )}
             </div>
 
-            {/* 등록일 / 수정일 */}
-            <div style={styles.dateWrap}>
-              <p style={styles.date}>등록일: {book.createdAt ? book.createdAt.split('T')[0] : '-'}</p>
-              <p style={styles.date}>수정일: {book.updatedAt ? book.updatedAt.split('T')[0] : '-'}</p>
-            </div>
-          </div>
-        </div>
-
-        {/* 댓글 섹션 - 수정 모드일 때 숨김 */}
-        {!isEditMode && (
-          <div style={styles.commentSection}>
-            <h3 style={styles.commentTitle}>
-              💬 댓글 {comments.length > 0 && <span style={styles.commentCount}>{comments.length}</span>}
-            </h3>
-
-            {/* 댓글 목록 */}
-            {commentLoading ? (
-              <p style={styles.commentEmpty}>댓글을 불러오는 중...</p>
-            ) : comments.length === 0 ? (
-              <p style={styles.commentEmpty}>아직 댓글이 없습니다. 첫 댓글을 남겨보세요!</p>
-            ) : (
-              <ul style={styles.commentList}>
-                {comments.map((c) => (
-                  <li key={c.id} style={styles.commentItem}>
-                    <div style={styles.commentHeader}>
-                      <span style={styles.commentAuthor}>{c.author}</span>
-                      <span style={styles.commentDate}>{c.createdAt?.split('T')[0]}</span>
-                      <button style={styles.commentActionBtn} onClick={() => openPwPrompt(c, 'edit')}>수정</button>
-                      <button style={{ ...styles.commentActionBtn, color: '#e53e3e' }} onClick={() => openPwPrompt(c, 'delete')}>삭제</button>
-                    </div>
-
-                    {/* 비밀번호 확인 + 수정 UI */}
-                    {pwPrompt?.id === c.id ? (
-                      <div style={styles.pwBox}>
-                        {pwPrompt.mode === 'edit' && (
-                          <textarea
-                            value={pwPrompt.editText}
-                            onChange={(e) => setPwPrompt((p) => ({ ...p, editText: e.target.value }))}
-                            rows={2}
-                            style={{ ...styles.commentTextarea, marginBottom: '8px' }}
-                          />
-                        )}
-                        {pwPrompt.mode === 'delete' && (
-                          <p style={{ fontSize: '13px', color: '#666', margin: '0 0 8px 0' }}>
-                            이 댓글을 삭제하려면 비밀번호를 입력하세요.
-                          </p>
-                        )}
-                        <div style={styles.pwRow}>
-                          <input
-                            type="password"
-                            placeholder="비밀번호"
-                            value={pwPrompt.pw}
-                            onChange={(e) => setPwPrompt((p) => ({ ...p, pw: e.target.value }))}
-                            onKeyDown={(e) => e.key === 'Enter' && handlePwConfirm()}
-                            style={styles.pwInput}
-                            autoFocus
-                          />
-                          <button style={styles.pwConfirmBtn} onClick={handlePwConfirm}>
-                            {pwPrompt.mode === 'edit' ? '수정 완료' : '삭제'}
-                          </button>
-                          <button style={styles.pwCancelBtn} onClick={closePwPrompt}>취소</button>
-                        </div>
-                      </div>
-                    ) : (
-                      <p style={styles.commentText}>{c.text}</p>
-                    )}
-                  </li>
-                ))}
-              </ul>
-            )}
-
-            {/* 댓글 입력 */}
-            <div style={styles.commentForm}>
-              <div style={styles.commentInputRow}>
-                <div style={styles.commentTextareaWrap}>
-                  <div style={styles.commentMetaRow}>
-                    <input
-                      type="text"
-                      placeholder="작성자 (선택)"
-                      value={commentAuthor}
-                      onChange={(e) => setCommentAuthor(e.target.value)}
-                      style={styles.commentAuthorInput}
-                    />
-                    <input
-                      type="password"
-                      placeholder="비밀번호"
-                      value={commentPassword}
-                      onChange={(e) => setCommentPassword(e.target.value)}
-                      style={styles.commentAuthorInput}
-                    />
+            <div style={styles.infoCol}>
+              {isEditMode ? (
+                  <input type="text" value={editTitle}
+                         onChange={(e) => setEditTitle(e.target.value)}
+                         style={{ ...styles.input, fontSize: '20px', fontWeight: 'bold' }} />
+              ) : (
+                  <div style={styles.titleRow}>
+                    <h2 style={styles.title}>{book.title}</h2>
+                    <span style={styles.likes}>❤️ {book.likes ?? 0}</span>
                   </div>
-                  <textarea
-                    placeholder="댓글을 입력하세요..."
-                    value={commentText}
-                    onChange={(e) => setCommentText(e.target.value)}
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter' && !e.shiftKey) {
-                        e.preventDefault();
-                        handleAddComment();
-                      }
-                    }}
-                    rows={2}
-                    style={styles.commentTextarea}
-                  />
-                </div>
-                <button
-                  style={styles.commentSubmitBtn}
-                  onClick={handleAddComment}
-                  disabled={!commentText.trim()}
-                >
-                  등록
-                </button>
+              )}
+
+              {isEditMode ? (
+                  <input type="text" value={editAuthor}
+                         onChange={(e) => setEditAuthor(e.target.value)} style={styles.input} />
+              ) : (
+                  <p style={styles.author}>저자: {book.author}</p>
+              )}
+
+              {isEditMode ? (
+                  <select value={editGenre} onChange={(e) => setEditGenre(e.target.value)} style={styles.select}>
+                    {GENRE_LIST.map((g) => <option key={g} value={g}>{g}</option>)}
+                  </select>
+              ) : (
+                  <span style={styles.genreBadge}>{book.genre}</span>
+              )}
+
+              {isEditMode ? (
+                  <select value={editTag} onChange={(e) => setEditTag(e.target.value)} style={styles.select}>
+                    {TAG_LIST.map((t) => <option key={t} value={t}>{t}</option>)}
+                  </select>
+              ) : (
+                  <div style={styles.tagRow}>
+                    {tagsArray.map((t, idx) => (
+                        <span key={idx} style={styles.tag}>#{t.trim()}</span>
+                    ))}
+                  </div>
+              )}
+
+              <div style={styles.contentSection}>
+                <h4 style={styles.contentTitle}>도서 내용</h4>
+                {isEditMode ? (
+                    <textarea value={editContent} onChange={(e) => setEditContent(e.target.value)}
+                              rows={6} style={styles.textarea} />
+                ) : (
+                    <>
+                      <p style={styles.content}>
+                        {!book.content ? '등록된 내용이 없습니다.'
+                            : contentExpanded || book.content.length <= CONTENT_LIMIT
+                                ? book.content
+                                : book.content.slice(0, CONTENT_LIMIT) + '...'}
+                      </p>
+                      {book.content?.length > CONTENT_LIMIT && (
+                          <button onClick={() => setContentExpanded((prev) => !prev)} style={styles.moreBtn}>
+                            {contentExpanded ? '접기 ▲' : '더보기 ▼'}
+                          </button>
+                      )}
+                    </>
+                )}
+              </div>
+
+              <div style={styles.dateWrap}>
+                <p style={styles.date}>등록일: {book.createdAt ? book.createdAt.split('T')[0] : '-'}</p>
+                <p style={styles.date}>수정일: {book.updatedAt ? book.updatedAt.split('T')[0] : '-'}</p>
               </div>
             </div>
           </div>
-        )}
 
+          {!isEditMode && (
+              <div style={styles.commentSection}>
+                <h3 style={styles.commentTitle}>
+                  💬 댓글 {comments.length > 0 && <span style={styles.commentCount}>{comments.length}</span>}
+                </h3>
+
+                {commentLoading ? (
+                    <p style={styles.commentEmpty}>댓글을 불러오는 중...</p>
+                ) : comments.length === 0 ? (
+                    <p style={styles.commentEmpty}>아직 댓글이 없습니다. 첫 댓글을 남겨보세요!</p>
+                ) : (
+                    <ul style={styles.commentList}>
+                      {comments.map((c) => (
+                          <li key={c.id} style={styles.commentItem}>
+                            <div style={styles.commentHeader}>
+                              <span style={styles.commentAuthor}>{c.author}</span>
+                              <span style={styles.commentDate}>{c.createdAt?.split('T')[0]}</span>
+                              <button style={styles.commentActionBtn} onClick={() => openPwPrompt(c, 'edit')}>수정</button>
+                              <button style={{ ...styles.commentActionBtn, color: '#e53e3e' }} onClick={() => openPwPrompt(c, 'delete')}>삭제</button>
+                            </div>
+                            {pwPrompt?.id === c.id ? (
+                                <div style={styles.pwBox}>
+                                  {pwPrompt.mode === 'edit' && (
+                                      <textarea value={pwPrompt.editText}
+                                                onChange={(e) => setPwPrompt((p) => ({ ...p, editText: e.target.value }))}
+                                                rows={2} style={{ ...styles.commentTextarea, marginBottom: '8px' }} />
+                                  )}
+                                  {pwPrompt.mode === 'delete' && (
+                                      <p style={{ fontSize: '13px', color: '#666', margin: '0 0 8px 0' }}>
+                                        이 댓글을 삭제하려면 비밀번호를 입력하세요.
+                                      </p>
+                                  )}
+                                  <div style={styles.pwRow}>
+                                    <input type="password" placeholder="비밀번호" value={pwPrompt.pw}
+                                           onChange={(e) => setPwPrompt((p) => ({ ...p, pw: e.target.value }))}
+                                           onKeyDown={(e) => e.key === 'Enter' && handlePwConfirm()}
+                                           style={styles.pwInput} autoFocus />
+                                    <button style={styles.pwConfirmBtn} onClick={handlePwConfirm}>
+                                      {pwPrompt.mode === 'edit' ? '수정 완료' : '삭제'}
+                                    </button>
+                                    <button style={styles.pwCancelBtn} onClick={closePwPrompt}>취소</button>
+                                  </div>
+                                </div>
+                            ) : (
+                                <p style={styles.commentText}>{c.text}</p>
+                            )}
+                          </li>
+                      ))}
+                    </ul>
+                )}
+
+                <div style={styles.commentForm}>
+                  <div style={styles.commentInputRow}>
+                    <div style={styles.commentTextareaWrap}>
+                      <div style={styles.commentMetaRow}>
+                        <input type="text" placeholder="작성자 (선택)" value={commentAuthor}
+                               onChange={(e) => setCommentAuthor(e.target.value)} style={styles.commentAuthorInput} />
+                        <input type="password" placeholder="비밀번호" value={commentPassword}
+                               onChange={(e) => setCommentPassword(e.target.value)} style={styles.commentAuthorInput} />
+                      </div>
+                      <textarea placeholder="댓글을 입력하세요..." value={commentText}
+                                onChange={(e) => setCommentText(e.target.value)}
+                                onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleAddComment(); } }}
+                                rows={2} style={styles.commentTextarea} />
+                    </div>
+                    <button style={styles.commentSubmitBtn} onClick={handleAddComment} disabled={!commentText.trim()}>
+                      등록
+                    </button>
+                  </div>
+                </div>
+              </div>
+          )}
+        </div>
       </div>
-    </div>
   );
 }
 

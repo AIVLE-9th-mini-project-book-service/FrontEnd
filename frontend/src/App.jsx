@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './context/AuthProvider';
+import PrivateRoute from './components/PrivateRoute';
 import Header from './pages/Header';
 import Footer from './pages/Footer';
 import BookMain from './pages/BookMain';
@@ -24,12 +25,13 @@ function App() {
                         <Route path="/login"          element={<Login />} />
                         <Route path="/register"       element={<Register />} />
                         <Route path="/books"          element={<BookList />} />
-                        <Route path="/books/register" element={<BookRegister />} />
-                        <Route path="/books/deleted"  element={<DeletedBook />} />
-                        <Route path="/books/:id"      element={<BookDetail />} />
-                        <Route path="/books/:id/edit" element={<BookEdit />} />
-                        <Route path="/books/chart"    element={<BookChart />} />
                         <Route path="/books/search"   element={<BookFinder />} />
+                        <Route path="/books/chart"    element={<BookChart />} />
+                        <Route path="/books/:id"      element={<BookDetail />} />
+
+                        <Route path="/books/register" element={<PrivateRoute><BookRegister /></PrivateRoute>} />
+                        <Route path="/books/deleted"  element={<PrivateRoute><DeletedBook /></PrivateRoute>} />
+                        <Route path="/books/:id/edit" element={<PrivateRoute><BookEdit /></PrivateRoute>} />
                     </Routes>
                 </main>
                 <Footer />

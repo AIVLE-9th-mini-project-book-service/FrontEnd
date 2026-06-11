@@ -142,7 +142,7 @@ function BookList() {
   const [currentPage, setCurrentPage] = useState(1);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const bookUrl = 'http://localhost:8080/books';
+  const bookUrl = '/books';
 
   useEffect(() => {
     const fetchBooks = async () => {

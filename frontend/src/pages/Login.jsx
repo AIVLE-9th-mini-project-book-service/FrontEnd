@@ -32,7 +32,9 @@ function Login() {
             }
 
             const data = await res.json();
-            login({ nickname: data.name, token: data.token });
+            localStorage.setItem('accessToken', data.accessToken);
+            localStorage.setItem('refreshToken', data.refreshToken);
+            login({ nickname: data.name, token: data.accessToken });
             navigate('/');
 
         } catch (err) {
