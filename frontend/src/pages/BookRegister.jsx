@@ -1,4 +1,3 @@
-// BookRegister.jsx
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Input from '../components/Input';
@@ -6,10 +5,11 @@ import Button from '../components/Button';
 import TextArea from '../components/TextArea';
 import { GENRE_LIST, TAG_LIST } from "../bookOption";
 
-const BASE_URL = 'http://localhost:8080';
+const BASE_URL = '';
 
 function BookRegister() {
   const navigate = useNavigate();
+  const token = localStorage.getItem('accessToken');
   const bookUrl = `${BASE_URL}/books`;
 
   const [form, setForm] = useState({
@@ -19,13 +19,11 @@ function BookRegister() {
     likes: 0,
     content: '',
     tag: '',
-    coverImageUrl: '', 
+    coverImageUrl: '',
   });
 
   const [selectedTags, setSelectedTags] = useState([]);
   const [errors, setErrors] = useState({});
-
-  // AI 관련 로컬 상태
   const [apiKey, setApiKey] = useState('');
   const [quality, setQuality] = useState('auto');
   const [loading, setLoading] = useState(false);
@@ -41,11 +39,10 @@ function BookRegister() {
 
   const handleTagSelect = (tag) => {
     setSelectedTags((prev) =>
-      prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]
+        prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]
     );
   };
 
-  // 💡 BookRegister 스타일(화살표 함수)로 변경된 AI 표지 생성 함수
   const handleGenerateCover = async () => {
     if (!form.title.trim() || !form.author.trim() || !form.genre) {
       alert('AI 표지를 생성하려면 도서 제목, 저자명, 장르를 먼저 입력/선택해주세요.');
@@ -55,7 +52,6 @@ function BookRegister() {
       alert('OpenAI API Key를 입력해주세요.');
       return;
     }
-
     if (!window.confirm('AI 표지 생성 시 OpenAI API 비용이 발생합니다. 계속하시겠습니까?')) {
       alert('표지 생성이 취소되었습니다.');
       return;
@@ -65,7 +61,10 @@ function BookRegister() {
     try {
       const res = await fetch(`${BASE_URL}/books/cover/generate`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
         body: JSON.stringify({
           apiKey,
           quality,
@@ -109,15 +108,15 @@ function BookRegister() {
     }
     setErrors({});
 
-    const newBook = {
-      ...form,
-      tag: selectedTags.join(',')
-    };
+    const newBook = { ...form, tag: selectedTags.join(',') };
 
     try {
       const res = await fetch(bookUrl, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
         body: JSON.stringify(newBook),
       });
       if (!res.ok) throw new Error('서버 응답 오류');
@@ -130,141 +129,101 @@ function BookRegister() {
   };
 
   return (
-    <div style={styles.container}>
-      <h2 style={styles.pageTitle}>새 도서 등록하기</h2>
+      <div style={styles.container}>
+        <h2 style={styles.pageTitle}>새 도서 등록하기</h2>
 
-      {form.coverImageUrl && (
-        <div style={styles.previewContainer}>
-          <p style={styles.previewLabel}>생성된 표지 미리보기</p>
-          <img src={form.coverImageUrl} alt="표지 미리보기" style={styles.previewImage} />
-        </div>
-      )}
-
-      <div style={styles.formGroup}>
-        <label style={styles.label}>도서 제목 <span style={styles.required}>*</span></label>
-        <Input
-          name="title"
-          placeholder="도서 제목을 입력하세요"
-          value={form.title}
-          onChange={(e) => { handleChange(e); setErrors((prev) => ({ ...prev, title: '' })); }}
-          style={{ ...styles.input, ...(errors.title ? styles.inputError : {}) }}
-        />
-        {errors.title && <p style={styles.errorMsg}>{errors.title}</p>}
-      </div>
-
-      <div style={styles.formGroup}>
-        <label style={styles.label}>저자명 <span style={styles.required}>*</span></label>
-        <Input
-          name="author"
-          placeholder="저자 이름을 입력하세요"
-          value={form.author}
-          onChange={(e) => { handleChange(e); setErrors((prev) => ({ ...prev, author: '' })); }}
-          style={{ ...styles.input, ...(errors.author ? styles.inputError : {}) }}
-        />
-        {errors.author && <p style={styles.errorMsg}>{errors.author}</p>}
-      </div>
-
-      <div style={styles.formGroup}>
-        <p style={styles.label}>장르 선택 <span style={styles.required}>*</span></p>
-        <div style={{ ...styles.chipContainer, ...(errors.genre ? styles.chipContainerError : {}) }}>
-          {GENRE_LIST.map((g) => (
-            <span
-              key={g}
-              onClick={() => { handleGenreSelect(g); setErrors((prev) => ({ ...prev, genre: '' })); }}
-              style={{
-                ...styles.chip,
-                border: `1px solid ${form.genre === g ? '#1D9E75' : '#ccc'}`,
-                background: form.genre === g ? '#E1F5EE' : 'transparent',
-                color: form.genre === g ? '#085041' : '#555',
-                fontWeight: form.genre === g ? 'bold' : 'normal',
-              }}
-            >
-              {g}
-            </span>
-          ))}
-        </div>
-        {errors.genre && <p style={styles.errorMsg}>{errors.genre}</p>}
-      </div>
-
-      <div style={styles.formGroup}>
-        <p style={styles.label}>태그 선택 (복수 선택 가능)</p>
-        <div style={styles.chipContainer}>
-          {TAG_LIST.map((t) => (
-            <span
-              key={t}
-              onClick={() => handleTagSelect(t)}
-              style={{
-                ...styles.chip,
-                border: `1px solid ${selectedTags.includes(t) ? '#1D9E75' : '#ccc'}`,
-                background: selectedTags.includes(t) ? '#E1F5EE' : 'transparent',
-                color: selectedTags.includes(t) ? '#085041' : '#555',
-                fontWeight: selectedTags.includes(t) ? 'bold' : 'normal',
-              }}
-            >
-              {t} {selectedTags.includes(t) && '×'}
-            </span>
-          ))}
-        </div>
-      </div>
-
-      <div style={styles.formGroup}>
-        <label style={styles.label}>도서 소개 / 내용</label>
-        <TextArea
-          name="content"
-          placeholder="도서의 주요 내용이나 첫 문장을 입력해 주세요."
-          value={form.content}
-          onChange={handleChange}
-          rows={5}
-          style={styles.textarea}
-        />
-      </div>
-
-      <div style={styles.formGroup}>
-        <label style={styles.label}>API Key</label>
-        <Input
-          type="password"
-          placeholder="sk-..."
-          value={apiKey}
-          onChange={(e) => setApiKey(e.target.value)}
-          style={styles.input}
-        />
-      </div>
-
-      <div style={styles.aiSection}>
-        <h3 style={styles.aiTitle}>🎨 AI 표지 생성</h3>
+        {form.coverImageUrl && (
+            <div style={styles.previewContainer}>
+              <p style={styles.previewLabel}>생성된 표지 미리보기</p>
+              <img src={form.coverImageUrl} alt="표지 미리보기" style={styles.previewImage} />
+            </div>
+        )}
 
         <div style={styles.formGroup}>
-          <label style={styles.label}>품질</label>
-          <select
-            value={quality}
-            onChange={(e) => setQuality(e.target.value)}
-            disabled={loading}
-            style={styles.select}
-          >
-            <option value="low">Low</option>
-            <option value="medium">Medium</option>
-            <option value="high">High</option>
-            <option value="auto">Auto</option>
-          </select>
+          <label style={styles.label}>도서 제목 <span style={styles.required}>*</span></label>
+          <Input name="title" placeholder="도서 제목을 입력하세요" value={form.title}
+                 onChange={(e) => { handleChange(e); setErrors((prev) => ({ ...prev, title: '' })); }}
+                 style={{ ...styles.input, ...(errors.title ? styles.inputError : {}) }} />
+          {errors.title && <p style={styles.errorMsg}>{errors.title}</p>}
         </div>
 
-        <Button
-          label={loading ? '⏳ 표지 그리는 중...' : '🎨 AI 표지 생성'}
-          onClick={handleGenerateCover}
-          disabled={loading}
-          style={{ 
-            ...styles.aiButton,
-            backgroundColor: loading ? '#94d3be' : '#1D9E75'
-          }}
-        />
-      </div>
+        <div style={styles.formGroup}>
+          <label style={styles.label}>저자명 <span style={styles.required}>*</span></label>
+          <Input name="author" placeholder="저자 이름을 입력하세요" value={form.author}
+                 onChange={(e) => { handleChange(e); setErrors((prev) => ({ ...prev, author: '' })); }}
+                 style={{ ...styles.input, ...(errors.author ? styles.inputError : {}) }} />
+          {errors.author && <p style={styles.errorMsg}>{errors.author}</p>}
+        </div>
 
-      <Button
-        label="등록하기"
-        onClick={handleSubmit}
-        style={styles.submitButton}
-      />
-    </div>
+        <div style={styles.formGroup}>
+          <p style={styles.label}>장르 선택 <span style={styles.required}>*</span></p>
+          <div style={{ ...styles.chipContainer, ...(errors.genre ? styles.chipContainerError : {}) }}>
+            {GENRE_LIST.map((g) => (
+                <span key={g}
+                      onClick={() => { handleGenreSelect(g); setErrors((prev) => ({ ...prev, genre: '' })); }}
+                      style={{
+                        ...styles.chip,
+                        border: `1px solid ${form.genre === g ? '#1D9E75' : '#ccc'}`,
+                        background: form.genre === g ? '#E1F5EE' : 'transparent',
+                        color: form.genre === g ? '#085041' : '#555',
+                        fontWeight: form.genre === g ? 'bold' : 'normal',
+                      }}>
+              {g}
+            </span>
+            ))}
+          </div>
+          {errors.genre && <p style={styles.errorMsg}>{errors.genre}</p>}
+        </div>
+
+        <div style={styles.formGroup}>
+          <p style={styles.label}>태그 선택 (복수 선택 가능)</p>
+          <div style={styles.chipContainer}>
+            {TAG_LIST.map((t) => (
+                <span key={t} onClick={() => handleTagSelect(t)}
+                      style={{
+                        ...styles.chip,
+                        border: `1px solid ${selectedTags.includes(t) ? '#1D9E75' : '#ccc'}`,
+                        background: selectedTags.includes(t) ? '#E1F5EE' : 'transparent',
+                        color: selectedTags.includes(t) ? '#085041' : '#555',
+                        fontWeight: selectedTags.includes(t) ? 'bold' : 'normal',
+                      }}>
+              {t} {selectedTags.includes(t) && '×'}
+            </span>
+            ))}
+          </div>
+        </div>
+
+        <div style={styles.formGroup}>
+          <label style={styles.label}>도서 소개 / 내용</label>
+          <TextArea name="content" placeholder="도서의 주요 내용이나 첫 문장을 입력해 주세요."
+                    value={form.content} onChange={handleChange} rows={5} style={styles.textarea} />
+        </div>
+
+        <div style={styles.formGroup}>
+          <label style={styles.label}>API Key</label>
+          <Input type="password" placeholder="sk-..." value={apiKey}
+                 onChange={(e) => setApiKey(e.target.value)} style={styles.input} />
+        </div>
+
+        <div style={styles.aiSection}>
+          <h3 style={styles.aiTitle}>🎨 AI 표지 생성</h3>
+          <div style={styles.formGroup}>
+            <label style={styles.label}>품질</label>
+            <select value={quality} onChange={(e) => setQuality(e.target.value)}
+                    disabled={loading} style={styles.select}>
+              <option value="low">Low</option>
+              <option value="medium">Medium</option>
+              <option value="high">High</option>
+              <option value="auto">Auto</option>
+            </select>
+          </div>
+          <Button label={loading ? '⏳ 표지 그리는 중...' : '🎨 AI 표지 생성'}
+                  onClick={handleGenerateCover} disabled={loading}
+                  style={{ ...styles.aiButton, backgroundColor: loading ? '#94d3be' : '#1D9E75' }} />
+        </div>
+
+        <Button label="등록하기" onClick={handleSubmit} style={styles.submitButton} />
+      </div>
   );
 }
 
@@ -283,13 +242,12 @@ const styles = {
   inputError: { border: '1px solid #e53e3e', backgroundColor: '#fff5f5' },
   chipContainerError: { padding: '8px', borderRadius: '6px', border: '1px solid #e53e3e', backgroundColor: '#fff5f5' },
   errorMsg: { margin: '5px 0 0 2px', fontSize: '12px', color: '#e53e3e' },
-  
   aiSection: { marginTop: '10px', padding: '20px', backgroundColor: '#f8f9fa', borderRadius: '10px', border: '1px dashed #1D9E75' },
   aiTitle: { fontSize: '16px', fontWeight: 'bold', color: '#1D9E75', marginBottom: '15px', marginTop: 0 },
   aiButton: { width: '100%', padding: '12px', color: '#fff', border: 'none', borderRadius: '6px', fontSize: '14px', fontWeight: 'bold', cursor: 'pointer' },
   previewContainer: { marginBottom: '25px', textAlign: 'center', backgroundColor: '#f8f9fa', padding: '15px', borderRadius: '8px', border: '1px solid #eee' },
   previewLabel: { fontSize: '13px', fontWeight: 'bold', color: '#555', marginBottom: '10px', marginTop: 0 },
-  previewImage: { maxWidth: '180px', height: 'auto', borderRadius: '6px', boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }
+  previewImage: { maxWidth: '180px', height: 'auto', borderRadius: '6px', boxShadow: '0 2px 8px rgba(0,0,0,0.1)' },
 };
 
 export default BookRegister;

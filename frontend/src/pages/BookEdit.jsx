@@ -3,24 +3,20 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { GENRE_LIST, TAG_LIST } from "../bookOption";
 import './BookEdit.css';
 
-
-const BASE_URL = 'http://localhost:8080';
+const BASE_URL = '';
 
 function BookEdit() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const token = localStorage.getItem('accessToken');
 
   const [book, setBook] = useState(null);
   const [bookLoading, setBookLoading] = useState(true);
-
-  // 도서 수정 필드 상태
   const [title, setTitle] = useState('');
   const [author, setAuthor] = useState('');
   const [content, setContent] = useState('');
   const [selectedTags, setSelectedTags] = useState([]);
   const [tagError, setTagError] = useState(false);
-
-  // AI 표지 생성 관련 상태
   const [apiKey, setApiKey] = useState('')
   const [quality, setQuality] = useState('low')
   const [loading, setLoading] = useState(false)
@@ -29,7 +25,6 @@ function BookEdit() {
   const [summary, setSummary] = useState('')
   const [oneLinerLoading, setOneLinerLoading] = useState(false)
 
-  // 도서 데이터 fetch
   useEffect(() => {
     const fetchBook = async () => {
       try {
@@ -62,9 +57,6 @@ function BookEdit() {
     });
   };
 
-  
-  
-  // 저장
   async function handleSave() {
     if (selectedTags.length === 0) {
       setTagError(true);
@@ -74,7 +66,10 @@ function BookEdit() {
     try {
       const res = await fetch(`${BASE_URL}/books/${id}`, {
         method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
         body: JSON.stringify({
           title,
           author,
@@ -139,7 +134,6 @@ function BookEdit() {
     }
   }
 
-  // AI 표지 생성 버튼
   async function handleGenerateCover() {
     if (!apiKey.trim()) {
       alert('OpenAI API Key를 입력해주세요.');
@@ -150,7 +144,10 @@ function BookEdit() {
     try {
       const res = await fetch(`${BASE_URL}/books/${id}/cover/generate`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
         body: JSON.stringify({ apiKey, quality }),
       });
       if (res.status === 401) { alert('API Key가 올바르지 않습니다.'); return; }
@@ -171,142 +168,96 @@ function BookEdit() {
   }
 
   if (bookLoading) return (
-    <p style={{ textAlign: 'center', marginTop: '60px', color: '#888' }}>
-      도서 정보를 불러오는 중...
-    </p>
+      <p style={{ textAlign: 'center', marginTop: '60px', color: '#888' }}>
+        도서 정보를 불러오는 중...
+      </p>
   );
   if (!book) return null;
 
   return (
-    <div className="book-edit">
-      <button className="back-btn" onClick={() => navigate(`/books/${id}`)}>← 뒤로 가기</button>
-      <h2>📝 도서 수정</h2>
+      <div className="book-edit">
+        <button className="back-btn" onClick={() => navigate(`/books/${id}`)}>← 뒤로 가기</button>
+        <h2>📝 도서 수정</h2>
 
-      <div className="edit-layout">
-        {/* 왼쪽: 표지 미리보기 */}
-        <div className="cover-preview">
-          {coverPreview ? (
-            <img src={coverPreview} alt="표지 미리보기" />
-          ) : (
-            <div className="no-cover">🖼️ 표지 없음</div>
-          )}
-        </div>
-
-        {/* 오른쪽: 수정 폼 + AI 생성 */}
-        <div className="edit-form">
-
-          <div className="form-group">
-            <label>제목</label>
-            <input
-              type="text"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-            />
-          </div>
-
-          <div className="form-group">
-            <label>작가</label>
-            <input
-              type="text"
-              value={author}
-              onChange={(e) => setAuthor(e.target.value)}
-            />
-          </div>
-
-          <div className="form-group">
-            <label>내용</label>
-            <textarea
-              value={content}
-              onChange={(e) => setContent(e.target.value)}
-              rows={4}
-            />
-          </div>
-
-          <div className="form-group">
-            <label>태그 <span className="tag-required">* 최소 1개 선택</span></label>
-            <div className={`tag-chip-container${tagError ? ' tag-error' : ''}`}>
-              {TAG_LIST.map((t) => (
-                <span
-                  key={t}
-                  className={`tag-chip${selectedTags.includes(t) ? ' selected' : ''}`}
-                  onClick={() => handleTagSelect(t)}
-                >
-                  {t} {selectedTags.includes(t) && '×'}
-                </span>
-              ))}
-            </div>
-            {tagError && <p className="tag-error-msg">태그를 최소 1개 선택해주세요.</p>}
-          </div>
-
-          <div className="form-group">
-            <label>API Key</label>
-            <input
-              type="password"
-              placeholder="sk-..."
-              value={apiKey}
-              onChange={(e) => setApiKey(e.target.value)}
-            />
-          </div>
-
-          <button
-            className="save-btn"
-            onClick={handleSave}
-            disabled={saving}
-          >
-            {saving ? '💾 저장 중...' : '💾 저장'}
-          </button>
-
-          {/* 한줄평 섹션 */}
-          <div className="ai-section">
-            <h3>✏️ AI 한줄평 생성</h3>
-            <button
-              className="generate-btn"
-              onClick={handleGenerateOneLiner}
-              disabled={oneLinerLoading}
-            >
-              {oneLinerLoading ? '⏳ 생성 중...' : '✏️ 한줄평 생성'}
-            </button>
-            {summary && (
-              <div className="form-group" style={{ marginTop: '8px' }}>
-                <label>한줄평</label>
-                <textarea
-                  value={summary}
-                  onChange={(e) => setSummary(e.target.value)}
-                  rows={2}
-                />
-              </div>
+        <div className="edit-layout">
+          <div className="cover-preview">
+            {coverPreview ? (
+                <img src={coverPreview} alt="표지 미리보기" />
+            ) : (
+                <div className="no-cover">🖼️ 표지 없음</div>
             )}
           </div>
 
-          {/* AI 표지 생성 섹션 */}
-          <div className="ai-section">
-            <h3>🎨 AI 표지 생성</h3>
-
+          <div className="edit-form">
             <div className="form-group">
-              <label>품질</label>
-              <select
-                value={quality}
-                onChange={(e) => setQuality(e.target.value)}
-                disabled={loading}
-              >
-                <option value="low">Low</option>
-                <option value="medium">Medium</option>
-                <option value="high">High</option>
-                <option value="auto">Auto</option>
-              </select>
+              <label>제목</label>
+              <input type="text" value={title} onChange={(e) => setTitle(e.target.value)} />
             </div>
 
-            <button
-              className="generate-btn"
-              onClick={handleGenerateCover}
-              disabled={loading}
-            >
-              {loading ? '⏳ 생성 중...' : '🎨 AI 표지 생성'}
+            <div className="form-group">
+              <label>작가</label>
+              <input type="text" value={author} onChange={(e) => setAuthor(e.target.value)} />
+            </div>
+
+            <div className="form-group">
+              <label>내용</label>
+              <textarea value={content} onChange={(e) => setContent(e.target.value)} rows={4} />
+            </div>
+
+            <div className="form-group">
+              <label>태그 <span className="tag-required">* 최소 1개 선택</span></label>
+              <div className={`tag-chip-container${tagError ? ' tag-error' : ''}`}>
+                {TAG_LIST.map((t) => (
+                    <span key={t} className={`tag-chip${selectedTags.includes(t) ? ' selected' : ''}`}
+                          onClick={() => handleTagSelect(t)}>
+                  {t} {selectedTags.includes(t) && '×'}
+                </span>
+                ))}
+              </div>
+              {tagError && <p className="tag-error-msg">태그를 최소 1개 선택해주세요.</p>}
+            </div>
+
+            <div className="form-group">
+              <label>API Key</label>
+              <input type="password" placeholder="sk-..." value={apiKey}
+                     onChange={(e) => setApiKey(e.target.value)} />
+            </div>
+
+            <button className="save-btn" onClick={handleSave} disabled={saving}>
+              {saving ? '💾 저장 중...' : '💾 저장'}
             </button>
+
+            <div className="ai-section">
+              <h3>✏️ AI 한줄평 생성</h3>
+              <button className="generate-btn" onClick={handleGenerateOneLiner} disabled={oneLinerLoading}>
+                {oneLinerLoading ? '⏳ 생성 중...' : '✏️ 한줄평 생성'}
+              </button>
+              {summary && (
+                  <div className="form-group" style={{ marginTop: '8px' }}>
+                    <label>한줄평</label>
+                    <textarea value={summary} onChange={(e) => setSummary(e.target.value)} rows={2} />
+                  </div>
+              )}
+            </div>
+
+            <div className="ai-section">
+              <h3>🎨 AI 표지 생성</h3>
+              <div className="form-group">
+                <label>품질</label>
+                <select value={quality} onChange={(e) => setQuality(e.target.value)} disabled={loading}>
+                  <option value="low">Low</option>
+                  <option value="medium">Medium</option>
+                  <option value="high">High</option>
+                  <option value="auto">Auto</option>
+                </select>
+              </div>
+              <button className="generate-btn" onClick={handleGenerateCover} disabled={loading}>
+                {loading ? '⏳ 생성 중...' : '🎨 AI 표지 생성'}
+              </button>
+            </div>
           </div>
         </div>
       </div>
-    </div>
   );
 }
 
