@@ -1,8 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-const registerUrl = 'http://localhost:8080/';
-
 const domainOptions = ['gmail.com', 'naver.com', 'kakao.com', 'daum.net', 'outlook.com', '직접입력'];
 
 function Register() {
@@ -50,58 +48,16 @@ function Register() {
         return () => document.removeEventListener('mousedown', handleClickOutside);
     }, []);
 
-    // const handleSubmit = async (e) => {
-    //     e.preventDefault();
-    //     setError('');
-    //
-    //     const { username, nickname, password } = form;
-    //     const fullEmail = `${email.id}@${isDirect ? email.custom : email.domain}`;
-    //     const fullPhone = `${phone.p1}-${phone.p2}-${phone.p3}`;
-    //
-    //     if (!username || !email.id || (isDirect && !email.custom) || !nickname || !password || !phone.p1 || !phone.p2 || !phone.p3) {
-    //         setError('모든 항목을 입력해주세요.');
-    //         return;
-    //     }
-    //
-    //     if (phone.p1.length !== 3 || phone.p2.length < 3 || phone.p2.length > 4 || phone.p3.length !== 4) {
-    //         setError('휴대폰 번호 자리수가 올바르지 않습니다.');
-    //         return;
-    //     }
-    //
-    //     try {
-    //         const res = await fetch(registerUrl, {
-    //             method: 'POST',
-    //             headers: { 'Content-Type': 'application/json' },
-    //             body: JSON.stringify({ ...form, email: fullEmail, phone: fullPhone }),
-    //         });
-    //
-    //         if (!res.ok) {
-    //             setError('회원가입에 실패했습니다.');
-    //             return;
-    //         }
-    //
-    //         navigate('/login');
-    //
-    //     } catch (err) {
-    //         setError('서버 연결에 실패했습니다.');
-    //     }
-    // };
-
-    // 테스트용 코드
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError('');
 
-        const { username, nickname, password } = form;
+        const { nickname, password } = form;
+        const fullEmail = `${email.id}@${isDirect ? email.custom : email.domain}`;
+        const fullPhone = `${phone.p1}-${phone.p2}-${phone.p3}`;
 
-        if (!username || !email.id || (isDirect && !email.custom) || !nickname || !password || !phone.p1 || !phone.p2 || !phone.p3) {
+        if (!email.id || (isDirect && !email.custom) || !nickname || !password || !phone.p1 || !phone.p2 || !phone.p3) {
             setError('모든 항목을 입력해주세요.');
-            return;
-        }
-
-        const emailRegex = /^[^\s@]+$/;
-        if (!emailRegex.test(email.id)) {
-            setError('이메일 아이디를 올바르게 입력해주세요.');
             return;
         }
 
@@ -110,8 +66,27 @@ function Register() {
             return;
         }
 
-        alert('회원가입이 완료되었습니다!');
-        navigate('/login');
+        try {
+            const res = await fetch('/members/signup', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    email: fullEmail,
+                    password: password,
+                    name: nickname,
+                }),
+            });
+
+            if (!res.ok) {
+                setError('회원가입에 실패했습니다.');
+                return;
+            }
+
+            navigate('/login');
+
+        } catch (err) {
+            setError('서버 연결에 실패했습니다.');
+        }
     };
 
     return (
@@ -119,13 +94,6 @@ function Register() {
             <div className="login-card">
                 <h2 className="login-title">회원가입</h2>
                 <div className="login-form">
-                    <input
-                        type="text"
-                        name="username"
-                        placeholder="아이디"
-                        value={form.username}
-                        onChange={handleChange}
-                    />
                     <div className="email-group">
                         <input
                             type="text"
@@ -144,7 +112,7 @@ function Register() {
                                         onChange={(e) => setEmail({ ...email, custom: e.target.value })}
                                     />
                                     <span
-                                        className="dropdown-arrow"
+                                        style={{ cursor: 'pointer', color: '#333', fontSize: '12px', flexShrink: 0 }}
                                         onClick={() => setDropdownOpen(!dropdownOpen)}
                                     >
                                         ▼
@@ -175,17 +143,17 @@ function Register() {
                         </div>
                     </div>
                     <input
-                        type="text"
-                        name="nickname"
-                        placeholder="닉네임"
-                        value={form.nickname}
-                        onChange={handleChange}
-                    />
-                    <input
                         type="password"
                         name="password"
                         placeholder="비밀번호"
                         value={form.password}
+                        onChange={handleChange}
+                    />
+                    <input
+                        type="text"
+                        name="nickname"
+                        placeholder="이름"
+                        value={form.nickname}
                         onChange={handleChange}
                     />
                     <div className="phone-group">
