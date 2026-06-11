@@ -1,5 +1,4 @@
 // BookRegister.jsx
-import { generateBookCover } from '../components/api/Openapi';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Input from '../components/Input';
@@ -7,9 +6,11 @@ import Button from '../components/Button';
 import TextArea from '../components/TextArea';
 import { GENRE_LIST, TAG_LIST } from "../bookOption";
 
+const BASE_URL = 'http://localhost:8080';
+
 function BookRegister() {
   const navigate = useNavigate();
-  const bookUrl = 'http://localhost:8080/books';
+  const bookUrl = `${BASE_URL}/books`;
 
   const [form, setForm] = useState({
     title: '',
@@ -62,24 +63,31 @@ function BookRegister() {
 
     setLoading(true);
     try {
-      const registerBook = {
-        title: form.title,
-        author: form.author,
-        content: form.content,
-        tag: selectedTags.join(','),
-        genre: form.genre
-      };
-
-      const imageSrc = await generateBookCover(registerBook, apiKey, quality);
-      
-      // 💡 기존 setForm 패턴 유지
-      setForm((prev) => ({ ...prev, coverImageUrl: imageSrc }));
+      const res = await fetch(`${BASE_URL}/books/cover/generate`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          apiKey,
+          quality,
+          title: form.title,
+          author: form.author,
+          content: form.content,
+          tag: selectedTags.join(','),
+          genre: form.genre,
+        }),
+      });
+      if (res.status === 401) { alert('API Key가 올바르지 않습니다.'); return; }
+      if (res.status === 429) { alert('요청 한도 초과. 잠시 후 다시 시도해주세요.'); return; }
+      if (!res.ok) {
+        const err = await res.json();
+        alert(`오류: ${err.message}`);
+        return;
+      }
+      const data = await res.json();
+      setForm((prev) => ({ ...prev, coverImageUrl: data.coverImageUrl }));
       alert(`"${form.title}" 표지가 생성되었습니다! 하단의 등록하기 버튼을 눌러야 최종 저장됩니다.`);
     } catch (err) {
-      if (err.message === '401')           alert('API Key가 올바르지 않습니다.');
-      else if (err.message === '429')      alert('요청 한도 초과. 잠시 후 다시 시도해주세요.');
-      else if (err.message === 'PARSE_ERROR') alert('응답 형식 오류가 발생했습니다.');
-      else                                 alert(`오류: ${err.message}`);
+      alert(`오류: ${err.message}`);
     } finally {
       setLoading(false);
     }
