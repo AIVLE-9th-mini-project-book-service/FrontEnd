@@ -6,25 +6,17 @@ const domainOptions = ['gmail.com', 'naver.com', 'kakao.com', 'daum.net', 'outlo
 function Register() {
     const navigate = useNavigate();
     const [form, setForm] = useState({
-        username: '',
         nickname: '',
         password: '',
     });
     const [email, setEmail] = useState({ id: '', domain: '', custom: '' });
     const [isDirect, setIsDirect] = useState(true);
     const [dropdownOpen, setDropdownOpen] = useState(false);
-    const [phone, setPhone] = useState({ p1: '', p2: '', p3: '' });
     const [error, setError] = useState('');
     const dropdownRef = useRef(null);
 
     const handleChange = (e) => {
         setForm({ ...form, [e.target.name]: e.target.value });
-    };
-
-    const handlePhoneChange = (e) => {
-        const { name, value } = e.target;
-        if (!/^\d*$/.test(value)) return;
-        setPhone({ ...phone, [name]: value });
     };
 
     const handleSelectDomain = (option) => {
@@ -54,15 +46,9 @@ function Register() {
 
         const { nickname, password } = form;
         const fullEmail = `${email.id}@${isDirect ? email.custom : email.domain}`;
-        const fullPhone = `${phone.p1}-${phone.p2}-${phone.p3}`;
 
-        if (!email.id || (isDirect && !email.custom) || !nickname || !password || !phone.p1 || !phone.p2 || !phone.p3) {
+        if (!email.id || (isDirect && !email.custom) || !nickname || !password) {
             setError('모든 항목을 입력해주세요.');
-            return;
-        }
-
-        if (phone.p1.length !== 3 || phone.p2.length < 3 || phone.p2.length > 4 || phone.p3.length !== 4) {
-            setError('휴대폰 번호 자리수가 올바르지 않습니다.');
             return;
         }
 
@@ -143,47 +129,19 @@ function Register() {
                         </div>
                     </div>
                     <input
-                        type="password"
-                        name="password"
-                        placeholder="비밀번호"
-                        value={form.password}
-                        onChange={handleChange}
-                    />
-                    <input
                         type="text"
                         name="nickname"
                         placeholder="이름"
                         value={form.nickname}
                         onChange={handleChange}
                     />
-                    <div className="phone-group">
-                        <input
-                            type="text"
-                            name="p1"
-                            placeholder="010"
-                            maxLength={3}
-                            value={phone.p1}
-                            onChange={handlePhoneChange}
-                        />
-                        <span>-</span>
-                        <input
-                            type="text"
-                            name="p2"
-                            placeholder="1234"
-                            maxLength={4}
-                            value={phone.p2}
-                            onChange={handlePhoneChange}
-                        />
-                        <span>-</span>
-                        <input
-                            type="text"
-                            name="p3"
-                            placeholder="5678"
-                            maxLength={4}
-                            value={phone.p3}
-                            onChange={handlePhoneChange}
-                        />
-                    </div>
+                    <input
+                        type="password"
+                        name="password"
+                        placeholder="비밀번호"
+                        value={form.password}
+                        onChange={handleChange}
+                    />
                     {error && <p className="error-msg">{error}</p>}
                     <button onClick={handleSubmit}>회원가입</button>
                     <button className="secondary-btn" onClick={() => navigate('/login')}>
