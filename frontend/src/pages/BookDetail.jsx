@@ -46,7 +46,7 @@ function BookDetail() {
         setEditAuthor(data.author ?? '');
         setEditGenre(data.genre ?? '');
         setEditContent(data.content ?? '');
-        setEditTag(data.tag ?? '');
+        setEditTag(data.tagText ?? '');
         setEditImageUrl(data.coverImageUrl ?? '');
       } catch (err) {
         console.error(err);
@@ -192,7 +192,7 @@ function BookDetail() {
   );
   if (!book) return null;
 
-  const tagsArray = book.tag ? book.tag.split(',').filter(Boolean) : [];
+  const tagsArray = Text ? book.tagText.split(',').filter(Boolean) : [];
 
   return (
     <div style={styles.page}>

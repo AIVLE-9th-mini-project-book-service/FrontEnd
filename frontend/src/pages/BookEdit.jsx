@@ -1,4 +1,3 @@
-import { generateOneLiner } from '../components/api/Openapi_text'
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { GENRE_LIST, TAG_LIST } from "../bookOption";
@@ -41,7 +40,7 @@ function BookEdit() {
         setTitle(data.title);
         setAuthor(data.author);
         setContent(data.content);
-        setSelectedTags(data.tag ? data.tag.split(',').map((t) => t.trim()).filter(Boolean) : []);
+        setSelectedTags(data.tagText ? data.tagText.split(',').map((t) => t.trim()).filter(Boolean) : []);
         setCoverPreview(data.coverImageUrl || '');
         setSummary(data.summary || '');
       } catch (err) {
@@ -63,6 +62,8 @@ function BookEdit() {
     });
   };
 
+  
+  
   // 저장
   async function handleSave() {
     if (selectedTags.length === 0) {
@@ -84,7 +85,16 @@ function BookEdit() {
         }),
       });
       if (!res.ok) throw new Error('저장 실패');
-      navigate(`/books/${id}`);
+      alert('도서 정보가 저장되었습니다!');
+      setBook((prev) => ({
+      ...prev,
+      title,
+      author,
+      content,
+      tagText: selectedTags.join(','),
+      coverImageUrl: coverPreview,
+      summary,
+    }));
     } catch (err) {
       alert(`저장 오류: ${err.message}`);
     } finally {
@@ -94,22 +104,38 @@ function BookEdit() {
 
   async function handleGenerateOneLiner() {
     if (!apiKey.trim()) {
-      alert('OpenAI API Key를 입력해주세요.')
+      alert('OpenAI API Key를 입력해주세요.');
       return
     }
-    if (!window.confirm('AI 한줄평 생성 시 OpenAI API 비용이 발생합니다. 계속하시겠습니까?')) return
+    if (!window.confirm('수정 사항이 있으시면 저장 버튼을 누른 뒤 한줄평을 생성해주세요!\nAI 한줄평 생성 시 OpenAI API 비용이 발생합니다. 계속하시겠습니까?')) return
     setOneLinerLoading(true)
     try {
-      const editedBook = { title, author, content, tag: selectedTags.join(','), genre: book.genre }
-      const result = await generateOneLiner(editedBook, apiKey)
-      setSummary(result)
+      
+      const res = await fetch(`${BASE_URL}/books/${id}/summary/generate`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ apiKey }),
+      })
+      if (res.status === 401) {
+         alert('API Key가 올바르지 않습니다.'); 
+         return;
+         }
+      if (res.status === 429) { 
+        alert('요청 한도 초과. 잠시 후 다시 시도해주세요.');
+        return; 
+        }
+      if (!res.ok) {
+        const err = await res.json();
+        alert(`오류: ${err.message}`);
+        return;
+        }
+      const data = await res.json();
+      setSummary(data.summary);
+      alert(`"${title}" 한줄평이 생성되었습니다! 저장 버튼을 눌러 저장하세요.`)
     } catch (err) {
-      if (err.message === '401')           alert('API Key가 올바르지 않습니다.')
-      else if (err.message === '429')      alert('요청 한도 초과. 잠시 후 다시 시도해주세요.')
-      else if (err.message === 'PARSE_ERROR') alert('응답 형식 오류가 발생했습니다.')
-      else                                 alert(`오류: ${err.message}`)
+      alert(`오류: ${err.message}`);
     } finally {
-      setOneLinerLoading(false)
+      setOneLinerLoading(false);
     }
   }
 
