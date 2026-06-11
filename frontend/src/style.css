@@ -140,18 +140,13 @@ button {
    Main (자료검색 창)
    ============================================================ */
 
-/* Main Search, Menu 가로 정렬 */
-
 .book-main-section {
   width: 100%;
   max-width: 1400px;
-
   margin: 80px auto 0;
-
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-
   gap: 80px;
 }
 
@@ -168,7 +163,6 @@ button {
   font-size: 22px;
   font-weight: 500;
   color: #5f6b7a;
-
   letter-spacing: 2px;
   margin-bottom: 15px;
 }
@@ -191,7 +185,6 @@ button {
   padding: 0 8px 0 0;
   margin: 0;
   box-shadow: 0 6px 20px rgba(27, 58, 92, 0.08);
-
   overflow: visible;
   position: relative;
 }
@@ -203,22 +196,15 @@ button {
 .search-type {
   background: var(--main-color, #1b3a5c);
   color: white;
-
   height: 100%;
-
   padding: 0 30px;
-
   font-size: 17px;
   font-weight: 500;
-
   white-space: nowrap;
-
   border-radius: 25px 0 0 25px;
-
   display: flex;
   align-items: center;
   justify-content: center;
-
   line-height: 1;
 }
 
@@ -271,24 +257,16 @@ button {
 
 .search-dropdown {
   position: absolute;
-
   top: 78px;
   left: 50%;
-
   transform: translateX(-50%);
-
   width: 90%;
   max-width: 800px;
-
   z-index: 1000;
-
   overflow: hidden;
-
   border: 1px solid #e5e5e5;
   border-radius: 18px;
-
   background: white;
-
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
 }
 
@@ -296,11 +274,8 @@ button {
   display: flex;
   align-items: center;
   gap: 14px;
-
   padding: 12px 18px;
-
   cursor: pointer;
-
   transition: background 0.15s;
 }
 
@@ -382,13 +357,9 @@ button {
 .detail-search-panel {
   width: 100%;
   margin: 18px auto 0;
-
   padding: 24px;
-
   border-radius: 20px;
-
   background: white;
-
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
 }
 
@@ -398,10 +369,8 @@ button {
 
 .detail-section h4 {
   margin-bottom: 14px;
-
   font-size: 16px;
   font-weight: 700;
-
   color: #1b3a5c;
   text-align: center;
 }
@@ -415,16 +384,11 @@ button {
 
 .detail-chip {
   padding: 10px 18px;
-
   border: 1px solid #d9d9d9;
   border-radius: 999px;
-
   background: white;
-
   font-size: 14px;
-
   cursor: pointer;
-
   transition: all 0.15s;
 }
 
@@ -435,7 +399,6 @@ button {
 .detail-chip.active {
   background: #1b3a5c;
   color: white;
-
   border-color: #1b3a5c;
 }
 
@@ -446,7 +409,6 @@ button {
 .detail-result-section {
   width: 90%;
   max-width: 1200px;
-
   margin: 40px auto;
 }
 
@@ -454,14 +416,12 @@ button {
   display: flex;
   justify-content: space-between;
   align-items: center;
-
   margin-bottom: 24px;
 }
 
 .detail-result-header h3 {
   font-size: 28px;
   font-weight: 700;
-
   color: #1b3a5c;
 }
 
@@ -471,26 +431,17 @@ button {
 
 .detail-book-grid {
   display: grid;
-
-  grid-template-columns:
-    repeat(auto-fill, minmax(220px, 1fr));
-
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
   gap: 24px;
 }
 
 .detail-book-card {
   background: white;
-
   border-radius: 20px;
-
   overflow: hidden;
-
   cursor: pointer;
-
   transition: all 0.2s;
-
-  box-shadow:
-    0 6px 18px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
 }
 
 .detail-book-card:hover {
@@ -500,16 +451,13 @@ button {
 .detail-book-image {
   width: 100%;
   height: 300px;
-
   overflow: hidden;
-
   background: #f5f5f5;
 }
 
 .detail-book-image img {
   width: 100%;
   height: 100%;
-
   object-fit: cover;
 }
 
@@ -520,29 +468,21 @@ button {
 .detail-book-info h4 {
   font-size: 18px;
   font-weight: 700;
-
   margin-bottom: 8px;
-
   color: #222;
 }
 
 .detail-book-info p {
   color: #666;
-
   margin-bottom: 10px;
 }
 
 .detail-book-info span {
   display: inline-block;
-
   padding: 6px 12px;
-
   border-radius: 999px;
-
   background: #eef4ff;
-
   color: #1b3a5c;
-
   font-size: 13px;
   font-weight: 600;
 }
@@ -583,7 +523,6 @@ button {
   border-color: #1b3a5c;
   font-weight: 700;
 }
-
 
 /* ============================================================
    Main Menu (메인 페이지 메뉴)
@@ -628,7 +567,6 @@ button {
 .book-menu-icon {
   width: 50px;
   height: 50px;
-
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1032,7 +970,6 @@ button {
   display: block;
 }
 
-
 .likes-book-card h3 {
   margin: 12px 0 6px;
   font-size: 16px;
@@ -1207,7 +1144,6 @@ button {
 /* ============================================================
    Book List (도서 목록)
    ============================================================ */
-/* 사이드바 + 목록 전체 래퍼 */
 .book-list-wrapper {
   display: flex;
   align-items: flex-start;
@@ -1217,7 +1153,6 @@ button {
   gap: 28px;
 }
 
-/* 사이드바 */
 .book-list-sidebar {
   width: 200px;
   flex-shrink: 0;
@@ -1430,7 +1365,6 @@ button {
   color: #555;
 }
 
-/* 페이지네이션 */
 .pagination {
   display: flex;
   justify-content: center;
@@ -1779,11 +1713,9 @@ button {
   max-width: 1200px;
   margin: 0 auto;
   color: #fff;
-
   box-sizing: border-box;
 }
 
-/* 상단 5단 레이아웃 */
 .footer-content {
   display: grid;
   grid-template-columns: 1.4fr 1fr 1fr 0.3fr 0.5fr;
@@ -1793,7 +1725,6 @@ button {
   border-bottom: 1px solid rgba(255, 255, 255, 0.4);
 }
 
-/* 브랜드 */
 .footer-brand,
 .footer-project h4 {
   margin: 0 0 22px;
@@ -1820,8 +1751,8 @@ button {
 }
 
 .social-list img {
-    width: 32px;
-    height: 32px;
+  width: 32px;
+  height: 32px;
 }
 
 .footer-project,
@@ -1829,7 +1760,6 @@ button {
   display: flex;
   flex-direction: column;
 }
-
 
 .footer-project p,
 .member-list p {
@@ -1844,7 +1774,6 @@ button {
   gap: 0 18px;
 }
 
-/* 하단 저작권 */
 .footer-bottom {
   padding: 20px 0;
   text-align: center;
@@ -1916,9 +1845,7 @@ button {
   .sidebar-item {
     width: auto;
   }
-}
 
-@media (max-width: 768px) {
   .book-finder__main {
     padding: 40px 20px 48px;
   }
@@ -2195,7 +2122,7 @@ button {
 }
 
 /* ============================================================
-   BookFInder(도서 검색)
+   BookFinder (도서 검색)
    ============================================================ */
 
 .book-finder {
@@ -2405,38 +2332,9 @@ button {
   color: #6c757d;
 }
 
-@media (max-width: 900px) {
-  .book-finder__popular-grid {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-}
-
-@media (max-width: 768px) {
-  .book-finder__main {
-    padding: 40px 20px 48px;
-  }
-
-  .book-finder__search-section h1 {
-    font-size: 1.75rem;
-  }
-
-  .book-finder__subtitle {
-    font-size: 1rem;
-  }
-
-  .book-finder__popular-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 16px;
-  }
-}
-
-@media (max-width: 480px) {
-  .book-finder__popular-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
-
-/* ── 로그인 페이지 ── */
+/* ============================================================
+   로그인 / 회원가입 페이지
+   ============================================================ */
 .login-wrapper {
   min-height: calc(100vh - 160px);
   display: flex;
@@ -2521,4 +2419,109 @@ button {
 
 .secondary-btn:hover {
   background-color: #e8f0fe;
+}
+
+.email-group {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.email-group input {
+  flex: 1;
+}
+
+.email-group span {
+  color: #333;
+  font-size: 16px;
+}
+
+.phone-group {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.phone-group input {
+  flex: 1;
+  text-align: center;
+}
+
+.phone-group span {
+  color: #333;
+  font-size: 16px;
+}
+
+.custom-dropdown {
+  flex: 1;
+  position: relative;
+}
+
+.dropdown-selected {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  border: 1px solid #dde1e7;
+  border-radius: 8px;
+  font-size: 14px;
+  color: #333;
+  cursor: pointer;
+  background: #fff;
+}
+
+.dropdown-selected:hover {
+  border-color: #4a90d9;
+}
+
+.dropdown-arrow {
+  font-size: 10px;
+  color: #333;
+  cursor: pointer;
+}
+
+.dropdown-list {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  background: #fff;
+  border: 1px solid #dde1e7;
+  border-radius: 8px;
+  list-style: none;
+  margin: 0;
+  padding: 4px 0;
+  z-index: 100;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.dropdown-item {
+  padding: 10px 16px;
+  font-size: 14px;
+  color: #333;
+  cursor: pointer;
+}
+
+.dropdown-item:hover {
+  background: #f5f6f8;
+}
+
+.domain-direct {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  border: 1px solid #dde1e7;
+  border-radius: 8px;
+  padding: 0 10px;
+  gap: 6px;
+}
+
+.domain-direct input {
+  flex: 1;
+  border: none;
+  outline: none;
+  font-size: 14px;
+  padding: 12px 0;
+  color: #333;
+  background: transparent;
 }
