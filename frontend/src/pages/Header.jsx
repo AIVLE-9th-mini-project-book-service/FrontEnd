@@ -36,12 +36,7 @@ function Header() {
 
             {user ? (
                 <div className="auth-area">
-                  <span
-                      style={{ cursor: 'pointer' }}
-                      onClick={() => navigate('/mypage')}
-                  >
-                    {user.nickname}님 환영합니다
-                  </span>
+                  <span>{user.nickname}님 환영합니다</span>
                   <button className="icon-link-btn" onClick={handleLogout}>로그아웃</button>
                 </div>
             ) : (
