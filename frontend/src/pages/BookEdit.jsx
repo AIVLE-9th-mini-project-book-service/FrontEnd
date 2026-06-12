@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { GENRE_LIST, TAG_LIST } from "../bookOption";
 import './BookEdit.css';
 
-const BASE_URL = '';
+const BASE_URL = '/api';
 
 function BookEdit() {
   const { id } = useParams();

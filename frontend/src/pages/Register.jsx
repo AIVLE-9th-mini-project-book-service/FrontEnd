@@ -53,7 +53,7 @@ function Register() {
         }
 
         try {
-            const res = await fetch('/members/signup', {
+            const res = await fetch('/api/members/signup', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({

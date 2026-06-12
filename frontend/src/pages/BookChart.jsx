@@ -19,9 +19,9 @@ function BookChart() {
     const [statsLoading, setStatsLoading] = useState(true);
     const [statsError, setStatsError] = useState(null);
 
-    const bookUrl = '/books';
-    const bookCountUrl = '/books/statistics/count';
-    const likesCountUrl = '/books/statistics/likes';
+    const bookUrl = '/api/books';
+    const bookCountUrl = '/api/books/statistics/count';
+    const likesCountUrl = '/api/books/statistics/likes';
 
     useEffect(() => {
         fetch(bookUrl)

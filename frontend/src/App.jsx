@@ -13,6 +13,7 @@ import BookChart from './pages/BookChart';
 import BookFinder from './pages/BookFinder';
 import Login from './pages/Login';
 import Register from './pages/Register';
+import MyPage from "./pages/MyPage.jsx";
 
 function App() {
     return (
@@ -32,6 +33,7 @@ function App() {
                         <Route path="/books/register" element={<PrivateRoute><BookRegister /></PrivateRoute>} />
                         <Route path="/books/deleted"  element={<PrivateRoute><DeletedBook /></PrivateRoute>} />
                         <Route path="/books/:id/edit" element={<PrivateRoute><BookEdit /></PrivateRoute>} />
+                        <Route path="/mypage" element={<PrivateRoute><MyPage /></PrivateRoute>} />
                     </Routes>
                 </main>
                 <Footer />

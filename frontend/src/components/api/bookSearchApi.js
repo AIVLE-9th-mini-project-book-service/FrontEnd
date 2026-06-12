@@ -1,4 +1,4 @@
-const API_BASE_URL = 'http://localhost:8080';
+const API_BASE_URL = '/api';
 
 async function requestJson(path) {
   const response = await fetch(`${API_BASE_URL}${path}`);
@@ -20,11 +20,11 @@ export async function searchBooks({ keyword, genres = [], tags = [], size = 20 }
     params.set('keyword', keyword.trim());
   }
   genres
-    .filter((genre) => genre?.trim())
-    .forEach((genre) => params.append('genres', genre.trim()));
+      .filter((genre) => genre?.trim())
+      .forEach((genre) => params.append('genres', genre.trim()));
   tags
-    .filter((tag) => tag?.trim())
-    .forEach((tag) => params.append('tags', tag.trim()));
+      .filter((tag) => tag?.trim())
+      .forEach((tag) => params.append('tags', tag.trim()));
 
   const data = await requestJson(`/books/search?${params.toString()}`);
   return data.content ?? [];
