@@ -189,7 +189,7 @@ function BookSearch({
       <div className={isDetailOpen ? 'book-search book-search--detail-open' : 'book-search'}>
         <div className="search-title">
           <p>AIVLE School</p>
-          <h1>걸기가 서재</h1>
+          <h1>걸어서 서재 속으로</h1>
         </div>
 
         <div className="search-area">
