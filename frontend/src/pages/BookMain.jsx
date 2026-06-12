@@ -304,6 +304,20 @@ function BookMenu() {
   const navigate = useNavigate();
   const token = localStorage.getItem('accessToken');
 
+  // JWT payload에서 role 추출
+  const getRole = () => {
+    if (!token) return null;
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      return payload.role ?? null;
+    } catch {
+      return null;
+    }
+  };
+
+  const role = getRole();
+  const isAdmin = role === 'ADMIN';
+
   const baseMenuList = [
     { icon: Add, name: '신규도서등록', path: '/books/register' },
     { icon: Search, name: '도서검색', path: '/books/search' },
@@ -327,7 +341,7 @@ function BookMenu() {
             </button>
         ))}
 
-        {token && (
+        {token && !isAdmin && (
             <button
                 className="book-menu-item"
                 onClick={() => navigate('/mypage')}
