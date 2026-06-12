@@ -81,15 +81,7 @@ function BookEdit() {
       });
       if (!res.ok) throw new Error('저장 실패');
       alert('도서 정보가 저장되었습니다!');
-      setBook((prev) => ({
-      ...prev,
-      title,
-      author,
-      content,
-      tagText: selectedTags.join(','),
-      coverImageUrl: coverPreview,
-      summary,
-    }));
+      navigate(`/books/${id}`);
     } catch (err) {
       alert(`저장 오류: ${err.message}`);
     } finally {
@@ -108,7 +100,10 @@ function BookEdit() {
       
       const res = await fetch(`${BASE_URL}/books/${id}/summary/generate`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
         body: JSON.stringify({ apiKey }),
       })
       if (res.status === 401) {

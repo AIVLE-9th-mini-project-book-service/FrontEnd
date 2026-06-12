@@ -33,7 +33,7 @@ function BookDetail() {
     if (!token) return;
     const fetchLoginUser = async () => {
       try {
-        const res = await fetch('/members/me', {
+        const res = await fetch('/api/members/me', {
           headers: { 'Authorization': `Bearer ${token}` },
         });
         if (!res.ok) return;
@@ -49,7 +49,7 @@ function BookDetail() {
   useEffect(() => {
     const fetchBook = async () => {
       try {
-        const res = await fetch(bookUrl+`/${id}`);
+        const res = await fetch(bookUrl + `/${id}`);
         if (!res.ok) throw new Error('도서 정보를 불러오지 못했습니다.');
         const data = await res.json();
         setBook(data);
@@ -92,9 +92,7 @@ function BookDetail() {
     try {
       const res = await fetch(`${bookUrl}/trash/${id}`, {
         method: 'PATCH',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-        },
+        headers: { 'Authorization': `Bearer ${token}` },
       });
       if (!res.ok) throw new Error('삭제 도서 이동 실패');
       alert('삭제 도서로 이동했습니다.');
@@ -165,7 +163,6 @@ function BookDetail() {
 
   const openPwPrompt = (comment, mode) => {
     if (token) {
-      // 로그인 상태: 비밀번호 없이 바로 처리
       if (mode === 'delete') {
         handleCommentDelete(comment.id);
       } else {
@@ -226,7 +223,7 @@ function BookDetail() {
   );
   if (!book) return null;
 
-  const tagsArray = Text ? book.tagText.split(',').filter(Boolean) : [];
+  const tagsArray = book.tagText ? book.tagText.split(/[,/]/).filter(Boolean) : [];
 
   return (
       <div style={styles.page}>
@@ -356,10 +353,10 @@ function BookDetail() {
                                   )}
                                   <div style={styles.pwRow}>
                                     {!token && (
-                                      <input type="password" placeholder="비밀번호" value={pwPrompt.pw}
-                                             onChange={(e) => setPwPrompt((p) => ({ ...p, pw: e.target.value }))}
-                                             onKeyDown={(e) => e.key === 'Enter' && handlePwConfirm()}
-                                             style={styles.pwInput} autoFocus />
+                                        <input type="password" placeholder="비밀번호" value={pwPrompt.pw}
+                                               onChange={(e) => setPwPrompt((p) => ({ ...p, pw: e.target.value }))}
+                                               onKeyDown={(e) => e.key === 'Enter' && handlePwConfirm()}
+                                               style={styles.pwInput} autoFocus />
                                     )}
                                     <button style={styles.pwConfirmBtn} onClick={handlePwConfirm}>
                                       {pwPrompt.mode === 'edit' ? '수정 완료' : '삭제'}
@@ -379,12 +376,12 @@ function BookDetail() {
                   <div style={styles.commentInputRow}>
                     <div style={styles.commentTextareaWrap}>
                       {!token && (
-                        <div style={styles.commentMetaRow}>
-                          <input type="text" placeholder="작성자 (선택)" value={commentAuthor}
-                                 onChange={(e) => setCommentAuthor(e.target.value)} style={styles.commentAuthorInput} />
-                          <input type="password" placeholder="비밀번호" value={commentPassword}
-                                 onChange={(e) => setCommentPassword(e.target.value)} style={styles.commentAuthorInput} />
-                        </div>
+                          <div style={styles.commentMetaRow}>
+                            <input type="text" placeholder="작성자 (선택)" value={commentAuthor}
+                                   onChange={(e) => setCommentAuthor(e.target.value)} style={styles.commentAuthorInput} />
+                            <input type="password" placeholder="비밀번호" value={commentPassword}
+                                   onChange={(e) => setCommentPassword(e.target.value)} style={styles.commentAuthorInput} />
+                          </div>
                       )}
                       <textarea placeholder="댓글을 입력하세요..." value={commentText}
                                 onChange={(e) => setCommentText(e.target.value)}
