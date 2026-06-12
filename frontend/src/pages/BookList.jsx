@@ -143,6 +143,7 @@ function BookList() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const bookUrl = '/api/books';
+  const token = localStorage.getItem('accessToken');
 
   useEffect(() => {
     const fetchBooks = async () => {
@@ -167,6 +168,10 @@ function BookList() {
     try {
       const res = await fetch(bookUrl + `/${id}/like`, {
         method: 'PATCH',
+                headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
       });
       if (!res.ok) throw new Error('좋아요 반영 실패');
       setBooks((prev) =>
