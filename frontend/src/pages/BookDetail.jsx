@@ -59,7 +59,7 @@ function BookDetail() {
         setEditAuthor(data.author ?? '');
         setEditGenre(data.genre ?? '');
         setEditContent(data.content ?? '');
-        setEditTag(data.tagText ?? '');
+        setEditTag(data.tag ?? '');
         setEditImageUrl(data.coverImageUrl ?? '');
       } catch (err) {
         console.error(err);
@@ -123,7 +123,8 @@ function BookDetail() {
 
   const handleSubmitUpdate = async () => {
     try {
-      const res = await fetch(`${bookUrl}/${id}`, {
+      const patchUrl = user?.isAdmin ? `/api/admin/books/${id}` : `${bookUrl}/${id}`;
+      const res = await fetch(patchUrl, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
@@ -196,7 +197,8 @@ function BookDetail() {
 
   const handleCommentDelete = async (commentId, password) => {
     try {
-      const res = await fetch(`${commentUrl}/${commentId}`, {
+      const deleteUrl = user?.isAdmin ? `/api/admin/comments/${commentId}` : `${commentUrl}/${commentId}`;
+      const res = await fetch(deleteUrl, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
@@ -217,7 +219,8 @@ function BookDetail() {
       await handleCommentDelete(pwPrompt.id, pwPrompt.pw);
     } else {
       try {
-        const res = await fetch(`${commentUrl}/${pwPrompt.id}`, {
+        const patchUrl = user?.isAdmin ? `/api/admin/comments/${pwPrompt.id}` : `${commentUrl}/${pwPrompt.id}`;
+        const res = await fetch(patchUrl, {
           method: 'PATCH',
           headers: {
             'Content-Type': 'application/json',
@@ -242,7 +245,7 @@ function BookDetail() {
   );
   if (!book) return null;
 
-  const tagsArray = Text ? book.tagText.split(',').filter(Boolean) : [];
+  const tagsArray = book.tag ? book.tag.split(',').filter(Boolean) : [];
 
   return (
       <div style={styles.page}>
@@ -391,27 +394,29 @@ function BookDetail() {
                     </ul>
                 )}
 
-                <div style={styles.commentForm}>
-                  <div style={styles.commentInputRow}>
-                    <div style={styles.commentTextareaWrap}>
-                      {!token && (
-                        <div style={styles.commentMetaRow}>
-                          <input type="text" placeholder="작성자 (선택)" value={commentAuthor}
-                                 onChange={(e) => setCommentAuthor(e.target.value)} style={styles.commentAuthorInput} />
-                          <input type="password" placeholder="비밀번호" value={commentPassword}
-                                 onChange={(e) => setCommentPassword(e.target.value)} style={styles.commentAuthorInput} />
-                        </div>
-                      )}
-                      <textarea placeholder="댓글을 입력하세요..." value={commentText}
-                                onChange={(e) => setCommentText(e.target.value)}
-                                onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleAddComment(); } }}
-                                rows={2} style={styles.commentTextarea} />
+                {!user?.isAdmin && (
+                  <div style={styles.commentForm}>
+                    <div style={styles.commentInputRow}>
+                      <div style={styles.commentTextareaWrap}>
+                        {!token && (
+                          <div style={styles.commentMetaRow}>
+                            <input type="text" placeholder="작성자 (선택)" value={commentAuthor}
+                                   onChange={(e) => setCommentAuthor(e.target.value)} style={styles.commentAuthorInput} />
+                            <input type="password" placeholder="비밀번호" value={commentPassword}
+                                   onChange={(e) => setCommentPassword(e.target.value)} style={styles.commentAuthorInput} />
+                          </div>
+                        )}
+                        <textarea placeholder="댓글을 입력하세요..." value={commentText}
+                                  onChange={(e) => setCommentText(e.target.value)}
+                                  onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleAddComment(); } }}
+                                  rows={2} style={styles.commentTextarea} />
+                      </div>
+                      <button style={styles.commentSubmitBtn} onClick={handleAddComment} disabled={!commentText.trim()}>
+                        등록
+                      </button>
                     </div>
-                    <button style={styles.commentSubmitBtn} onClick={handleAddComment} disabled={!commentText.trim()}>
-                      등록
-                    </button>
                   </div>
-                </div>
+                )}
               </div>
           )}
         </div>

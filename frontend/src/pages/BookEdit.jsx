@@ -37,7 +37,7 @@ function BookEdit() {
         setTitle(data.title);
         setAuthor(data.author);
         setContent(data.content);
-        setSelectedTags(data.tagText ? data.tagText.split(',').map((t) => t.trim()).filter(Boolean) : []);
+        setSelectedTags(data.tag ? data.tag.split(',').map((t) => t.trim()).filter((t) => TAG_LIST.includes(t)) : []);
         setCoverPreview(data.coverImageUrl || '');
         setSummary(data.summary || '');
       } catch (err) {
@@ -67,7 +67,7 @@ function BookEdit() {
     setSaving(true);
     try {
       const endpoint = user?.isAdmin ? `/api/admin/books/${id}` : `${BASE_URL}/books/${id}`;
-      const method = user?.isAdmin ? 'PUT' : 'PATCH';
+      const method = 'PATCH';
       const res = await fetch(endpoint, {
         method,
         headers: {
@@ -85,15 +85,7 @@ function BookEdit() {
       });
       if (!res.ok) throw new Error('저장 실패');
       alert('도서 정보가 저장되었습니다!');
-      setBook((prev) => ({
-      ...prev,
-      title,
-      author,
-      content,
-      tagText: selectedTags.join(','),
-      coverImageUrl: coverPreview,
-      summary,
-    }));
+      navigate(`/books/${id}`);
     } catch (err) {
       alert(`저장 오류: ${err.message}`);
     } finally {
