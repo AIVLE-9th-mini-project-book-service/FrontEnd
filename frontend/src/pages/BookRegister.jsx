@@ -5,7 +5,7 @@ import Button from '../components/Button';
 import TextArea from '../components/TextArea';
 import { GENRE_LIST, TAG_LIST } from "../bookOption";
 
-const BASE_URL = '';
+const BASE_URL = '/api';
 
 function BookRegister() {
   const navigate = useNavigate();

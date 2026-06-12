@@ -5,9 +5,7 @@ export default defineConfig({
     plugins: [react()],
     server: {
         proxy: {
-            '/members': 'http://localhost:8080',
-            '/books': 'http://localhost:8080',
-            '/comments': 'http://localhost:8080',
+            '/api': 'http://localhost:8080',
         }
     }
 })

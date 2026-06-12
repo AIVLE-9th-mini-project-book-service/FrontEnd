@@ -7,8 +7,8 @@ function BookDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
   const token = localStorage.getItem('accessToken');
-  const bookUrl = '/books';
-  const commentUrl = '/comments';
+  const bookUrl = '/api/books';
+  const commentUrl = '/api/comments';
 
   const [book, setBook] = useState(null);
   const [bookLoading, setBookLoading] = useState(true);
