@@ -16,25 +16,28 @@ function Login() {
         e.preventDefault();
         setError('');
 
+        const isAdmin = !form.email.includes('@');
+        const url = isAdmin ? '/api/admin/login' : '/api/members/login';
+        const body = isAdmin
+            ? { username: form.email, password: form.password }
+            : { email: form.email, password: form.password };
+
         try {
-            const res = await fetch('/api/members/login', {
+            const res = await fetch(url, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    email: form.email,
-                    password: form.password,
-                }),
+                body: JSON.stringify(body),
             });
 
             if (!res.ok) {
-                setError('이메일 또는 비밀번호가 올바르지 않습니다.');
+                setError('아이디/이메일 또는 비밀번호가 올바르지 않습니다.');
                 return;
             }
 
             const data = await res.json();
             localStorage.setItem('accessToken', data.accessToken);
-            localStorage.setItem('refreshToken', data.refreshToken);
-            login({ nickname: data.name, token: data.accessToken });
+            if (data.refreshToken) localStorage.setItem('refreshToken', data.refreshToken);
+            login({ nickname: data.name ?? form.email, token: data.accessToken, isAdmin });
             navigate('/');
 
         } catch (err) {
@@ -48,9 +51,9 @@ function Login() {
                 <h2 className="login-title">로그인</h2>
                 <div className="login-form">
                     <input
-                        type="email"
+                        type="text"
                         name="email"
-                        placeholder="이메일"
+                        placeholder="이메일 또는 관리자 아이디"
                         value={form.email}
                         onChange={handleChange}
                     />

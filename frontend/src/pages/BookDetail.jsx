@@ -2,11 +2,13 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import noCover from '../img/no-cover.svg';
 import { GENRE_LIST, TAG_LIST } from "../bookOption";
+import { useAuth } from '../context/useAuth';
 
 function BookDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
   const token = localStorage.getItem('accessToken');
+  const { user } = useAuth();
   const bookUrl = '/api/books';
   const commentUrl = '/api/comments';
 
@@ -57,7 +59,7 @@ function BookDetail() {
         setEditAuthor(data.author ?? '');
         setEditGenre(data.genre ?? '');
         setEditContent(data.content ?? '');
-        setEditTag(data.tagText ?? '');
+        setEditTag(data.tag ?? '');
         setEditImageUrl(data.coverImageUrl ?? '');
       } catch (err) {
         console.error(err);
@@ -88,24 +90,41 @@ function BookDetail() {
   }, [id]);
 
   const handleDelete = async () => {
-    if (!window.confirm(`"${book.title}"을(를) 삭제 도서로 이동할까요?`)) return;
-    try {
-      const res = await fetch(`${bookUrl}/trash/${id}`, {
-        method: 'PATCH',
-        headers: { 'Authorization': `Bearer ${token}` },
-      });
-      if (!res.ok) throw new Error('삭제 도서 이동 실패');
-      alert('삭제 도서로 이동했습니다.');
-      navigate('/books/deleted');
-    } catch (err) {
-      console.error(err);
-      alert('삭제 도서 이동에 실패했습니다.');
+    if (user?.isAdmin) {
+      if (!window.confirm(`"${book.title}"을(를) 영구 삭제할까요?`)) return;
+      try {
+        const res = await fetch(`/api/admin/books/${id}`, {
+          method: 'DELETE',
+          headers: { 'Authorization': `Bearer ${token}` },
+        });
+        if (!res.ok) throw new Error('삭제 실패');
+        alert('도서가 삭제되었습니다.');
+        navigate('/books');
+      } catch (err) {
+        console.error(err);
+        alert('삭제에 실패했습니다.');
+      }
+    } else {
+      if (!window.confirm(`"${book.title}"을(를) 삭제 도서로 이동할까요?`)) return;
+      try {
+        const res = await fetch(`${bookUrl}/trash/${id}`, {
+          method: 'PATCH',
+          headers: { 'Authorization': `Bearer ${token}` },
+        });
+        if (!res.ok) throw new Error('삭제 도서 이동 실패');
+        alert('삭제 도서로 이동했습니다.');
+        navigate('/books/deleted');
+      } catch (err) {
+        console.error(err);
+        alert('삭제 도서 이동에 실패했습니다.');
+      }
     }
   };
 
   const handleSubmitUpdate = async () => {
     try {
-      const res = await fetch(`${bookUrl}/${id}`, {
+      const patchUrl = user?.isAdmin ? `/api/admin/books/${id}` : `${bookUrl}/${id}`;
+      const res = await fetch(patchUrl, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
@@ -177,7 +196,8 @@ function BookDetail() {
 
   const handleCommentDelete = async (commentId, password) => {
     try {
-      const res = await fetch(`${commentUrl}/${commentId}`, {
+      const deleteUrl = user?.isAdmin ? `/api/admin/comments/${commentId}` : `${commentUrl}/${commentId}`;
+      const res = await fetch(deleteUrl, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
@@ -198,7 +218,8 @@ function BookDetail() {
       await handleCommentDelete(pwPrompt.id, pwPrompt.pw);
     } else {
       try {
-        const res = await fetch(`${commentUrl}/${pwPrompt.id}`, {
+        const patchUrl = user?.isAdmin ? `/api/admin/comments/${pwPrompt.id}` : `${commentUrl}/${pwPrompt.id}`;
+        const res = await fetch(patchUrl, {
           method: 'PATCH',
           headers: {
             'Content-Type': 'application/json',
@@ -223,7 +244,7 @@ function BookDetail() {
   );
   if (!book) return null;
 
-  const tagsArray = book.tagText ? book.tagText.split(/[,/]/).filter(Boolean) : [];
+  const tagsArray = book.tag ? book.tag.split(',').filter(Boolean) : [];
 
   return (
       <div style={styles.page}>
@@ -372,27 +393,29 @@ function BookDetail() {
                     </ul>
                 )}
 
-                <div style={styles.commentForm}>
-                  <div style={styles.commentInputRow}>
-                    <div style={styles.commentTextareaWrap}>
-                      {!token && (
+                {!user?.isAdmin && (
+                  <div style={styles.commentForm}>
+                    <div style={styles.commentInputRow}>
+                      <div style={styles.commentTextareaWrap}>
+                        {!token && (
                           <div style={styles.commentMetaRow}>
                             <input type="text" placeholder="작성자 (선택)" value={commentAuthor}
                                    onChange={(e) => setCommentAuthor(e.target.value)} style={styles.commentAuthorInput} />
                             <input type="password" placeholder="비밀번호" value={commentPassword}
                                    onChange={(e) => setCommentPassword(e.target.value)} style={styles.commentAuthorInput} />
                           </div>
-                      )}
-                      <textarea placeholder="댓글을 입력하세요..." value={commentText}
-                                onChange={(e) => setCommentText(e.target.value)}
-                                onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleAddComment(); } }}
-                                rows={2} style={styles.commentTextarea} />
+                        )}
+                        <textarea placeholder="댓글을 입력하세요..." value={commentText}
+                                  onChange={(e) => setCommentText(e.target.value)}
+                                  onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleAddComment(); } }}
+                                  rows={2} style={styles.commentTextarea} />
+                      </div>
+                      <button style={styles.commentSubmitBtn} onClick={handleAddComment} disabled={!commentText.trim()}>
+                        등록
+                      </button>
                     </div>
-                    <button style={styles.commentSubmitBtn} onClick={handleAddComment} disabled={!commentText.trim()}>
-                      등록
-                    </button>
                   </div>
-                </div>
+                )}
               </div>
           )}
         </div>
