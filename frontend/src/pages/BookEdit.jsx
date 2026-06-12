@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { GENRE_LIST, TAG_LIST } from "../bookOption";
+import { useAuth } from '../context/useAuth';
 import './BookEdit.css';
 
 const BASE_URL = '/api';
@@ -9,6 +10,7 @@ function BookEdit() {
   const { id } = useParams();
   const navigate = useNavigate();
   const token = localStorage.getItem('accessToken');
+  const { user } = useAuth();
 
   const [book, setBook] = useState(null);
   const [bookLoading, setBookLoading] = useState(true);
@@ -64,8 +66,10 @@ function BookEdit() {
     }
     setSaving(true);
     try {
-      const res = await fetch(`${BASE_URL}/books/${id}`, {
-        method: 'PATCH',
+      const endpoint = user?.isAdmin ? `/api/admin/books/${id}` : `${BASE_URL}/books/${id}`;
+      const method = user?.isAdmin ? 'PUT' : 'PATCH';
+      const res = await fetch(endpoint, {
+        method,
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`,

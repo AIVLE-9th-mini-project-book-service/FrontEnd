@@ -2,11 +2,13 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import noCover from '../img/no-cover.svg';
 import { GENRE_LIST, TAG_LIST } from "../bookOption";
+import { useAuth } from '../context/useAuth';
 
 function BookDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
   const token = localStorage.getItem('accessToken');
+  const { user } = useAuth();
   const bookUrl = '/api/books';
   const commentUrl = '/api/comments';
 
@@ -88,20 +90,34 @@ function BookDetail() {
   }, [id]);
 
   const handleDelete = async () => {
-    if (!window.confirm(`"${book.title}"을(를) 삭제 도서로 이동할까요?`)) return;
-    try {
-      const res = await fetch(`${bookUrl}/trash/${id}`, {
-        method: 'PATCH',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-        },
-      });
-      if (!res.ok) throw new Error('삭제 도서 이동 실패');
-      alert('삭제 도서로 이동했습니다.');
-      navigate('/books/deleted');
-    } catch (err) {
-      console.error(err);
-      alert('삭제 도서 이동에 실패했습니다.');
+    if (user?.isAdmin) {
+      if (!window.confirm(`"${book.title}"을(를) 영구 삭제할까요?`)) return;
+      try {
+        const res = await fetch(`/api/admin/books/${id}`, {
+          method: 'DELETE',
+          headers: { 'Authorization': `Bearer ${token}` },
+        });
+        if (!res.ok) throw new Error('삭제 실패');
+        alert('도서가 삭제되었습니다.');
+        navigate('/books');
+      } catch (err) {
+        console.error(err);
+        alert('삭제에 실패했습니다.');
+      }
+    } else {
+      if (!window.confirm(`"${book.title}"을(를) 삭제 도서로 이동할까요?`)) return;
+      try {
+        const res = await fetch(`${bookUrl}/trash/${id}`, {
+          method: 'PATCH',
+          headers: { 'Authorization': `Bearer ${token}` },
+        });
+        if (!res.ok) throw new Error('삭제 도서 이동 실패');
+        alert('삭제 도서로 이동했습니다.');
+        navigate('/books/deleted');
+      } catch (err) {
+        console.error(err);
+        alert('삭제 도서 이동에 실패했습니다.');
+      }
     }
   };
 
