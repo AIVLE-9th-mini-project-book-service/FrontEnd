@@ -35,7 +35,7 @@ function BookDetail() {
     if (!token) return;
     const fetchLoginUser = async () => {
       try {
-        const res = await fetch('/members/me', {
+        const res = await fetch('/api/members/me', {
           headers: { 'Authorization': `Bearer ${token}` },
         });
         if (!res.ok) return;
@@ -51,7 +51,7 @@ function BookDetail() {
   useEffect(() => {
     const fetchBook = async () => {
       try {
-        const res = await fetch(bookUrl+`/${id}`);
+        const res = await fetch(bookUrl + `/${id}`);
         if (!res.ok) throw new Error('도서 정보를 불러오지 못했습니다.');
         const data = await res.json();
         setBook(data);
@@ -182,7 +182,6 @@ function BookDetail() {
 
   const openPwPrompt = (comment, mode) => {
     if (token) {
-      // 로그인 상태: 비밀번호 없이 바로 처리
       if (mode === 'delete') {
         handleCommentDelete(comment.id);
       } else {
@@ -375,10 +374,10 @@ function BookDetail() {
                                   )}
                                   <div style={styles.pwRow}>
                                     {!token && (
-                                      <input type="password" placeholder="비밀번호" value={pwPrompt.pw}
-                                             onChange={(e) => setPwPrompt((p) => ({ ...p, pw: e.target.value }))}
-                                             onKeyDown={(e) => e.key === 'Enter' && handlePwConfirm()}
-                                             style={styles.pwInput} autoFocus />
+                                        <input type="password" placeholder="비밀번호" value={pwPrompt.pw}
+                                               onChange={(e) => setPwPrompt((p) => ({ ...p, pw: e.target.value }))}
+                                               onKeyDown={(e) => e.key === 'Enter' && handlePwConfirm()}
+                                               style={styles.pwInput} autoFocus />
                                     )}
                                     <button style={styles.pwConfirmBtn} onClick={handlePwConfirm}>
                                       {pwPrompt.mode === 'edit' ? '수정 완료' : '삭제'}
