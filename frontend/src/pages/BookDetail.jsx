@@ -19,6 +19,7 @@ function BookDetail() {
   const [editContent, setEditContent] = useState('');
   const [editTag, setEditTag] = useState('');
   const [editImageUrl, setEditImageUrl] = useState('');
+  const [loginUser, setLoginUser] = useState(null);
   const [comments, setComments] = useState([]);
   const [commentText, setCommentText] = useState('');
   const [commentAuthor, setCommentAuthor] = useState('');
@@ -27,6 +28,23 @@ function BookDetail() {
   const [pwPrompt, setPwPrompt] = useState(null);
   const [contentExpanded, setContentExpanded] = useState(false);
   const CONTENT_LIMIT = 150;
+
+  useEffect(() => {
+    if (!token) return;
+    const fetchLoginUser = async () => {
+      try {
+        const res = await fetch('/members/me', {
+          headers: { 'Authorization': `Bearer ${token}` },
+        });
+        if (!res.ok) return;
+        const data = await res.json();
+        setLoginUser(data);
+      } catch {
+        // 로그인 유저 정보 조회 실패 시 무시
+      }
+    };
+    fetchLoginUser();
+  }, [token]);
 
   useEffect(() => {
     const fetchBook = async () => {
@@ -120,15 +138,18 @@ function BookDetail() {
     if (!commentText.trim()) return;
     const newComment = {
       bookId: id,
-      author: commentAuthor.trim() || '익명',
+      author: token ? (loginUser?.name ?? '회원') : (commentAuthor.trim() || '익명'),
       text: commentText.trim(),
-      password: commentPassword,
+      password: token ? null : commentPassword,
       createdAt: new Date().toISOString(),
     };
     try {
       const res = await fetch(`${bookUrl}/${id}/comments`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          ...(token && { 'Authorization': `Bearer ${token}` }),
+        },
         body: JSON.stringify(newComment),
       });
       if (!res.ok) throw new Error();
@@ -143,35 +164,54 @@ function BookDetail() {
   };
 
   const openPwPrompt = (comment, mode) => {
+    if (token) {
+      // 로그인 상태: 비밀번호 없이 바로 처리
+      if (mode === 'delete') {
+        handleCommentDelete(comment.id);
+      } else {
+        setPwPrompt({ id: comment.id, mode, pw: null, editText: comment.text, storedPw: null });
+      }
+      return;
+    }
     setPwPrompt({ id: comment.id, mode, pw: '', editText: comment.text, storedPw: comment.password });
   };
 
   const closePwPrompt = () => setPwPrompt(null);
 
-  const handlePwConfirm = async () => {
-    if (pwPrompt.pw !== pwPrompt.storedPw) {
-      alert('비밀번호가 올바르지 않습니다.');
-      return;
+  const handleCommentDelete = async (commentId, password) => {
+    try {
+      const res = await fetch(`${commentUrl}/${commentId}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(token && { 'Authorization': `Bearer ${token}` }),
+        },
+        ...(!token && { body: JSON.stringify({ password }) }),
+      });
+      if (!res.ok) throw new Error();
+      setComments((prev) => prev.filter((c) => c.id !== commentId));
+      closePwPrompt();
+    } catch {
+      alert('댓글 삭제에 실패했습니다.');
     }
+  };
+
+  const handlePwConfirm = async () => {
     if (pwPrompt.mode === 'delete') {
-      try {
-        const res = await fetch(`${commentUrl}/${pwPrompt.id}`, { method: 'DELETE' });
-        if (!res.ok) throw new Error();
-        setComments((prev) => prev.filter((c) => c.id !== pwPrompt.id));
-        closePwPrompt();
-      } catch {
-        alert('댓글 삭제에 실패했습니다.');
-      }
+      await handleCommentDelete(pwPrompt.id, pwPrompt.pw);
     } else {
       try {
         const res = await fetch(`${commentUrl}/${pwPrompt.id}`, {
           method: 'PATCH',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ text: pwPrompt.editText, password: pwPrompt.pw }),
+          headers: {
+            'Content-Type': 'application/json',
+            ...(token && { 'Authorization': `Bearer ${token}` }),
+          },
+          body: JSON.stringify({ text: pwPrompt.editText, ...(!token && { password: pwPrompt.pw }) }),
         });
         if (!res.ok) throw new Error();
         const updated = await res.json();
-        setComments((prev) => prev.map((c) => (c.id === updated.id ? updated : c)));
+        setComments((prev) => prev.map((c) => (c.id === updated.id ? { ...c, ...updated } : c)));
         closePwPrompt();
       } catch {
         alert('댓글 수정에 실패했습니다.');
@@ -309,16 +349,18 @@ function BookDetail() {
                                                 onChange={(e) => setPwPrompt((p) => ({ ...p, editText: e.target.value }))}
                                                 rows={2} style={{ ...styles.commentTextarea, marginBottom: '8px' }} />
                                   )}
-                                  {pwPrompt.mode === 'delete' && (
+                                  {!token && pwPrompt.mode === 'delete' && (
                                       <p style={{ fontSize: '13px', color: '#666', margin: '0 0 8px 0' }}>
                                         이 댓글을 삭제하려면 비밀번호를 입력하세요.
                                       </p>
                                   )}
                                   <div style={styles.pwRow}>
-                                    <input type="password" placeholder="비밀번호" value={pwPrompt.pw}
-                                           onChange={(e) => setPwPrompt((p) => ({ ...p, pw: e.target.value }))}
-                                           onKeyDown={(e) => e.key === 'Enter' && handlePwConfirm()}
-                                           style={styles.pwInput} autoFocus />
+                                    {!token && (
+                                      <input type="password" placeholder="비밀번호" value={pwPrompt.pw}
+                                             onChange={(e) => setPwPrompt((p) => ({ ...p, pw: e.target.value }))}
+                                             onKeyDown={(e) => e.key === 'Enter' && handlePwConfirm()}
+                                             style={styles.pwInput} autoFocus />
+                                    )}
                                     <button style={styles.pwConfirmBtn} onClick={handlePwConfirm}>
                                       {pwPrompt.mode === 'edit' ? '수정 완료' : '삭제'}
                                     </button>
@@ -336,12 +378,14 @@ function BookDetail() {
                 <div style={styles.commentForm}>
                   <div style={styles.commentInputRow}>
                     <div style={styles.commentTextareaWrap}>
-                      <div style={styles.commentMetaRow}>
-                        <input type="text" placeholder="작성자 (선택)" value={commentAuthor}
-                               onChange={(e) => setCommentAuthor(e.target.value)} style={styles.commentAuthorInput} />
-                        <input type="password" placeholder="비밀번호" value={commentPassword}
-                               onChange={(e) => setCommentPassword(e.target.value)} style={styles.commentAuthorInput} />
-                      </div>
+                      {!token && (
+                        <div style={styles.commentMetaRow}>
+                          <input type="text" placeholder="작성자 (선택)" value={commentAuthor}
+                                 onChange={(e) => setCommentAuthor(e.target.value)} style={styles.commentAuthorInput} />
+                          <input type="password" placeholder="비밀번호" value={commentPassword}
+                                 onChange={(e) => setCommentPassword(e.target.value)} style={styles.commentAuthorInput} />
+                        </div>
+                      )}
                       <textarea placeholder="댓글을 입력하세요..." value={commentText}
                                 onChange={(e) => setCommentText(e.target.value)}
                                 onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleAddComment(); } }}
