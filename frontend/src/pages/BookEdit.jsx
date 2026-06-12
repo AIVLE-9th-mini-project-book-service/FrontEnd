@@ -100,7 +100,10 @@ function BookEdit() {
       
       const res = await fetch(`${BASE_URL}/books/${id}/summary/generate`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
         body: JSON.stringify({ apiKey }),
       })
       if (res.status === 401) {
