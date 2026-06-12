@@ -85,7 +85,7 @@ function BookEdit() {
       });
       if (!res.ok) throw new Error('저장 실패');
       alert('도서 정보가 저장되었습니다!');
-      navigate(`/books/${id}`);
+      
     } catch (err) {
       alert(`저장 오류: ${err.message}`);
     } finally {
