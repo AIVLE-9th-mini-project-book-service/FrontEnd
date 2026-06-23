@@ -1,0 +1,12 @@
+version: 0.0
+os: linux
+
+files:
+  - source: build/
+    destination: /var/www/html/
+
+hooks:
+  AfterInstall:
+    - location: deploy-scripts/start.sh
+      timeout: 120
+      runas: root
