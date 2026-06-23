@@ -1,0 +1,35 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      nodejs: 20
+    commands:
+      - echo "Installing dependencies..."
+      - npm ci
+
+  pre_build:
+    commands:
+      - echo "Pre-build started on `date`"
+      - echo "Node version: $(node -v)"
+      - echo "NPM version: $(npm -v)"
+
+  build:
+    commands:
+      - echo "Build started on `date`"
+      - npm run build
+
+  post_build:
+    commands:
+      - echo "Build completed on `date`"
+
+artifacts:
+  files:
+    - build/**/*        # React 빌드 결과물
+    - appspec.yml       # CodeDeploy 설정
+    - scripts/**/*      # 배포 스크립트
+  discard-paths: no
+
+cache:
+  paths:
+    - node_modules/**/* # 캐시로 빌드 속도 향상
