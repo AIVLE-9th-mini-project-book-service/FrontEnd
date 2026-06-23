@@ -5,11 +5,11 @@ phases:
     runtime-versions:
       nodejs: 18
     commands:
-      - cd frontend
+      - cd $CODEBUILD_SRC_DIR/frontend
       - npm install
   build:
     commands:
-      - cd frontend
+      - cd $CODEBUILD_SRC_DIR/frontend
       - npm run build
 artifacts:
   files:
