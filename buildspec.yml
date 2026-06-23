@@ -3,11 +3,11 @@ version: 0.2
 phases:
   install:
     runtime-versions:
-      nodejs: 18
+      nodejs: 20 
   pre_build:
     commands:
       - echo Change directory to frontend...
-      - cd frontend  
+      - cd frontend
       - echo Installing source dependencies...
       - npm install
   build:
@@ -16,4 +16,4 @@ phases:
       - npm run build
 artifacts:
   files:
-    - 'frontend/build/**/*'  
+    - 'frontend/dist/**/*' 
