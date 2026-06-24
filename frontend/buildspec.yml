@@ -6,13 +6,9 @@ phases:
     commands:
       - cd frontend
       - npm install
-  pre_build:
-    commands:
-      - npm install
   build:
     commands:
-      - ng build -c production
-      - echo "Build completed."
+      - npm install
     finally:
       - echo This is the finally block execution!
 artifacts:
