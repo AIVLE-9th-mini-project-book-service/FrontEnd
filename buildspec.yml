@@ -9,6 +9,7 @@ phases:
   build:
     commands:
       - npm install
+      - cd frontend
     finally:
       - echo This is the finally block execution!
 artifacts:
