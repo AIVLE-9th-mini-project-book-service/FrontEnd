@@ -5,23 +5,16 @@ phases:
     runtime-versions:
       nodejs: 20
     commands:
-      - echo "Installing dependencies..."
       - cd frontend && npm ci
-
   pre_build:
     commands:
-      - echo "Pre-build started on `date`"
-      - echo "Node version: $(node -v)"
-      - echo "NPM version: $(npm -v)"
-
+      - echo "Node $(node -v)"
   build:
     commands:
-      - echo "Build started on `date`"
       - cd frontend && npm run build
-
   post_build:
     commands:
-      - echo "Build completed on `date`"
+      - echo "Build done"
 
 artifacts:
   files:
