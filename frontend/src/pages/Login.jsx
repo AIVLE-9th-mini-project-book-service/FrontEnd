@@ -17,13 +17,13 @@ function Login() {
         setError('');
 
         const isAdmin = !form.email.includes('@');
-        const url = isAdmin ? '/api/admin/login' : import.meta.env.VITE_API_URL + '/api/members/login';
+        const url = isAdmin ? '/api/admin/login' : '/api/members/login';
         const body = isAdmin
             ? { username: form.email, password: form.password }
             : { email: form.email, password: form.password };
 
         try {
-            const res = await fetch(url, {
+            const res = await fetch(import.meta.env.VITE_API_URL + url, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(body),
