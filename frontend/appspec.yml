@@ -2,11 +2,11 @@ version: 0.0
 os: linux
 
 files:
-  - source: frontend/dist/
+  - source: dist/
     destination: /var/www/html/
 
 hooks:
   BeforeInstall:
-    - location: frontend/deploy-scripts/start.sh
+    - location: deploy-scripts/start.sh
       timeout: 120
       runas: root

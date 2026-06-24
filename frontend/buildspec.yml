@@ -8,14 +8,14 @@ phases:
       - cd frontend && npm ci
   build:
     commands:
-      - npm run build
+      - cd frontend && npm run build
 
 artifacts:
   files:
     - frontend/dist/**/*
-    - frontend/appspec.yml
     - frontend/deploy-scripts/**/*
-  discard-paths: no
+    - frontend/appspec.yml
+  discard-paths: yes
 
 cache:
   paths:
