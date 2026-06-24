@@ -1,14 +1,4 @@
-const API_BASE_URL = '/api';
-
-async function requestJson(path) {
-  const response = await fetch(`${API_BASE_URL}${path}`);
-
-  if (!response.ok) {
-    throw new Error(`API request failed: ${response.status}`);
-  }
-
-  return response.json();
-}
+import { apiFetch } from '../../api/client';
 
 export async function searchBooks({ keyword, genres = [], tags = [], size = 20 }) {
   const params = new URLSearchParams({
@@ -19,14 +9,16 @@ export async function searchBooks({ keyword, genres = [], tags = [], size = 20 }
   if (keyword?.trim()) {
     params.set('keyword', keyword.trim());
   }
-  genres
-      .filter((genre) => genre?.trim())
-      .forEach((genre) => params.append('genres', genre.trim()));
-  tags
-      .filter((tag) => tag?.trim())
-      .forEach((tag) => params.append('tags', tag.trim()));
 
-  const data = await requestJson(`/books/search?${params.toString()}`);
+  genres
+    .filter((genre) => genre?.trim())
+    .forEach((genre) => params.append('genres', genre.trim()));
+
+  tags
+    .filter((tag) => tag?.trim())
+    .forEach((tag) => params.append('tags', tag.trim()));
+
+  const data = await apiFetch(`/books/search?${params.toString()}`);
   return data.content ?? [];
 }
 
@@ -36,5 +28,5 @@ export async function searchBooksByFilters({ keyword, genres = [], tags = [], si
 
 export async function getPopularBooks(limit = 5) {
   const params = new URLSearchParams({ limit: String(limit) });
-  return requestJson(`/books/popular?${params.toString()}`);
+  return apiFetch(`/books/popular?${params.toString()}`);
 }
