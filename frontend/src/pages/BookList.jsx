@@ -142,7 +142,7 @@ function BookList() {
   const [currentPage, setCurrentPage] = useState(1);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const bookUrl = '/api/books';
+  const bookUrl = '/books';
   const token = localStorage.getItem('accessToken');
 
   useEffect(() => {
