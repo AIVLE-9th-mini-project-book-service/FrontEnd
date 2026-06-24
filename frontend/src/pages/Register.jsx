@@ -53,7 +53,7 @@ function Register() {
         }
 
         try {
-            const res = await fetch('http://3.80.73.51:8080/api/members/signup', {
+            const res = await fetch(import.meta.env.VITE_API_URL + '/api/members/signup', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
