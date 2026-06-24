@@ -8,14 +8,17 @@ phases:
       - cd frontend && npm ci
   build:
     commands:
+      - pwd
+      - ls -al
       - npm run build
-      - cp frontend/appspec.yml appspec.yml
-      - cp -r frontend/deploy-scripts deploy-scripts
+      - pwd && ls -al
+      - cp appspec.yml ../appspec.yml || cp frontend/appspec.yml appspec.yml
+      - cp -r deploy-scripts ../deploy-scripts || cp -r frontend/deploy-scripts deploy-scripts
 
 artifacts:
   files:
     - frontend/dist/**/*
-    - frontend/deploy-scripts/**/*
+    - deploy-scripts/**/*
     - appspec.yml
   discard-paths: no
 
