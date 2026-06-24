@@ -6,6 +6,7 @@ phases:
       nodejs: 20
     commands:
       - echo "Installing dependencies..."
+      - cd frontend
       - npm ci
 
   pre_build:
@@ -17,6 +18,7 @@ phases:
   build:
     commands:
       - echo "Build started on `date`"
+      - cd frontend
       - npm run build
 
   post_build:
@@ -25,11 +27,17 @@ phases:
 
 artifacts:
   files:
-    - build/**/*        # React 빌드 결과물
-    - appspec.yml       # CodeDeploy 설정
-    - scripts/**/*      # 배포 스크립트
+    - '**/*'
+  base-directory: frontend/dist
   discard-paths: no
+  secondary-artifacts:
+    deploy:
+      files:
+        - appspec.yml
+        - scripts/**/*
+      base-directory: frontend
+      discard-paths: no
 
 cache:
   paths:
-    - node_modules/**/* # 캐시로 빌드 속도 향상
+    - frontend/node_modules/**/*

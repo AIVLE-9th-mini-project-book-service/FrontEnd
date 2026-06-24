@@ -2,11 +2,11 @@ version: 0.0
 os: linux
 
 files:
-  - source: build/
+  - source: /
     destination: /var/www/html/
 
 hooks:
-  AfterInstall:
+  BeforeInstall:
     - location: deploy-scripts/start.sh
       timeout: 120
       runas: root

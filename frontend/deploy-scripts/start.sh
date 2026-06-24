@@ -16,7 +16,7 @@ echo "[3/3] Nginx 재시작..."
 systemctl enable nginx
 systemctl restart nginx
 
-# 4. 상태 확인
+# 상태 확인
 if systemctl is-active --quiet nginx; then
     echo "=== 배포 완료 ==="
     exit 0
