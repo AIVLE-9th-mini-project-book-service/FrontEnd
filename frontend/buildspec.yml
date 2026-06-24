@@ -6,15 +6,9 @@ phases:
       nodejs: 20
     commands:
       - cd frontend && npm ci
-  pre_build:
-    commands:
-      - echo "Node $(node -v)"
   build:
     commands:
-      - cd frontend && npm run build
-  post_build:
-    commands:
-      - echo "Build done"
+      - cd frontend && npm run build && echo "BUILD SUCCESS" || (echo "BUILD FAILED" && cat frontend/package.json && exit 1)
 
 artifacts:
   files:
