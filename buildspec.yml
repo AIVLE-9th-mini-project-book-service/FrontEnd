@@ -3,17 +3,42 @@ version: 0.2
 phases:
   install:
     runtime-versions:
-      nodejs: 20 
+      nodejs: 20
+    commands:
+      - echo Installing kubectl...
+      - curl -LO "https://dl.k8s.io/release/v1.28.0/bin/linux/amd64/kubectl"
+      - chmod +x ./kubectl
+      - mv ./kubectl /usr/local/bin/kubectl
   pre_build:
     commands:
       - echo Change directory to frontend...
       - cd frontend
       - echo Installing source dependencies...
       - npm install
+      - echo Logging in to Amazon ECR...
+      - aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 879772956301.dkr.ecr.us-east-1.amazonaws.com
+      - REPOSITORY_URI=879772956301.dkr.ecr.us-east-1.amazonaws.com/user134-frontend-repo
+      - IMAGE_TAG=build-$(echo $CODEBUILD_BUILD_ID | awk -F':' '{print $2}')
   build:
     commands:
       - echo Build started on `date`
       - npm run build
+      - echo Building the Docker image...
+      - docker build -t $REPOSITORY_URI:latest .
+      - docker tag $REPOSITORY_URI:latest $REPOSITORY_URI:$IMAGE_TAG
+  post_build:
+    commands:
+      - echo Build completed on `date`
+      - echo Pushing the Docker images to ECR...
+      - docker push $REPOSITORY_URI:latest
+      - docker push $REPOSITORY_URI:$IMAGE_TAG
+      - echo Configuring AWS EKS access...
+      - aws eks update-kubeconfig --region us-east-1 --name miniproj-eks-newcluster-HS
+      - echo Deploying to EKS Cluster...
+      - kubectl apply -f ../deployment.yaml
+      - echo Setting the new image on deployment...
+      - kubectl set image deployment/frontend-deployment frontend-container=$REPOSITORY_URI:$IMAGE_TAG
 artifacts:
   files:
-    - 'frontend/dist/**/*' 
+    - 'frontend/dist/**/*'
+    - 'deployment.yaml'
