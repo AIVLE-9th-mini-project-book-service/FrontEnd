@@ -9,13 +9,15 @@ phases:
   build:
     commands:
       - npm run build
+      - cp frontend/appspec.yml appspec.yml
+      - cp -r frontend/deploy-scripts deploy-scripts
 
 artifacts:
   files:
     - frontend/dist/**/*
     - frontend/deploy-scripts/**/*
-    - frontend/appspec.yml
-  discard-paths: yes
+    - appspec.yml
+  discard-paths: no
 
 cache:
   paths:
