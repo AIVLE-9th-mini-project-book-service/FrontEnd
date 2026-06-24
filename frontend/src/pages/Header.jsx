@@ -1,9 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/useAuth';
 import logo from '../img/logo.png';
-import icon01 from 'src/img/icon01.png';
-import icon02 from 'src/img/icon02.png';
-import icon03 from 'src/img/icon03.png';
 
 function Header() {
   const navigate = useNavigate();
@@ -28,13 +25,13 @@ function Header() {
 
           <div className="header-icons">
             <button className="icon-link-btn" onClick={() => navigate('/books')}>
-              <img src={icon01} alt="도서 목록" />
+              <img src="src/img/icon01.png" alt="도서 목록" />
             </button>
             <button className="icon-link-btn" onClick={() => navigate('/books/register')}>
-              <img src={icon02} alt="도서 등록" />
+              <img src="src/img/icon02.png" alt="도서 등록" />
             </button>
             <button className="icon-link-btn" onClick={() => navigate('/books/deleted')}>
-              <img src={icon03} alt="휴지통" />
+              <img src="src/img/icon03.png" alt="휴지통" />
             </button>
 
             {user ? (
