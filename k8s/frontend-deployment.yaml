@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: team20-y-frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: team20-y-frontend
+  template:
+    metadata:
+      labels:
+        app: team20-y-frontend
+    spec:
+      containers:
+        - name: team20-y-frontend
+          image: IMAGE_URI_PLACEHOLDER
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 80

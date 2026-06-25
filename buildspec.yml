@@ -1,0 +1,46 @@
+version: 0.2
+
+env:
+  variables:
+    AWS_DEFAULT_REGION: us-east-2
+    IMAGE_REPO_NAME: team20-y-frontend
+    VITE_API_BASE_URL: /api
+
+phases:
+  install:
+    commands:
+      - echo "Check Docker"
+      - docker --version
+
+  pre_build:
+    commands:
+      - echo "Login to Amazon ECR"
+      - ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
+      - REPOSITORY_URI=$ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME
+      - aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com
+      - IMAGE_TAG=$(echo ${CODEBUILD_RESOLVED_SOURCE_VERSION:-latest} | cut -c 1-7)
+      - echo "REPOSITORY_URI=$REPOSITORY_URI"
+      - echo "IMAGE_TAG=$IMAGE_TAG"
+
+  build:
+    commands:
+      - echo "Build frontend Docker image"
+      - docker build --build-arg VITE_API_BASE_URL=$VITE_API_BASE_URL -t $IMAGE_REPO_NAME:$IMAGE_TAG .
+      - docker tag $IMAGE_REPO_NAME:$IMAGE_TAG $REPOSITORY_URI:$IMAGE_TAG
+      - docker tag $IMAGE_REPO_NAME:$IMAGE_TAG $REPOSITORY_URI:latest
+
+  post_build:
+    commands:
+      - echo "Push frontend Docker image"
+      - docker push $REPOSITORY_URI:$IMAGE_TAG
+      - docker push $REPOSITORY_URI:latest
+
+      - echo "Update frontend Kubernetes manifest image"
+      - sed -i "s|IMAGE_URI_PLACEHOLDER|$REPOSITORY_URI:$IMAGE_TAG|g" k8s/frontend-deployment.yaml
+      - cat k8s/frontend-deployment.yaml
+
+artifacts:
+  files:
+    - k8s/**/*
+    - buildspec-deploy.yml
+  discard-paths: no

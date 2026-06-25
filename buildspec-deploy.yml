@@ -1,0 +1,39 @@
+version: 0.2
+
+env:
+  variables:
+    AWS_DEFAULT_REGION: us-east-2
+    CLUSTER_NAME: team20-y-eks
+
+phases:
+  install:
+    commands:
+      - aws --version
+      - |
+        if ! command -v kubectl >/dev/null 2>&1; then
+          curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+          chmod +x kubectl
+          mv kubectl /usr/local/bin/kubectl
+        fi
+      - kubectl version --client
+
+  pre_build:
+    commands:
+      - aws eks update-kubeconfig --region $AWS_DEFAULT_REGION --name $CLUSTER_NAME
+
+  build:
+    commands:
+      - echo "Apply frontend manifests"
+      - kubectl apply -f k8s/frontend-deployment.yaml
+      - kubectl apply -f k8s/frontend-service.yaml
+      - kubectl rollout status deployment/team20-y-frontend --timeout=300s
+
+      - echo "Apply app ingress"
+      - kubectl apply -f k8s/ingress.yaml
+
+  post_build:
+    commands:
+      - kubectl get deployment
+      - kubectl get pods -o wide
+      - kubectl get svc
+      - kubectl get ingress
